@@ -767,18 +767,20 @@ const coursesData = [
     area: "Algebra",
     icon: "𝔸",
     courses: [
-      { name: "Group Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Rings and Modules", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Advanced Linear Algebra", refs: ["Bist & Sahay"], description: "" },
-      { name: "Galois Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Commutative Algebra", refs: ["N.S. Gopalkrishnan", "Matsumura"], description: "" },
+      { name: "Group Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "The course began with some basic definitions and revisiting quickly working through isomorphism theorems. Then the focus shifted towards simple groups, solvable groups, composition series, Jordan-Hölder decomposition, and the courses ended with the statement of structure theorem." },
+      { name: "Elementary Number Theory", refs: ["David Burton — Elementary Number Theory"], description: "In works." },
+      { name: "Rings and Modules", refs: ["Dummit & Foote — Abstract Algebra"], description: "Definition of rings and modules, their isomorphism theorems, properties of ideals was the stepping stone towards to some more serious (yet elementary) theory of localisation (of rings) and noetherian modules. The course ended with some emphasis towards Gauss lemma and Eisenstein's criterion. The course began with working with arbitrary rings but then quickly shifted to working with commutative unital rings." },
+      { name: "Galois Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "The starting point was recap of some relevant ring theory (like Gauss lemma and Eisenstein's criterion) definiton of field extensions, algebraic extensions, separable extensions and some more relevant theory. After the mid-term, the focus shifted to Galois extensions and the course ended with the Galois correspondence theorem." },
+      { name: "Commutative Algebra", refs: ["N.S. Gopalkrishnan", "Matsumura"], description: "We began with defining free modules, projective modules, injective modules, flat modules, Hom and tensor product as a functor and interesting properties and some other relevant (and elementary) homological algebra, like short exact sequences, free resolutions and more. We then proceeded to some theory of localisation, its nature as a functor, how it interacts with whatever we covered before. After midsem, the focus shifted to Noetherian rings, Artinian rings, Primary deocomposition theorem. The course then ended with integral extensions, specifically the going up and going down theorem." },
+      { name: "Algebraic Geometry", refs: ["Hartshorne — Algebraic Geometry"], description: "" },
     ]
   },
   {
     area: "Analysis",
     icon: "∫",
     courses: [
-      { name: "Real Analysis I & II", refs: [], description: "" },
+      { name: "Real Analysis I", refs: ["Understading Analysis - Stephen Abott"], description: "" },
+      { name: "Real Analysis II", refs: ["Analysis on Manifolds - Munkres; Calculus on Manifolds - Spivak"], description: "" },
       { name: "Complex Analysis I", refs: ["Ahlfors — Complex Analysis"], description: "" },
       { name: "Ordinary Differential Equations", refs: ["Coddington — An Introduction to ODE"], description: "" },
       { name: "Probability Theory", refs: ["Durrett — Probability: Theory and Examples"], description: "" },
@@ -788,21 +790,14 @@ const coursesData = [
     area: "Topology & Geometry",
     icon: "𝕋",
     courses: [
-      { name: "General Topology", refs: ["Munkres — Topology"], description: "" },
+      { name: "General Topology", refs: ["Munkres — Topology"], description: "We began with some basic definitions and results about what a topology is and then " },
       { name: "Algebraic Topology I", refs: ["Hatcher — Algebraic Topology"], description: "" },
       { name: "Algebraic Topology II", refs: ["Hatcher — Algebraic Topology"], description: "" },
-      { name: "Differential Geometry of Curves and Surfaces", refs: ["Andrew Pressley — Elementary Differential Geometry"], description: "" },
-      { name: "Mathematical Methods for Classical Mechanics", refs: ["Lee — Introduction to Smooth Manifolds"], description: "" },
+      { name: "Differential Geometry of Curves and Surfaces", refs: ["Andrew Pressley — Elementary Differential Geometry"], description: "The course began with discussing curves, their curvature, torsion, serret-frenet equations, then moving on to surfaces and leading up to first fundamental form, second fundamental form, Gaussian curvature and geodesics. The course ended with Gauss's remarkable theorem and Christoffel symbols.},
+      { name: "Mathematical Methods for Classical Mechanics", refs: ["Lee — Introduction to Smooth Manifolds"], description: "This was an introductory course mostly discussing some elementary manifold theory and leading up to relevant symplectic geometry theory in the context of classical mechanics." },
     ]
   },
-  {
-    area: "Geometry & Number Theory",
-    icon: "𝕍",
-    courses: [
-      { name: "Algebraic Geometry", refs: ["Hartshorne — Algebraic Geometry"], description: "" },
-      { name: "Elementary Number Theory", refs: ["David Burton — Elementary Number Theory"], description: "" },
-    ]
-  },
+  
   {
     area: "Combinatorics & Logic",
     icon: "#",
