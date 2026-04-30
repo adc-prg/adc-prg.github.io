@@ -5,7 +5,6 @@ import {
   Route,
   Link,
   useLocation,
-  useNavigate,
 } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -40,11 +39,6 @@ const ExternalLink = (p) => (
     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
   </svg>
 );
-const ArrowRight = (p) => (
-  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-  </svg>
-);
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const cvData = {
@@ -60,6 +54,7 @@ const cvData = {
     guide: "Guide: Prof. Ashish Upadhyay",
     description: "Cayley graphs are graphs which exhibit the nature of action of a group G on a set S, which is closed under inverses (typically generating set). A graph is said to be integral if each of the eigenvalues of its Adjacency Matrix is an integer. The genus of a graph is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without any edge crossings. The goal was to work towards finding out the fields for which the 'generalised' cayley graphs are integral and what genus do they have."
   }],
+  
   education: [
     { institution: "Indian Institute of Science Education and Research, Bhopal", degree: "BS-MS (Dual Degree), Major: Mathematics", duration: "2022 – 2027 (Expected)", grades: ["Cumulative performance: 8.81 / 10"] },
     { institution: "Puna International School, Gandhinagar", degree: "Senior Secondary (CBSE), Science Stream", duration: "2020 – 2022" },
@@ -116,24 +111,63 @@ const cvData = {
 
 const navPages = [
   { label: 'AcadEx',    path: '/acadex',    desc: 'Academic internships and summer schools.' },
-  { label: 'Research',  path: '/research',  desc: 'Research projects and ongoing work.' },
-  { label: 'Courses',   path: '/courses',   desc: 'Five courses that changed how I see mathematics.' },
+  { label: 'Research',  path: '/research',  desc: 'Research projects.' },
+  { label: 'Courses',   path: '/courses',   desc: 'Some mathematics worth sitting with.' },
   { label: 'Events',    path: '/events',    desc: 'Academic and extracurricular events I\'ve organised.' },
-  { label: 'Now',       path: '/now',       desc: 'What is currently on the desk.' },
-  { label: 'Shelf',     path: '/shelf',     desc: 'Books worth sitting with.' },
+  { label: 'Explorations', path: '/resources', desc: 'Self learning initiatives.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'An independent student-led ideas initiative.' },
   { label: 'Contact',   path: '/contact',   desc: 'Get in touch for collaborations or inquiries.' },
 ];
 
-const bentoCategories = [
-  { category: "Algebra",                  icon: "𝔸", span: 2},
-  { category: "Analysis",                  icon: "∫", span: 1},
-  { category: "Topology",                  icon: "𝕋", span: 1},
-  { category: "Algebraic Geometry",        icon: "𝕍", span: 1},
-  { category: "Homological Algebra",       icon: "⟶", span: 1},
-  { category: "Category Theory",           icon: "⊸", span: 1},
-  { category: "Foundations & Discrete",    icon: "#",  span: 2},
-  { category: "Miscellaneous",             icon: "∞",  span: 1},
+const coursesData = [
+  {
+    area: "Algebra",
+    icon: "𝔸",
+    courses: [
+      { name: "Group Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Rings and Modules", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Advanced Linear Algebra", refs: ["Bist & Sahay"], description: "" },
+      { name: "Galois Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Commutative Algebra", refs: ["N.S. Gopalkrishnan", "Matsumura"], description: "" },
+    ]
+  },
+  {
+    area: "Analysis",
+    icon: "∫",
+    courses: [
+      { name: "Real Analysis I & II", refs: [], description: "" },
+      { name: "Complex Analysis I", refs: ["Ahlfors — Complex Analysis"], description: "" },
+      { name: "Ordinary Differential Equations", refs: ["Coddington — An Introduction to ODE"], description: "" },
+      { name: "Probability Theory", refs: ["Durrett — Probability: Theory and Examples"], description: "" },
+    ]
+  },
+  {
+    area: "Topology & Geometry",
+    icon: "𝕋",
+    courses: [
+      { name: "General Topology", refs: ["Munkres — Topology"], description: "" },
+      { name: "Algebraic Topology I", refs: ["Hatcher — Algebraic Topology"], description: "" },
+      { name: "Algebraic Topology II", refs: ["Hatcher — Algebraic Topology"], description: "" },
+      { name: "Differential Geometry of Curves and Surfaces", refs: ["Andrew Pressley — Elementary Differential Geometry"], description: "" },
+      { name: "Mathematical Methods for Classical Mechanics", refs: ["Lee — Introduction to Smooth Manifolds"], description: "" },
+    ]
+  },
+  {
+    area: "Geometry & Number Theory",
+    icon: "𝕍",
+    courses: [
+      { name: "Algebraic Geometry", refs: ["Hartshorne — Algebraic Geometry"], description: "" },
+      { name: "Elementary Number Theory", refs: ["David Burton — Elementary Number Theory"], description: "" },
+    ]
+  },
+  {
+    area: "Combinatorics & Logic",
+    icon: "#",
+    courses: [
+      { name: "Combinatorics and Graph Theory", refs: ["Brualdi — Introductory Combinatorics", "Douglas West — Introduction to Graph Theory"], description: "" },
+      { name: "Theory of Computation", refs: ["John C. Martin — Introduction to Languages and the Theory of Computation"], description: "" },
+    ]
+  },
 ];
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
@@ -192,7 +226,6 @@ const CSS = `
   @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:0.45} }
-  @keyframes shimmer { 0%{opacity:0.18} 50%{opacity:0.32} 100%{opacity:0.18} }
 
   .au  { animation:fadeUp 0.85s cubic-bezier(0.16,1,0.3,1) both; }
   .d1  { animation-delay:0.08s; }
@@ -258,68 +291,15 @@ const CSS = `
   .hdr-right { display:flex; align-items:center; gap:18px; }
   .hdr-nav { display:flex; flex-wrap:wrap; gap:4px 18px; justify-content:flex-end; align-items:center; }
 
-  /* Bento grid */
-  .bento-grid { display:grid; gap:14px; grid-template-columns:repeat(4, 1fr); }
-  .bento-span-2 { grid-column: span 2; }
-  .bento-card { background:var(--surface); border:1px solid var(--border); border-radius:calc(var(--r) + 2px); padding:26px 22px 22px; transition:box-shadow 0.35s,transform 0.3s; position:relative; overflow:hidden; }
-  .bento-card:hover { box-shadow:var(--sh-md); transform:translateY(-3px); }
-  .bento-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--accent), transparent); opacity:0; transition:opacity 0.3s; }
-  .bento-card:hover::before { opacity:1; }
-  .bento-icon { font-size:2rem; margin-bottom:12px; font-family:var(--fd); line-height:1; color:var(--accent); opacity:0.75; }
-  .bento-wip { display:inline-flex; align-items:center; gap:6px; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink3); border:1px solid var(--border); border-radius:20px; padding:3px 10px; margin-top:10px; }
+  /* Reusable utilities */
   .wip-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); opacity:0.6; animation:pulse 2s ease-in-out infinite; }
-
-  /* OpenBoard tag */
   .ob-tag { display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:20px; padding:3px 10px; opacity:0.8; }
-
-  /* Event tag */
   .ev-tag { display:inline-block; font-size:0.7rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); border:1px dashed var(--accent); border-radius:20px; padding:2px 9px; margin-bottom:10px; opacity:0.75; }
 
   /* Crimson CTA button */
   .cta-btn { display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#fff; border:none; border-radius:var(--r); padding:10px 20px; font-family:var(--fb); font-size:0.82rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:opacity 0.2s,transform 0.2s; }
   .cta-btn:hover { opacity:0.88; transform:translateY(-1px); }
 
-  /* Grassmannian card accent border */
-  .grass-card { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:var(--r); box-shadow:var(--sh-sm); padding:36px 32px; transition:box-shadow 0.3s; }
-  .grass-card:hover { box-shadow:var(--sh-md); }
-
-  /* ── Courses page: editorial entry ── */
-  .course-entry { display:grid; grid-template-columns:72px 1fr; gap:0 28px; padding:52px 0; border-top:1px solid var(--border); position:relative; }
-  .course-entry:hover .course-numeral { opacity:0.38; }
-  .course-numeral { font-family:var(--fd); font-size:clamp(3.2rem,7vw,5rem); font-weight:700; font-style:italic; color:var(--accent); opacity:0.18; line-height:1; user-select:none; transition:opacity 0.4s ease; padding-top:4px; }
-  .course-name { font-family:var(--fd); font-size:clamp(1.65rem,3.5vw,2.3rem); font-weight:600; color:var(--ink); line-height:1.1; letter-spacing:-0.01em; margin:0 0 16px; transition:color 0.2s; }
-  .course-entry:hover .course-name { color:var(--accent); }
-  .course-area-pill { display:inline-block; font-size:9px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:var(--ink3); border:1px solid var(--border); border-radius:20px; padding:2px 10px; margin-bottom:14px; }
-  .course-note { font-size:0.91rem; color:var(--ink2); line-height:1.88; max-width:560px; margin-bottom:20px; }
-  .course-ref { font-family:var(--fd); font-size:0.88rem; font-style:italic; color:var(--ink3); display:flex; align-items:baseline; gap:7px; }
-
-  /* ── Now page ── */
-  .now-block { border-top:1px solid var(--border); padding:36px 0 28px; }
-  .now-label { font-size:9px; font-weight:600; letter-spacing:0.26em; text-transform:uppercase; color:var(--ink3); margin-bottom:18px; }
-  .now-item { padding:18px 0; border-bottom:1px dashed var(--border); display:flex; gap:18px; align-items:flex-start; }
-  .now-item:last-child { border-bottom:none; }
-  .now-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; margin-top:7px; opacity:0.7; }
-
-  /* ── Shelf page ── */
-  .shelf-row { display:flex; align-items:baseline; gap:18px; padding:20px 0; border-bottom:1px solid var(--border); transition:background 0.2s; cursor:default; }
-  .shelf-row:hover { background:color-mix(in srgb, var(--border) 18%, transparent); margin:0 -16px; padding-left:16px; padding-right:16px; border-radius:4px; }
-  .shelf-num { font-family:var(--fd); font-size:0.75rem; color:var(--ink3); font-style:italic; min-width:22px; }
-  .shelf-title { font-family:var(--fd); font-size:1.05rem; font-weight:500; color:var(--ink); line-height:1.3; }
-  .shelf-author { font-size:0.78rem; color:var(--ink3); margin-top:3px; }
-  .shelf-note { font-size:0.8rem; color:var(--ink2); font-style:italic; line-height:1.65; margin-top:4px; }
-
-  @media(max-width:768px) {
-    .bento-grid { grid-template-columns:repeat(2,1fr); }
-    .bento-span-2 { grid-column: span 2; }
-    .course-entry { grid-template-columns:52px 1fr; gap:0 16px; padding:38px 0; }
-    .course-numeral { font-size:2.8rem; }
-  }
-  @media(max-width:480px) {
-    .bento-grid { grid-template-columns:1fr; }
-    .bento-span-2 { grid-column: span 1; }
-    .course-entry { grid-template-columns:1fr; }
-    .course-numeral { display:none; }
-  }
   @media(max-width:600px) {
     .hdr-inner { flex-direction:column; align-items:flex-start; gap:10px; padding:12px 0; }
     .hdr-right { width:100%; justify-content:space-between; }
@@ -336,11 +316,10 @@ const ThemeToggle = ({ theme, toggleTheme }) => (
 
 const Divider = ({ style = {} }) => <hr className="dv" style={style} />;
 
-const SectionHead = ({ eyebrow, title, subtitle }) => (
+const SectionHead = ({ eyebrow, title }) => (
   <FadeIn style={{ marginBottom: 52 }}>
     <div className="eb" style={{ marginBottom: 10 }}>{eyebrow}</div>
-    <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em', marginBottom: subtitle ? 18 : 0 }}>{title}</h2>
-    {subtitle && <p style={{ fontSize: '0.95rem', color: 'var(--ink2)', lineHeight: 1.85, maxWidth: 560, marginTop: 0 }}>{subtitle}</p>}
+    <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em' }}>{title}</h2>
   </FadeIn>
 );
 
@@ -365,6 +344,7 @@ const pageVar = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.42, ease: [0.16, 1, 0.3, 1] } },
   exit:    { opacity: 0, y: -10, transition: { duration: 0.22 } },
 };
+
 const PageWrapper = ({ children }) => (
   <motion.div variants={pageVar} initial="initial" animate="animate" exit="exit">
     {children}
@@ -407,7 +387,6 @@ const Footer = () => (
 // ─── Home Page ────────────────────────────────────────────────────────────────
 const HomePage = ({ theme, toggleTheme }) => {
   const [hovered, setHovered] = useState(null);
-  const navigate = useNavigate();
 
   return (
     <div className="grain" style={{ minHeight:'100vh', background:'var(--bg)', color:'var(--ink)', fontFamily:'var(--fb)' }}>
@@ -426,6 +405,7 @@ const HomePage = ({ theme, toggleTheme }) => {
 
       {/* ── Hero ── */}
       <section style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'80px 24px 40px', textAlign:'center', position:'relative', zIndex:1 }}>
+
         {/* Name */}
         <h1 className="au d1" style={{ fontSize:'clamp(3rem,13vw,7.5rem)', fontWeight:900, lineHeight:0.93, color:'var(--ink)', marginBottom:26, letterSpacing:'-0.02em', fontFamily:"'Playfair Display', Georgia, serif", fontStyle:'italic' }}>
           Adeetya
@@ -615,6 +595,7 @@ const ResearchPage = () => (
 
 // ─── Events Page ───────────────────────────────────────────────────────────────
 const EventsPage = () => {
+  // Put Grassmannian seminar first
   const sortedEvents = [
     ...cvData.events.filter(e => e.title.includes('Grassmannian')),
     ...cvData.events.filter(e => !e.title.includes('Grassmannian')),
@@ -644,6 +625,18 @@ const EventsPage = () => {
   </PageWrapper>
   );
 };
+
+// ─── Explorations Page ────────────────────────────────────────────────────────
+const ResourcesPage = () => (
+  <PageWrapper>
+    <SectionHead eyebrow="Independent Study" title="Explorations" />
+    <FadeIn delay={60}>
+      <p style={{ fontSize:'0.95rem', color:'var(--ink2)', fontStyle:'italic', lineHeight:1.88, maxWidth:600 }}>
+        This page is a work in progress. I'm putting together a curated record of what I'm reading, studying, and thinking about outside of formal coursework — areas I return to out of genuine curiosity. Check back soon.
+      </p>
+    </FadeIn>
+  </PageWrapper>
+);
 
 // ─── OpenBoard Page ───────────────────────────────────────────────────────────
 const OpenBoardPage = () => (
@@ -722,16 +715,17 @@ const OpenBoardPage = () => (
   </PageWrapper>
 );
 
-// ─── Contact Page ─────────────────────────────────────────────────────────────
+// ─── Contact Page (full viewport centered) ────────────────────────────────────
 const ContactPage = () => (
   <PageWrapper>
     <div style={{
       display:'flex', alignItems:'center', justifyContent:'center',
-      minHeight:'calc(100vh - 62px)',
+      minHeight:'calc(100vh - 62px)',  /* subtract sticky navbar height */
       padding:'40px 24px',
     }}>
       <div style={{ width:'100%', maxWidth:480 }}>
 
+        {/* Header */}
         <div style={{ textAlign:'center', marginBottom:40 }}>
           <div className="eb" style={{ marginBottom:10 }}>Contact</div>
           <h2 className="df" style={{ fontSize:'clamp(2.4rem,5vw,3.2rem)', fontWeight:600, lineHeight:1.08, color:'var(--ink)', letterSpacing:'-0.01em', marginBottom:0 }}>
@@ -739,6 +733,7 @@ const ContactPage = () => (
           </h2>
         </div>
 
+        {/* Card */}
         <FadeIn delay={80}>
           <div className="card" style={{ padding:'40px 36px' }}>
             <p className="df" style={{ fontSize:'1.08rem', fontStyle:'italic', color:'var(--ink2)', marginBottom:32, lineHeight:1.72, textAlign:'center' }}>
@@ -764,6 +759,7 @@ const ContactPage = () => (
           </div>
         </FadeIn>
 
+        {/* Social footnote */}
         <p style={{ textAlign:'center', marginTop:20, fontSize:'0.78rem', color:'var(--ink3)', fontStyle:'italic' }}>
           Response times vary — email is most reliable.
         </p>
@@ -772,331 +768,103 @@ const ContactPage = () => (
   </PageWrapper>
 );
 
-// ─── Courses Data (curated five) ──────────────────────────────────────────────
-const coursesData = [
-  {
-    numeral: "I",
-    name: "Algebraic Geometry",
-    area: "Geometry",
-    refs: ["Hartshorne — Algebraic Geometry"],
-    note: "The course that collapsed the wall between algebra and geometry. Hartshorne is demanding — every page earns its difficulty. Varieties, schemes, sheaves: not merely tools, but a way of seeing that you cannot un-learn."
-  },
-  {
-    numeral: "II",
-    name: "Commutative Algebra",
-    area: "Algebra",
-    refs: ["N.S. Gopalkrishnan", "Matsumura — Commutative Ring Theory"],
-    note: "The language algebraic geometry is secretly written in. Studied first through Gopalkrishnan, then revisited through Matsumura — two very different textures of the same subject. Local rings and Noetherian modules started feeling less like algebra and more like geometry done bare-handed."
-  },
-  {
-    numeral: "III",
-    name: "Algebraic Topology I",
-    area: "Topology",
-    refs: ["Hatcher — Algebraic Topology"],
-    note: "Fundamental groups, covering spaces, the van Kampen theorem. The first time topology had real computational teeth. Hatcher's exposition makes the subject breathe — abstract enough to be honest, concrete enough to be habitable."
-  },
-  {
-    numeral: "IV",
-    name: "Algebraic Topology II",
-    area: "Topology",
-    refs: ["Hatcher — Algebraic Topology"],
-    note: "Homology and cohomology — where the categorical language stops being optional. Long exact sequences, excision, Mayer-Vietoris: algebra that remembers shape. The point at which everything upstream begins to feel inevitable."
-  },
-  {
-    numeral: "V",
-    name: "Probability Theory",
-    area: "Analysis",
-    refs: ["Durrett — Probability: Theory and Examples"],
-    note: "The one course outside my usual territory that genuinely surprised me. Measure-theoretic probability via Durrett is rigorous, honest, and connected to the rest of mathematics in ways I did not expect going in."
-  },
-];
+// ─── Courses Page ─────────────────────────────────────────────────────────────
+const CoursesPage = () => {
+  const [openCourse, setOpenCourse] = useState(null);
+  const toggle = (key) => setOpenCourse(prev => prev === key ? null : key);
 
-// ─── Courses Page (editorial redesign) ────────────────────────────────────────
-const CoursesPage = () => (
-  <PageWrapper>
-    <div style={{ maxWidth: 800, margin: '0 auto' }}>
+  return (
+    <PageWrapper>
+      <div style={{ maxWidth: 860, margin: '0 auto' }}>
+        <SectionHead eyebrow="Coursework" title="A map of the territory." />
 
-      {/* Statement header */}
-      <FadeIn style={{ marginBottom: 72 }}>
-        <div className="eb" style={{ marginBottom: 14 }}>Coursework</div>
-        <h2 className="df" style={{ fontSize: 'clamp(2.4rem,5.5vw,3.4rem)', fontWeight: 600, lineHeight: 1.04, color: 'var(--ink)', letterSpacing: '-0.02em', marginBottom: 28 }}>
-          Five courses.<br />Not a catalogue.
-        </h2>
-        <p style={{ fontSize: '0.94rem', color: 'var(--ink2)', lineHeight: 1.9, maxWidth: 530 }}>
-          I have taken many mathematics courses. These are the ones that actually changed how I think — each one opening a room I hadn't seen before. The rest exist on a transcript. These five live in the way I approach problems.
-        </p>
-      </FadeIn>
+        <FadeIn>
+          <p style={{ fontSize: '0.93rem', color: 'var(--ink2)', lineHeight: 1.85, maxWidth: 580, marginBottom: 56 }}>
+            Courses that have shaped how I think — each one a door into a larger room.
+            Click any course to see the references and notes.
+          </p>
+        </FadeIn>
 
-      {/* Course entries */}
-      <div>
-        {coursesData.map((course, i) => (
-          <FadeIn key={course.name} delay={i * 90}>
-            <div className="course-entry">
-              {/* Numeral */}
-              <div className="course-numeral">{course.numeral}</div>
-
-              {/* Content */}
-              <div>
-                <span className="course-area-pill">{course.area}</span>
-                <h3 className="course-name">{course.name}</h3>
-                <p className="course-note">{course.note}</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {course.refs.map((ref, ri) => (
-                    <span key={ri} className="course-ref">
-                      <span style={{ color: 'var(--accent)', opacity: 0.55, fontSize: '1rem' }}>—</span>
-                      {ref}
-                    </span>
-                  ))}
-                </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 52 }}>
+          {coursesData.map((area, ai) => (
+            <FadeIn key={area.area} delay={ai * 60}>
+              {/* Area header */}
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 20 }}>
+                <span style={{ fontFamily: 'var(--fd)', fontSize: '1.7rem', color: 'var(--accent)', opacity: 0.7, lineHeight: 1 }}>{area.icon}</span>
+                <h3 className="df" style={{ fontSize: 'clamp(1.1rem,2.5vw,1.45rem)', fontWeight: 600, color: 'var(--ink)', margin: 0, letterSpacing: '-0.01em' }}>{area.area}</h3>
+                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, var(--border), transparent)', marginLeft: 8, alignSelf: 'center' }} />
               </div>
-            </div>
-          </FadeIn>
-        ))}
-        <div style={{ borderTop: '1px solid var(--border)' }} />
+
+              {/* Courses list */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {area.courses.map((course, ci) => {
+                  const key = `${ai}-${ci}`;
+                  const isOpen = openCourse === key;
+                  return (
+                    <div key={key} style={{ borderRadius: 'var(--r)', overflow: 'hidden', border: '1px solid var(--border)', background: isOpen ? 'var(--surface)' : 'transparent', transition: 'background 0.25s' }}>
+                      <button
+                        onClick={() => toggle(key)}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 16 }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                          <span style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--accent)', opacity: 0.7, fontFamily: 'var(--fb)', minWidth: 28, textAlign: 'right' }}>
+                            {String(ci + 1).padStart(2, '0')}
+                          </span>
+                          <span className="df" style={{ fontSize: 'clamp(0.97rem,2vw,1.1rem)', fontWeight: 500, color: isOpen ? 'var(--accent)' : 'var(--ink)', transition: 'color 0.2s' }}>
+                            {course.name}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                          {!isOpen && course.refs.length > 0 && (
+                            <span style={{ fontSize: '0.75rem', color: 'var(--ink3)', fontStyle: 'italic', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 240 }}>
+                              {course.refs[0]}{course.refs.length > 1 ? ` +${course.refs.length - 1}` : ''}
+                            </span>
+                          )}
+                          <span style={{ width: 22, height: 22, borderRadius: '50%', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', fontSize: 14, flexShrink: 0, transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)', transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)' }}>+</span>
+                        </div>
+                      </button>
+
+                      {/* Expanded content */}
+                      <div style={{ maxHeight: isOpen ? 400 : 0, overflow: 'hidden', transition: 'max-height 0.4s cubic-bezier(0.16,1,0.3,1)' }}>
+                        <div style={{ padding: '4px 20px 22px 62px', borderTop: '1px solid var(--border)' }}>
+                          {course.refs.length > 0 && (
+                            <div style={{ marginTop: 16, marginBottom: 18 }}>
+                              <div className="eb" style={{ marginBottom: 10, fontSize: 9 }}>References</div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                {course.refs.map((ref, ri) => (
+                                  <div key={ri} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                                    <span style={{ color: 'var(--accent)', fontSize: '0.8rem', marginTop: 1, flexShrink: 0 }}>—</span>
+                                    <span className="df" style={{ fontSize: '0.95rem', fontStyle: 'italic', color: 'var(--ink2)', lineHeight: 1.5 }}>{ref}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          <div style={{ marginTop: course.refs.length > 0 ? 0 : 16, padding: '12px 16px', background: 'color-mix(in srgb, var(--border) 30%, transparent)', borderRadius: 'calc(var(--r) - 2px)', borderLeft: '2px solid var(--border)' }}>
+                            {course.description
+                              ? <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.75 }}>{course.description}</p>
+                              : <p style={{ margin: 0, fontSize: '0.83rem', color: 'var(--ink3)', fontStyle: 'italic', lineHeight: 1.7 }}>A few lines about this course can go here.</p>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={300}>
+          <p style={{ marginTop: 64, fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic', textAlign: 'center' }}>
+            References reflect primary texts studied. Abbreviations in the nav are used informally.
+          </p>
+        </FadeIn>
       </div>
-
-      <FadeIn delay={550}>
-        <p style={{ marginTop: 52, fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic', textAlign: 'center' }}>
-          A deliberate edit, not a complete transcript. Primary references listed.
-        </p>
-      </FadeIn>
-    </div>
-  </PageWrapper>
-);
-
-// ─── Now Page ─────────────────────────────────────────────────────────────────
-const nowData = {
-  reading: [
-    {
-      title: "Algebraic Topology",
-      author: "Allen Hatcher",
-      note: "Revisiting for the BHU internship — now focused on homotopy theory and homology beyond the basics. The book rewards second passes."
-    },
-    {
-      title: "Categories for the Working Mathematician",
-      author: "Saunders Mac Lane",
-      note: "Preparation for the upcoming project with Dr. Vivek Sadhu. Reading slowly and carefully."
-    },
-  ],
-  working: [
-    {
-      title: "BHU Internship — Algebraic Topology",
-      note: "Currently in the problem-solving phase after building foundational theory. Applying homotopy and homology tools to more advanced problems."
-    },
-    {
-      title: "Openboard — upcoming talks",
-      note: "Helping plan the next round of talks for the initiative. Looking for speakers with ideas worth sharing with a general audience."
-    },
-  ],
-  thinking: [
-    {
-      title: "Homological algebra as a unifying language",
-      note: "Long exact sequences appear everywhere — topology, algebra, geometry. I keep thinking about why that is, and what it means for how mathematics is structured."
-    },
-    {
-      title: "The Probabilistic Method",
-      note: "The idea that you can prove existence without construction. I gave a talk on this — but the philosophy keeps resurfacing in how I think about problems."
-    },
-  ]
+    </PageWrapper>
+  );
 };
-
-const NowPage = () => (
-  <PageWrapper>
-    <div style={{ maxWidth: 720, margin: '0 auto' }}>
-
-      <FadeIn style={{ marginBottom: 60 }}>
-        <div className="eb" style={{ marginBottom: 12 }}>Now</div>
-        <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em', marginBottom: 20 }}>
-          What is on the desk.
-        </h2>
-        <p style={{ fontSize: '0.9rem', color: 'var(--ink3)', fontStyle: 'italic', lineHeight: 1.8 }}>
-          A snapshot of where my attention is. Updated as things change — which they do, often.
-        </p>
-      </FadeIn>
-
-      {/* Currently Reading */}
-      <FadeIn delay={80}>
-        <div className="now-block">
-          <div className="now-label">Currently Reading</div>
-          {nowData.reading.map((item, i) => (
-            <div key={i} className="now-item">
-              <div className="now-dot" />
-              <div>
-                <div className="df" style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--ink)', lineHeight: 1.2, marginBottom: 2 }}>{item.title}</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.05em', marginBottom: 8 }}>{item.author}</div>
-                <p style={{ fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.82, margin: 0 }}>{item.note}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </FadeIn>
-
-      {/* Currently Working On */}
-      <FadeIn delay={160}>
-        <div className="now-block">
-          <div className="now-label">Currently Working On</div>
-          {nowData.working.map((item, i) => (
-            <div key={i} className="now-item">
-              <div className="now-dot" style={{ background: 'var(--ink3)' }} />
-              <div>
-                <div className="df" style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--ink)', lineHeight: 1.2, marginBottom: 8 }}>{item.title}</div>
-                <p style={{ fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.82, margin: 0 }}>{item.note}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </FadeIn>
-
-      {/* Thinking About */}
-      <FadeIn delay={240}>
-        <div className="now-block">
-          <div className="now-label">Thinking About</div>
-          {nowData.thinking.map((item, i) => (
-            <div key={i} className="now-item">
-              <div className="now-dot" style={{ background: 'transparent', border: '1px solid var(--accent)', opacity: 0.6 }} />
-              <div>
-                <div className="df" style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--ink)', lineHeight: 1.2, marginBottom: 8 }}>{item.title}</div>
-                <p style={{ fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.82, margin: 0 }}>{item.note}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </FadeIn>
-
-      <FadeIn delay={340}>
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 32, marginTop: 8 }}>
-          <p style={{ fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
-            Inspired by the <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" className="lnk">/now movement</a>. A page like this keeps me honest about where my time actually goes.
-          </p>
-        </div>
-      </FadeIn>
-    </div>
-  </PageWrapper>
-);
-
-// ─── Shelf Page ───────────────────────────────────────────────────────────────
-const shelfData = {
-  mathematics: [
-    {
-      title: "Algebraic Geometry",
-      author: "Robin Hartshorne",
-      note: "The canonical reference. Earned its difficulty."
-    },
-    {
-      title: "Algebraic Topology",
-      author: "Allen Hatcher",
-      note: "A rare textbook that makes abstraction feel inhabitable. Freely available — no excuse not to read it."
-    },
-    {
-      title: "Categories for the Working Mathematician",
-      author: "Saunders Mac Lane",
-      note: "The book that defines the language. Dense, precise, and deeply satisfying once it clicks."
-    },
-    {
-      title: "Commutative Ring Theory",
-      author: "Hideyuki Matsumura",
-      note: "The serious follow-up to any introductory algebra course. Local rings, flatness, completions."
-    },
-    {
-      title: "Probability: Theory and Examples",
-      author: "Rick Durrett",
-      note: "Measure-theoretic probability at its most honest. Every theorem feels earned."
-    },
-    {
-      title: "Abstract Algebra",
-      author: "Dummit & Foote",
-      note: "Where most of my algebra began. A generous book — comprehensive and clear."
-    },
-  ],
-  otherwise: [
-    {
-      title: "Gödel, Escher, Bach: An Eternal Golden Braid",
-      author: "Douglas Hofstadter",
-      note: "The book that convinced me that thinking about thinking is itself a worthy pursuit. Still returning to it."
-    },
-    {
-      title: "The Man from the Future",
-      author: "Ananyo Bhattacharya",
-      note: "A biography of von Neumann. Remarkable what one mind can touch — mathematics, physics, economics, computation."
-    },
-    {
-      title: "A Mathematician's Apology",
-      author: "G. H. Hardy",
-      note: "Short. Honest. Occasionally arrogant. But there is truth in it — mathematics as aesthetic pursuit."
-    },
-  ]
-};
-
-const ShelfPage = () => (
-  <PageWrapper>
-    <div style={{ maxWidth: 760, margin: '0 auto' }}>
-
-      <FadeIn style={{ marginBottom: 64 }}>
-        <div className="eb" style={{ marginBottom: 12 }}>Shelf</div>
-        <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em', marginBottom: 20 }}>
-          Books worth sitting with.
-        </h2>
-        <p style={{ fontSize: '0.94rem', color: 'var(--ink2)', lineHeight: 1.88, maxWidth: 520 }}>
-          Not a reading list. A curated record of books that have actually shaped how I think — mathematically and otherwise. Some I've read cover to cover. Some I return to in pieces. All of them matter.
-        </p>
-      </FadeIn>
-
-      {/* Mathematics */}
-      <FadeIn delay={80}>
-        <div style={{ marginBottom: 60 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 28 }}>
-            <span className="df" style={{ fontSize: '1.4rem', color: 'var(--accent)', opacity: 0.65, lineHeight: 1 }}>𝔸</span>
-            <h3 className="df" style={{ fontSize: 'clamp(1.1rem,2.5vw,1.35rem)', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Mathematics</h3>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, var(--border), transparent)' }} />
-          </div>
-          <div>
-            {shelfData.mathematics.map((book, i) => (
-              <div key={i} className="shelf-row">
-                <span className="shelf-num">{String(i + 1).padStart(2, '0')}</span>
-                <div style={{ flex: 1 }}>
-                  <div className="shelf-title">{book.title}</div>
-                  <div className="shelf-author">{book.author}</div>
-                  {book.note && <div className="shelf-note">{book.note}</div>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </FadeIn>
-
-      {/* Otherwise */}
-      <FadeIn delay={200}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 28 }}>
-            <span className="df" style={{ fontSize: '1.4rem', color: 'var(--accent)', opacity: 0.65, lineHeight: 1 }}>∞</span>
-            <h3 className="df" style={{ fontSize: 'clamp(1.1rem,2.5vw,1.35rem)', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Otherwise</h3>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, var(--border), transparent)' }} />
-          </div>
-          <div>
-            {shelfData.otherwise.map((book, i) => (
-              <div key={i} className="shelf-row">
-                <span className="shelf-num">{String(i + 1).padStart(2, '0')}</span>
-                <div style={{ flex: 1 }}>
-                  <div className="shelf-title">{book.title}</div>
-                  <div className="shelf-author">{book.author}</div>
-                  {book.note && <div className="shelf-note">{book.note}</div>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </FadeIn>
-
-      <FadeIn delay={360}>
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 32, marginTop: 52 }}>
-          <p style={{ fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
-            This shelf grows slowly and deliberately. Every entry here has left a mark.
-          </p>
-        </div>
-      </FadeIn>
-    </div>
-  </PageWrapper>
-);
 
 // ─── Inner layout (Navbar + main + footer) ────────────────────────────────────
 const InnerLayout = ({ theme, toggleTheme, children }) => (
@@ -1127,7 +895,7 @@ function AnimatedRoutes({ theme, toggleTheme }) {
         {/* Home — no navbar */}
         <Route path="/" element={<HomePage theme={theme} toggleTheme={toggleTheme} />} />
 
-        {/* Inner pages */}
+        {/* Inner pages — wrapped in Navbar layout */}
         <Route path="/acadex" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <AcademicExperiencesPage />
@@ -1148,14 +916,9 @@ function AnimatedRoutes({ theme, toggleTheme }) {
             <EventsPage />
           </InnerLayout>
         } />
-        <Route path="/now" element={
+        <Route path="/resources" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <NowPage />
-          </InnerLayout>
-        } />
-        <Route path="/shelf" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <ShelfPage />
+            <ResourcesPage />
           </InnerLayout>
         } />
         <Route path="/openboard" element={
@@ -1189,6 +952,7 @@ function AnimatedRoutes({ theme, toggleTheme }) {
 export default function App() {
   const { theme, toggleTheme } = useTheme();
 
+  // Inject Google Fonts
   useEffect(() => {
     const href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Jost:wght@300;400;500;600&display=swap";
     if (!document.querySelector(`link[href="${href}"]`)) {
