@@ -118,6 +118,7 @@ const cvData = {
 const navPages = [
   { label: 'AcadEx',    path: '/acadex',    desc: 'Academic internships and summer schools.' },
   { label: 'Research',  path: '/research',  desc: 'Research projects.' },
+  { label: 'Courses',   path: '/courses',   desc: 'Some mathematics worth sitting with.' },
   { label: 'Events',    path: '/events',    desc: 'Academic and extracurricular events I\'ve organised.' },
   { label: 'Explorations', path: '/resources', desc: 'Self learning initiatives.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'An independent student-led ideas initiative.' },
@@ -760,6 +761,156 @@ const ContactPage = () => (
   </PageWrapper>
 );
 
+// ─── Courses Data ─────────────────────────────────────────────────────────────
+const coursesData = [
+  {
+    area: "Algebra",
+    icon: "𝔸",
+    courses: [
+      { name: "Group Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Rings and Modules", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Advanced Linear Algebra", refs: ["Bist & Sahay"], description: "" },
+      { name: "Galois Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Commutative Algebra", refs: ["N.S. Gopalkrishnan", "Matsumura"], description: "" },
+    ]
+  },
+  {
+    area: "Analysis",
+    icon: "∫",
+    courses: [
+      { name: "Real Analysis I & II", refs: [], description: "" },
+      { name: "Complex Analysis I", refs: ["Ahlfors — Complex Analysis"], description: "" },
+      { name: "Ordinary Differential Equations", refs: ["Coddington — An Introduction to ODE"], description: "" },
+      { name: "Probability Theory", refs: ["Durrett — Probability: Theory and Examples"], description: "" },
+    ]
+  },
+  {
+    area: "Topology & Geometry",
+    icon: "𝕋",
+    courses: [
+      { name: "General Topology", refs: ["Munkres — Topology"], description: "" },
+      { name: "Algebraic Topology I", refs: ["Hatcher — Algebraic Topology"], description: "" },
+      { name: "Algebraic Topology II", refs: ["Hatcher — Algebraic Topology"], description: "" },
+      { name: "Differential Geometry of Curves and Surfaces", refs: ["Andrew Pressley — Elementary Differential Geometry"], description: "" },
+      { name: "Mathematical Methods for Classical Mechanics", refs: ["Lee — Introduction to Smooth Manifolds"], description: "" },
+    ]
+  },
+  {
+    area: "Geometry & Number Theory",
+    icon: "𝕍",
+    courses: [
+      { name: "Algebraic Geometry", refs: ["Hartshorne — Algebraic Geometry"], description: "" },
+      { name: "Elementary Number Theory", refs: ["David Burton — Elementary Number Theory"], description: "" },
+    ]
+  },
+  {
+    area: "Combinatorics & Logic",
+    icon: "#",
+    courses: [
+      { name: "Combinatorics and Graph Theory", refs: ["Brualdi — Introductory Combinatorics", "Douglas West — Introduction to Graph Theory"], description: "" },
+      { name: "Theory of Computation", refs: ["John C. Martin — Introduction to Languages and the Theory of Computation"], description: "" },
+    ]
+  },
+];
+
+// ─── Courses Page ─────────────────────────────────────────────────────────────
+const CoursesPage = () => {
+  const [openCourse, setOpenCourse] = useState(null);
+  const toggle = (key) => setOpenCourse(prev => prev === key ? null : key);
+
+  return (
+    <PageWrapper>
+      <div style={{ maxWidth: 860, margin: '0 auto' }}>
+        <SectionHead eyebrow="Coursework" title="A map of the territory." />
+
+        <FadeIn>
+          <p style={{ fontSize: '0.93rem', color: 'var(--ink2)', lineHeight: 1.85, maxWidth: 580, marginBottom: 56 }}>
+            Courses that have shaped how I think — each one a door into a larger room.
+            Click any course to see the references and notes.
+          </p>
+        </FadeIn>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 52 }}>
+          {coursesData.map((area, ai) => (
+            <FadeIn key={area.area} delay={ai * 60}>
+              {/* Area header */}
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 20 }}>
+                <span style={{ fontFamily: 'var(--fd)', fontSize: '1.7rem', color: 'var(--accent)', opacity: 0.7, lineHeight: 1 }}>{area.icon}</span>
+                <h3 className="df" style={{ fontSize: 'clamp(1.1rem,2.5vw,1.45rem)', fontWeight: 600, color: 'var(--ink)', margin: 0, letterSpacing: '-0.01em' }}>{area.area}</h3>
+                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, var(--border), transparent)', marginLeft: 8, alignSelf: 'center' }} />
+              </div>
+
+              {/* Courses list */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {area.courses.map((course, ci) => {
+                  const key = `${ai}-${ci}`;
+                  const isOpen = openCourse === key;
+                  return (
+                    <div key={key} style={{ borderRadius: 'var(--r)', overflow: 'hidden', border: '1px solid var(--border)', background: isOpen ? 'var(--surface)' : 'transparent', transition: 'background 0.25s' }}>
+                      <button
+                        onClick={() => toggle(key)}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 16 }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                          <span style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--accent)', opacity: 0.7, fontFamily: 'var(--fb)', minWidth: 28, textAlign: 'right' }}>
+                            {String(ci + 1).padStart(2, '0')}
+                          </span>
+                          <span className="df" style={{ fontSize: 'clamp(0.97rem,2vw,1.1rem)', fontWeight: 500, color: isOpen ? 'var(--accent)' : 'var(--ink)', transition: 'color 0.2s' }}>
+                            {course.name}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                          {!isOpen && course.refs.length > 0 && (
+                            <span style={{ fontSize: '0.75rem', color: 'var(--ink3)', fontStyle: 'italic', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 240 }}>
+                              {course.refs[0]}{course.refs.length > 1 ? ` +${course.refs.length - 1}` : ''}
+                            </span>
+                          )}
+                          <span style={{ width: 22, height: 22, borderRadius: '50%', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', fontSize: 14, flexShrink: 0, transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)', transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)' }}>+</span>
+                        </div>
+                      </button>
+
+                      {/* Expanded content */}
+                      <div style={{ maxHeight: isOpen ? 400 : 0, overflow: 'hidden', transition: 'max-height 0.4s cubic-bezier(0.16,1,0.3,1)' }}>
+                        <div style={{ padding: '4px 20px 22px 62px', borderTop: '1px solid var(--border)' }}>
+                          {course.refs.length > 0 && (
+                            <div style={{ marginTop: 16, marginBottom: 18 }}>
+                              <div className="eb" style={{ marginBottom: 10, fontSize: 9 }}>References</div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                {course.refs.map((ref, ri) => (
+                                  <div key={ri} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                                    <span style={{ color: 'var(--accent)', fontSize: '0.8rem', marginTop: 1, flexShrink: 0 }}>—</span>
+                                    <span className="df" style={{ fontSize: '0.95rem', fontStyle: 'italic', color: 'var(--ink2)', lineHeight: 1.5 }}>{ref}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          <div style={{ marginTop: course.refs.length > 0 ? 0 : 16, padding: '12px 16px', background: 'color-mix(in srgb, var(--border) 30%, transparent)', borderRadius: 'calc(var(--r) - 2px)', borderLeft: '2px solid var(--border)' }}>
+                            {course.description
+                              ? <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.75 }}>{course.description}</p>
+                              : <p style={{ margin: 0, fontSize: '0.83rem', color: 'var(--ink3)', fontStyle: 'italic', lineHeight: 1.7 }}>A few lines about this course can go here.</p>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={300}>
+          <p style={{ marginTop: 64, fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic', textAlign: 'center' }}>
+            References reflect primary texts studied. Abbreviations in the nav are used informally.
+          </p>
+        </FadeIn>
+      </div>
+    </PageWrapper>
+  );
+};
+
 // ─── Inner layout (Navbar + main + footer) ────────────────────────────────────
 const InnerLayout = ({ theme, toggleTheme, children }) => (
   <>
@@ -798,6 +949,11 @@ function AnimatedRoutes({ theme, toggleTheme }) {
         <Route path="/research" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <ResearchPage />
+          </InnerLayout>
+        } />
+        <Route path="/courses" element={
+          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
+            <CoursesPage />
           </InnerLayout>
         } />
         <Route path="/events" element={
