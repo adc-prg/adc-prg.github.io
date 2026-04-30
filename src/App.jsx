@@ -777,30 +777,30 @@ const coursesData = [
   {
     numeral: "I",
     name: "Algebraic Geometry",
-    area: "Geometry",
+    area: "Algebra (or Geometry)",
     refs: ["Hartshorne — Algebraic Geometry"],
-    note: "The course that collapsed the wall between algebra and geometry. Hartshorne is demanding — every page earns its difficulty. Varieties, schemes, sheaves: not merely tools, but a way of seeing that you cannot un-learn."
+    note: "Geometry, when written, becomes algebra."
   },
   {
     numeral: "II",
     name: "Commutative Algebra",
     area: "Algebra",
     refs: ["N.S. Gopalkrishnan", "Matsumura — Commutative Ring Theory"],
-    note: "The language algebraic geometry is secretly written in. Studied first through Gopalkrishnan, then revisited through Matsumura — two very different textures of the same subject. Local rings and Noetherian modules started feeling less like algebra and more like geometry done bare-handed."
+    note: "The language algebraic geometry is secretly written in. Studied first through Gopalkrishnan, then revisited through Matsumura — two very different treatments (?) of the same subject."
   },
   {
     numeral: "III",
     name: "Algebraic Topology I",
     area: "Topology",
     refs: ["Hatcher — Algebraic Topology"],
-    note: "Fundamental groups, covering spaces, the van Kampen theorem. The first time topology had real computational teeth. Hatcher's exposition makes the subject breathe — abstract enough to be honest, concrete enough to be habitable."
+    note: "Fundamental groups, covering spaces, and the Van Kampen theorem. The first time topology had real computational teeth. Learnt some more Group theory to appreciate this course. Honestly, I was in awe, how one formalises intuition through algebra."
   },
   {
     numeral: "IV",
     name: "Algebraic Topology II",
     area: "Topology",
     refs: ["Hatcher — Algebraic Topology"],
-    note: "Homology and cohomology — where the categorical language stops being optional. Long exact sequences, excision, Mayer-Vietoris: algebra that remembers shape. The point at which everything upstream begins to feel inevitable."
+    note: "Homology, Cohomology, and higher homotopy groups. An intuitive introduction to some more homological algebra, before the serious stuff starts."
   },
   {
     numeral: "V",
@@ -823,7 +823,7 @@ const CoursesPage = () => (
           Five courses.<br />Not a catalogue.
         </h2>
         <p style={{ fontSize: '0.94rem', color: 'var(--ink2)', lineHeight: 1.9, maxWidth: 530 }}>
-          I have taken many mathematics courses. These are the ones that actually changed how I think — each one opening a room I hadn't seen before. The rest exist on a transcript. These five live in the way I approach problems.
+          I have taken many mathematics courses. These are the ones that actually changed how I think.
         </p>
       </FadeIn>
 
@@ -864,115 +864,6 @@ const CoursesPage = () => (
   </PageWrapper>
 );
 
-// ─── Now Page ─────────────────────────────────────────────────────────────────
-const nowData = {
-  reading: [
-    {
-      title: "Algebraic Topology",
-      author: "Allen Hatcher",
-      note: "Revisiting for the BHU internship — now focused on homotopy theory and homology beyond the basics. The book rewards second passes."
-    },
-    {
-      title: "Categories for the Working Mathematician",
-      author: "Saunders Mac Lane",
-      note: "Preparation for the upcoming project with Dr. Vivek Sadhu. Reading slowly and carefully."
-    },
-  ],
-  working: [
-    {
-      title: "BHU Internship — Algebraic Topology",
-      note: "Currently in the problem-solving phase after building foundational theory. Applying homotopy and homology tools to more advanced problems."
-    },
-    {
-      title: "Openboard — upcoming talks",
-      note: "Helping plan the next round of talks for the initiative. Looking for speakers with ideas worth sharing with a general audience."
-    },
-  ],
-  thinking: [
-    {
-      title: "Homological algebra as a unifying language",
-      note: "Long exact sequences appear everywhere — topology, algebra, geometry. I keep thinking about why that is, and what it means for how mathematics is structured."
-    },
-    {
-      title: "The Probabilistic Method",
-      note: "The idea that you can prove existence without construction. I gave a talk on this — but the philosophy keeps resurfacing in how I think about problems."
-    },
-  ]
-};
-
-const NowPage = () => (
-  <PageWrapper>
-    <div style={{ maxWidth: 720, margin: '0 auto' }}>
-
-      <FadeIn style={{ marginBottom: 60 }}>
-        <div className="eb" style={{ marginBottom: 12 }}>Now</div>
-        <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em', marginBottom: 20 }}>
-          What is on the desk.
-        </h2>
-        <p style={{ fontSize: '0.9rem', color: 'var(--ink3)', fontStyle: 'italic', lineHeight: 1.8 }}>
-          A snapshot of where my attention is. Updated as things change — which they do, often.
-        </p>
-      </FadeIn>
-
-      {/* Currently Reading */}
-      <FadeIn delay={80}>
-        <div className="now-block">
-          <div className="now-label">Currently Reading</div>
-          {nowData.reading.map((item, i) => (
-            <div key={i} className="now-item">
-              <div className="now-dot" />
-              <div>
-                <div className="df" style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--ink)', lineHeight: 1.2, marginBottom: 2 }}>{item.title}</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.05em', marginBottom: 8 }}>{item.author}</div>
-                <p style={{ fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.82, margin: 0 }}>{item.note}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </FadeIn>
-
-      {/* Currently Working On */}
-      <FadeIn delay={160}>
-        <div className="now-block">
-          <div className="now-label">Currently Working On</div>
-          {nowData.working.map((item, i) => (
-            <div key={i} className="now-item">
-              <div className="now-dot" style={{ background: 'var(--ink3)' }} />
-              <div>
-                <div className="df" style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--ink)', lineHeight: 1.2, marginBottom: 8 }}>{item.title}</div>
-                <p style={{ fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.82, margin: 0 }}>{item.note}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </FadeIn>
-
-      {/* Thinking About */}
-      <FadeIn delay={240}>
-        <div className="now-block">
-          <div className="now-label">Thinking About</div>
-          {nowData.thinking.map((item, i) => (
-            <div key={i} className="now-item">
-              <div className="now-dot" style={{ background: 'transparent', border: '1px solid var(--accent)', opacity: 0.6 }} />
-              <div>
-                <div className="df" style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--ink)', lineHeight: 1.2, marginBottom: 8 }}>{item.title}</div>
-                <p style={{ fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.82, margin: 0 }}>{item.note}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </FadeIn>
-
-      <FadeIn delay={340}>
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 32, marginTop: 8 }}>
-          <p style={{ fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
-            Inspired by the <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" className="lnk">/now movement</a>. A page like this keeps me honest about where my time actually goes.
-          </p>
-        </div>
-      </FadeIn>
-    </div>
-  </PageWrapper>
-);
 
 // ─── Shelf Page ───────────────────────────────────────────────────────────────
 const shelfData = {
@@ -980,49 +871,44 @@ const shelfData = {
     {
       title: "Algebraic Geometry",
       author: "Robin Hartshorne",
-      note: "The canonical reference. Earned its difficulty."
+      note: "I read the first paragraph of the first chapter just after my commutative algebra exam."
     },
     {
       title: "Algebraic Topology",
       author: "Allen Hatcher",
-      note: "A rare textbook that makes abstraction feel inhabitable. Freely available — no excuse not to read it."
+      note: "Freely available — no excuse to not go through it atleast once. The treatment is very terse but it is definitely enjoyable."
     },
     {
       title: "Categories for the Working Mathematician",
       author: "Saunders Mac Lane",
-      note: "The book that defines the language. Dense, precise, and deeply satisfying once it clicks."
+      note: "Just started this book and I am in awe. Will write more when I study more."
     },
     {
       title: "Commutative Ring Theory",
       author: "Hideyuki Matsumura",
-      note: "The serious follow-up to any introductory algebra course. Local rings, flatness, completions."
+      note: "The serious follow-up to my commutative algebra course. Haven't gone through it in detail but I genuinely want to."
     },
     {
       title: "Probability: Theory and Examples",
       author: "Rick Durrett",
-      note: "Measure-theoretic probability at its most honest. Every theorem feels earned."
+      note: "Measure-theoretic probability at its most honest."
     },
     {
       title: "Abstract Algebra",
       author: "Dummit & Foote",
-      note: "Where most of my algebra began. A generous book — comprehensive and clear."
+      note: "Where most of my algebra began. A generous book for someone trying to learn the subject."
+    },
+    {
+      title: "Algebra: Chapter 0",
+      author: "Paolo Aluffi",
+      note: "A book I came across during my time at TIFR-CAM. My first introduction to categories and how they matter."
     },
   ],
   otherwise: [
     {
-      title: "Gödel, Escher, Bach: An Eternal Golden Braid",
-      author: "Douglas Hofstadter",
-      note: "The book that convinced me that thinking about thinking is itself a worthy pursuit. Still returning to it."
-    },
-    {
-      title: "The Man from the Future",
-      author: "Ananyo Bhattacharya",
-      note: "A biography of von Neumann. Remarkable what one mind can touch — mathematics, physics, economics, computation."
-    },
-    {
-      title: "A Mathematician's Apology",
-      author: "G. H. Hardy",
-      note: "Short. Honest. Occasionally arrogant. But there is truth in it — mathematics as aesthetic pursuit."
+      title: "One, Two, Three, .... Infinity",
+      author: "Georg Gamow",
+      note: "A book I read back when I just entered my teenage era. A book that taught me math is not just what I saw in my high school."
     },
   ]
 };
@@ -1037,7 +923,7 @@ const ShelfPage = () => (
           Books worth sitting with.
         </h2>
         <p style={{ fontSize: '0.94rem', color: 'var(--ink2)', lineHeight: 1.88, maxWidth: 520 }}>
-          Not a reading list. A curated record of books that have actually shaped how I think — mathematically and otherwise. Some I've read cover to cover. Some I return to in pieces. All of them matter.
+          Not a reading list. A curated record of books that have actually shaped how I think; mathematically and otherwise. Haven't read any of them cover to cover, but I do return to them in pieces. All of them matter.
         </p>
       </FadeIn>
 
