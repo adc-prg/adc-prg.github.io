@@ -115,7 +115,6 @@ const cvData = {
   contact: { email: "adeetya22@iiserb.ac.in", linkedin: "https://www.linkedin.com/in/adeetya-choubey-6b2a44254/" }
 };
 
-// Removed Explorations/Resources entry
 const navPages = [
   { label: 'AcadEx',    path: '/acadex',    desc: 'Academic internships and summer schools.' },
   { label: 'Research',  path: '/research',  desc: 'Research projects.' },
@@ -125,16 +124,7 @@ const navPages = [
   { label: 'Contact',   path: '/contact',   desc: 'Get in touch for collaborations or inquiries.' },
 ];
 
-const bentoCategories = [
-  { category: "Algebra",                  icon: "𝔸", span: 2},
-  { category: "Analysis",                  icon: "∫", span: 1},
-  { category: "Topology",                  icon: "𝕋", span: 1},
-  { category: "Algebraic Geometry",        icon: "𝕍", span: 1},
-  { category: "Homological Algebra",       icon: "⟶", span: 1},
-  { category: "Category Theory",           icon: "⊸", span: 1},
-  { category: "Foundations & Discrete",    icon: "#",  span: 2},
-  { category: "Miscellaneous",             icon: "∞",  span: 1},
-];
+
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 const useTheme = () => {
