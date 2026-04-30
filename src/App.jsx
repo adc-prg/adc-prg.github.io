@@ -5,6 +5,7 @@ import {
   Route,
   Link,
   useLocation,
+  useNavigate,
 } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -37,6 +38,11 @@ const ChevronDown = (p) => (
 const ExternalLink = (p) => (
   <svg {...p} xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+  </svg>
+);
+const ArrowRight = (p) => (
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
   </svg>
 );
 
@@ -109,65 +115,25 @@ const cvData = {
   contact: { email: "adeetya22@iiserb.ac.in", linkedin: "https://www.linkedin.com/in/adeetya-choubey-6b2a44254/" }
 };
 
+// Removed Explorations/Resources entry
 const navPages = [
   { label: 'AcadEx',    path: '/acadex',    desc: 'Academic internships and summer schools.' },
   { label: 'Research',  path: '/research',  desc: 'Research projects.' },
   { label: 'Courses',   path: '/courses',   desc: 'Some mathematics worth sitting with.' },
   { label: 'Events',    path: '/events',    desc: 'Academic and extracurricular events I\'ve organised.' },
-  { label: 'Explorations', path: '/resources', desc: 'Self learning initiatives.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'An independent student-led ideas initiative.' },
   { label: 'Contact',   path: '/contact',   desc: 'Get in touch for collaborations or inquiries.' },
 ];
 
-const coursesData = [
-  {
-    area: "Algebra",
-    icon: "𝔸",
-    courses: [
-      { name: "Group Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Rings and Modules", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Advanced Linear Algebra", refs: ["Bist & Sahay"], description: "" },
-      { name: "Galois Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Commutative Algebra", refs: ["N.S. Gopalkrishnan", "Matsumura"], description: "" },
-    ]
-  },
-  {
-    area: "Analysis",
-    icon: "∫",
-    courses: [
-      { name: "Real Analysis I & II", refs: [], description: "" },
-      { name: "Complex Analysis I", refs: ["Ahlfors — Complex Analysis"], description: "" },
-      { name: "Ordinary Differential Equations", refs: ["Coddington — An Introduction to ODE"], description: "" },
-      { name: "Probability Theory", refs: ["Durrett — Probability: Theory and Examples"], description: "" },
-    ]
-  },
-  {
-    area: "Topology & Geometry",
-    icon: "𝕋",
-    courses: [
-      { name: "General Topology", refs: ["Munkres — Topology"], description: "" },
-      { name: "Algebraic Topology I", refs: ["Hatcher — Algebraic Topology"], description: "" },
-      { name: "Algebraic Topology II", refs: ["Hatcher — Algebraic Topology"], description: "" },
-      { name: "Differential Geometry of Curves and Surfaces", refs: ["Andrew Pressley — Elementary Differential Geometry"], description: "" },
-      { name: "Mathematical Methods for Classical Mechanics", refs: ["Lee — Introduction to Smooth Manifolds"], description: "" },
-    ]
-  },
-  {
-    area: "Geometry & Number Theory",
-    icon: "𝕍",
-    courses: [
-      { name: "Algebraic Geometry", refs: ["Hartshorne — Algebraic Geometry"], description: "" },
-      { name: "Elementary Number Theory", refs: ["David Burton — Elementary Number Theory"], description: "" },
-    ]
-  },
-  {
-    area: "Combinatorics & Logic",
-    icon: "#",
-    courses: [
-      { name: "Combinatorics and Graph Theory", refs: ["Brualdi — Introductory Combinatorics", "Douglas West — Introduction to Graph Theory"], description: "" },
-      { name: "Theory of Computation", refs: ["John C. Martin — Introduction to Languages and the Theory of Computation"], description: "" },
-    ]
-  },
+const bentoCategories = [
+  { category: "Algebra",                  icon: "𝔸", span: 2},
+  { category: "Analysis",                  icon: "∫", span: 1},
+  { category: "Topology",                  icon: "𝕋", span: 1},
+  { category: "Algebraic Geometry",        icon: "𝕍", span: 1},
+  { category: "Homological Algebra",       icon: "⟶", span: 1},
+  { category: "Category Theory",           icon: "⊸", span: 1},
+  { category: "Foundations & Discrete",    icon: "#",  span: 2},
+  { category: "Miscellaneous",             icon: "∞",  span: 1},
 ];
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
@@ -291,15 +257,39 @@ const CSS = `
   .hdr-right { display:flex; align-items:center; gap:18px; }
   .hdr-nav { display:flex; flex-wrap:wrap; gap:4px 18px; justify-content:flex-end; align-items:center; }
 
-  /* Reusable utilities */
+  /* Bento grid */
+  .bento-grid { display:grid; gap:14px; grid-template-columns:repeat(4, 1fr); }
+  .bento-span-2 { grid-column: span 2; }
+  .bento-card { background:var(--surface); border:1px solid var(--border); border-radius:calc(var(--r) + 2px); padding:26px 22px 22px; transition:box-shadow 0.35s,transform 0.3s; position:relative; overflow:hidden; }
+  .bento-card:hover { box-shadow:var(--sh-md); transform:translateY(-3px); }
+  .bento-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--accent), transparent); opacity:0; transition:opacity 0.3s; }
+  .bento-card:hover::before { opacity:1; }
+  .bento-icon { font-size:2rem; margin-bottom:12px; font-family:var(--fd); line-height:1; color:var(--accent); opacity:0.75; }
+  .bento-wip { display:inline-flex; align-items:center; gap:6px; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink3); border:1px solid var(--border); border-radius:20px; padding:3px 10px; margin-top:10px; }
   .wip-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); opacity:0.6; animation:pulse 2s ease-in-out infinite; }
+
+  /* OpenBoard tag */
   .ob-tag { display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:20px; padding:3px 10px; opacity:0.8; }
+
+  /* Event tag */
   .ev-tag { display:inline-block; font-size:0.7rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); border:1px dashed var(--accent); border-radius:20px; padding:2px 9px; margin-bottom:10px; opacity:0.75; }
 
   /* Crimson CTA button */
   .cta-btn { display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#fff; border:none; border-radius:var(--r); padding:10px 20px; font-family:var(--fb); font-size:0.82rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:opacity 0.2s,transform 0.2s; }
   .cta-btn:hover { opacity:0.88; transform:translateY(-1px); }
 
+  /* Grassmannian card accent border */
+  .grass-card { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:var(--r); box-shadow:var(--sh-sm); padding:36px 32px; transition:box-shadow 0.3s; }
+  .grass-card:hover { box-shadow:var(--sh-md); }
+
+  @media(max-width:768px) {
+    .bento-grid { grid-template-columns:repeat(2,1fr); }
+    .bento-span-2 { grid-column: span 2; }
+  }
+  @media(max-width:480px) {
+    .bento-grid { grid-template-columns:1fr; }
+    .bento-span-2 { grid-column: span 1; }
+  }
   @media(max-width:600px) {
     .hdr-inner { flex-direction:column; align-items:flex-start; gap:10px; padding:12px 0; }
     .hdr-right { width:100%; justify-content:space-between; }
@@ -339,12 +329,12 @@ const FadeIn = ({ children, delay = 0, style = {}, className = '' }) => {
   );
 };
 
+
 const pageVar = {
   initial: { opacity: 0, y: 18 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.42, ease: [0.16, 1, 0.3, 1] } },
   exit:    { opacity: 0, y: -10, transition: { duration: 0.22 } },
 };
-
 const PageWrapper = ({ children }) => (
   <motion.div variants={pageVar} initial="initial" animate="animate" exit="exit">
     {children}
@@ -387,6 +377,7 @@ const Footer = () => (
 // ─── Home Page ────────────────────────────────────────────────────────────────
 const HomePage = ({ theme, toggleTheme }) => {
   const [hovered, setHovered] = useState(null);
+  const navigate = useNavigate();
 
   return (
     <div className="grain" style={{ minHeight:'100vh', background:'var(--bg)', color:'var(--ink)', fontFamily:'var(--fb)' }}>
@@ -405,6 +396,7 @@ const HomePage = ({ theme, toggleTheme }) => {
 
       {/* ── Hero ── */}
       <section style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'80px 24px 40px', textAlign:'center', position:'relative', zIndex:1 }}>
+
 
         {/* Name */}
         <h1 className="au d1" style={{ fontSize:'clamp(3rem,13vw,7.5rem)', fontWeight:900, lineHeight:0.93, color:'var(--ink)', marginBottom:26, letterSpacing:'-0.02em', fontFamily:"'Playfair Display', Georgia, serif", fontStyle:'italic' }}>
@@ -454,6 +446,7 @@ const HomePage = ({ theme, toggleTheme }) => {
 
       {/* ── Below-fold content ── */}
       <section style={{ maxWidth:960, margin:'0 auto', padding:'20px 24px 80px', position:'relative', zIndex:1 }}>
+
 
         {/* Bio + Education Grid */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:20, marginBottom:20 }}>
@@ -626,18 +619,6 @@ const EventsPage = () => {
   );
 };
 
-// ─── Explorations Page ────────────────────────────────────────────────────────
-const ResourcesPage = () => (
-  <PageWrapper>
-    <SectionHead eyebrow="Independent Study" title="Explorations" />
-    <FadeIn delay={60}>
-      <p style={{ fontSize:'0.95rem', color:'var(--ink2)', fontStyle:'italic', lineHeight:1.88, maxWidth:600 }}>
-        This page is a work in progress. I'm putting together a curated record of what I'm reading, studying, and thinking about outside of formal coursework — areas I return to out of genuine curiosity. Check back soon.
-      </p>
-    </FadeIn>
-  </PageWrapper>
-);
-
 // ─── OpenBoard Page ───────────────────────────────────────────────────────────
 const OpenBoardPage = () => (
   <PageWrapper>
@@ -767,6 +748,58 @@ const ContactPage = () => (
     </div>
   </PageWrapper>
 );
+
+// ─── Courses Data ─────────────────────────────────────────────────────────────
+const coursesData = [
+  {
+    area: "Algebra",
+    icon: "𝔸",
+    courses: [
+      { name: "Group Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Rings and Modules", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Advanced Linear Algebra", refs: ["Bist & Sahay"], description: "" },
+      { name: "Galois Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
+      { name: "Commutative Algebra", refs: ["N.S. Gopalkrishnan", "Matsumura"], description: "" },
+    ]
+  },
+  {
+    area: "Analysis",
+    icon: "∫",
+    courses: [
+      { name: "Real Analysis I & II", refs: [], description: "" },
+      { name: "Complex Analysis I", refs: ["Ahlfors — Complex Analysis"], description: "" },
+      { name: "Ordinary Differential Equations", refs: ["Coddington — An Introduction to ODE"], description: "" },
+      { name: "Probability Theory", refs: ["Durrett — Probability: Theory and Examples"], description: "" },
+    ]
+  },
+  {
+    area: "Topology & Geometry",
+    icon: "𝕋",
+    courses: [
+      { name: "General Topology", refs: ["Munkres — Topology"], description: "" },
+      { name: "Algebraic Topology I", refs: ["Hatcher — Algebraic Topology"], description: "" },
+      { name: "Algebraic Topology II", refs: ["Hatcher — Algebraic Topology"], description: "" },
+      { name: "Differential Geometry of Curves and Surfaces", refs: ["Andrew Pressley — Elementary Differential Geometry"], description: "" },
+      { name: "Mathematical Methods for Classical Mechanics", refs: ["Lee — Introduction to Smooth Manifolds"], description: "" },
+    ]
+  },
+  {
+    area: "Geometry & Number Theory",
+    icon: "𝕍",
+    courses: [
+      { name: "Algebraic Geometry", refs: ["Hartshorne — Algebraic Geometry"], description: "" },
+      { name: "Elementary Number Theory", refs: ["David Burton — Elementary Number Theory"], description: "" },
+    ]
+  },
+  {
+    area: "Combinatorics & Logic",
+    icon: "#",
+    courses: [
+      { name: "Combinatorics and Graph Theory", refs: ["Brualdi — Introductory Combinatorics", "Douglas West — Introduction to Graph Theory"], description: "" },
+      { name: "Theory of Computation", refs: ["John C. Martin — Introduction to Languages and the Theory of Computation"], description: "" },
+    ]
+  },
+];
 
 // ─── Courses Page ─────────────────────────────────────────────────────────────
 const CoursesPage = () => {
@@ -914,11 +947,6 @@ function AnimatedRoutes({ theme, toggleTheme }) {
         <Route path="/events" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <EventsPage />
-          </InnerLayout>
-        } />
-        <Route path="/resources" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <ResourcesPage />
           </InnerLayout>
         } />
         <Route path="/openboard" element={
