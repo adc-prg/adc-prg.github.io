@@ -742,148 +742,223 @@ const ContactPage = () => (
 // ─── Courses Data ─────────────────────────────────────────────────────────────
 const coursesData = [
   {
+    id: "01",
+    name: "Algebraic Topology I",
+    area: "Topology",
+    symbol: "π₁",
+    refs: ["Hatcher — Algebraic Topology"],
+    note: "The course where I first understood that shape has algebra living inside it. Homotopy, fundamental groups, covering spaces — it permanently altered how I see geometric objects. Mathematics stopped being about numbers.",
+  },
+  {
+    id: "02",
+    name: "Algebraic Topology II",
+    area: "Topology",
+    symbol: "Hₙ",
+    refs: ["Hatcher — Algebraic Topology"],
+    note: "Homology and cohomology: machinery that counts holes without ever finding them explicitly. This is where I first fell for abstraction as a tool of genuine power, not just elegance.",
+  },
+  {
+    id: "03",
+    name: "Algebraic Geometry",
+    area: "Geometry",
+    symbol: "𝒪ₓ",
+    refs: ["Hartshorne — Algebraic Geometry"],
+    note: "Hartshorne is notorious for a reason — it asks a lot. Learning to think in schemes, sheaves, and the language of functors rewired something in me. The effort was the point.",
+  },
+  {
+    id: "04",
+    name: "Commutative Algebra",
     area: "Algebra",
-    icon: "𝔸",
-    courses: [
-      { name: "Group Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Rings and Modules", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Advanced Linear Algebra", refs: ["Bist & Sahay"], description: "" },
-      { name: "Galois Theory", refs: ["Dummit & Foote — Abstract Algebra"], description: "" },
-      { name: "Commutative Algebra", refs: ["N.S. Gopalkrishnan", "Matsumura"], description: "" },
-    ]
+    symbol: "Spec",
+    refs: ["N.S. Gopalkrishnan", "Matsumura — Commutative Ring Theory"],
+    note: "The structural grammar of algebraic geometry. Localisation, completion, dimension theory — I keep returning to these ideas every time I hit a wall in something harder.",
   },
   {
+    id: "05",
+    name: "Probability Theory",
     area: "Analysis",
-    icon: "∫",
-    courses: [
-      { name: "Real Analysis I & II", refs: [], description: "" },
-      { name: "Complex Analysis I", refs: ["Ahlfors — Complex Analysis"], description: "" },
-      { name: "Ordinary Differential Equations", refs: ["Coddington — An Introduction to ODE"], description: "" },
-      { name: "Probability Theory", refs: ["Durrett — Probability: Theory and Examples"], description: "" },
-    ]
-  },
-  {
-    area: "Topology & Geometry",
-    icon: "𝕋",
-    courses: [
-      { name: "General Topology", refs: ["Munkres — Topology"], description: "" },
-      { name: "Algebraic Topology I", refs: ["Hatcher — Algebraic Topology"], description: "" },
-      { name: "Algebraic Topology II", refs: ["Hatcher — Algebraic Topology"], description: "" },
-      { name: "Differential Geometry of Curves and Surfaces", refs: ["Andrew Pressley — Elementary Differential Geometry"], description: "" },
-      { name: "Mathematical Methods for Classical Mechanics", refs: ["Lee — Introduction to Smooth Manifolds"], description: "" },
-    ]
-  },
-  {
-    area: "Geometry & Number Theory",
-    icon: "𝕍",
-    courses: [
-      { name: "Algebraic Geometry", refs: ["Hartshorne — Algebraic Geometry"], description: "" },
-      { name: "Elementary Number Theory", refs: ["David Burton — Elementary Number Theory"], description: "" },
-    ]
-  },
-  {
-    area: "Combinatorics & Logic",
-    icon: "#",
-    courses: [
-      { name: "Combinatorics and Graph Theory", refs: ["Brualdi — Introductory Combinatorics", "Douglas West — Introduction to Graph Theory"], description: "" },
-      { name: "Theory of Computation", refs: ["John C. Martin — Introduction to Languages and the Theory of Computation"], description: "" },
-    ]
+    symbol: "𝔼[·]",
+    refs: ["Durrett — Probability: Theory and Examples"],
+    note: "Measure-theoretic probability is unexpectedly beautiful. Durrett gave me a rigour I did not expect to find here — and a deep appreciation for the interplay of analysis and randomness.",
   },
 ];
 
 // ─── Courses Page ─────────────────────────────────────────────────────────────
 const CoursesPage = () => {
-  const [openCourse, setOpenCourse] = useState(null);
-  const toggle = (key) => setOpenCourse(prev => prev === key ? null : key);
+  const [flipped, setFlipped] = useState(null);
 
   return (
     <PageWrapper>
-      <div style={{ maxWidth: 860, margin: '0 auto' }}>
-        <SectionHead eyebrow="Coursework" title="A map of the territory." />
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
 
-        <FadeIn>
-          <p style={{ fontSize: '0.93rem', color: 'var(--ink2)', lineHeight: 1.85, maxWidth: 580, marginBottom: 56 }}>
-            Courses that have shaped how I think — each one a door into a larger room.
-            Click any course to see the references and notes.
+        {/* Header */}
+        <FadeIn style={{ marginBottom: 64 }}>
+          <div className="eb" style={{ marginBottom: 12 }}>Coursework</div>
+          <h2 className="df" style={{ fontSize: 'clamp(2.4rem,5.5vw,3.4rem)', fontWeight: 600, lineHeight: 1.06, color: 'var(--ink)', letterSpacing: '-0.02em', marginBottom: 22 }}>
+            Five rooms I keep<br />returning to.
+          </h2>
+          <p style={{ fontSize: '0.93rem', color: 'var(--ink2)', lineHeight: 1.9, maxWidth: 500 }}>
+            Not a transcript. These are the courses that left marks — that changed the way I read a definition, follow an argument, or sit with a problem.
           </p>
         </FadeIn>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 52 }}>
-          {coursesData.map((area, ai) => (
-            <FadeIn key={area.area} delay={ai * 60}>
-              {/* Area header */}
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 20 }}>
-                <span style={{ fontFamily: 'var(--fd)', fontSize: '1.7rem', color: 'var(--accent)', opacity: 0.7, lineHeight: 1 }}>{area.icon}</span>
-                <h3 className="df" style={{ fontSize: 'clamp(1.1rem,2.5vw,1.45rem)', fontWeight: 600, color: 'var(--ink)', margin: 0, letterSpacing: '-0.01em' }}>{area.area}</h3>
-                <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, var(--border), transparent)', marginLeft: 8, alignSelf: 'center' }} />
-              </div>
+        {/* Cards grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 64 }}>
+          {coursesData.map((course, i) => {
+            const isFlipped = flipped === i;
+            return (
+              <FadeIn key={course.id} delay={i * 70}>
+                {/* Flip card wrapper */}
+                <div
+                  onClick={() => setFlipped(isFlipped ? null : i)}
+                  style={{
+                    cursor: 'pointer',
+                    perspective: '1000px',
+                    minHeight: 260,
+                    position: 'relative',
+                  }}
+                >
+                  {/* Inner flip container */}
+                  <div style={{
+                    position: 'relative',
+                    width: '100%',
+                    minHeight: 260,
+                    transformStyle: 'preserve-3d',
+                    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                    transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1)',
+                  }}>
 
-              {/* Courses list */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {area.courses.map((course, ci) => {
-                  const key = `${ai}-${ci}`;
-                  const isOpen = openCourse === key;
-                  return (
-                    <div key={key} style={{ borderRadius: 'var(--r)', overflow: 'hidden', border: '1px solid var(--border)', background: isOpen ? 'var(--surface)' : 'transparent', transition: 'background 0.25s' }}>
-                      <button
-                        onClick={() => toggle(key)}
-                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 16 }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                          <span style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--accent)', opacity: 0.7, fontFamily: 'var(--fb)', minWidth: 28, textAlign: 'right' }}>
-                            {String(ci + 1).padStart(2, '0')}
-                          </span>
-                          <span className="df" style={{ fontSize: 'clamp(0.97rem,2vw,1.1rem)', fontWeight: 500, color: isOpen ? 'var(--accent)' : 'var(--ink)', transition: 'color 0.2s' }}>
-                            {course.name}
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          {!isOpen && course.refs.length > 0 && (
-                            <span style={{ fontSize: '0.75rem', color: 'var(--ink3)', fontStyle: 'italic', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 240 }}>
-                              {course.refs[0]}{course.refs.length > 1 ? ` +${course.refs.length - 1}` : ''}
-                            </span>
-                          )}
-                          <span style={{ width: 22, height: 22, borderRadius: '50%', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', fontSize: 14, flexShrink: 0, transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)', transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)' }}>+</span>
-                        </div>
-                      </button>
+                    {/* ── FRONT ── */}
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      background: 'var(--surface)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 'var(--r)',
+                      padding: '28px 26px 24px',
+                      boxShadow: 'var(--sh-sm)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      overflow: 'hidden',
+                      minHeight: 260,
+                    }}>
+                      {/* Watermark number */}
+                      <span style={{
+                        position: 'absolute', top: 14, right: 20,
+                        fontFamily: 'var(--fd)', fontSize: '5.5rem', fontWeight: 700,
+                        color: 'var(--accent)', opacity: 0.055, lineHeight: 1,
+                        userSelect: 'none', pointerEvents: 'none',
+                        letterSpacing: '-0.04em',
+                      }}>{course.id}</span>
 
-                      {/* Expanded content */}
-                      <div style={{ maxHeight: isOpen ? 400 : 0, overflow: 'hidden', transition: 'max-height 0.4s cubic-bezier(0.16,1,0.3,1)' }}>
-                        <div style={{ padding: '4px 20px 22px 62px', borderTop: '1px solid var(--border)' }}>
-                          {course.refs.length > 0 && (
-                            <div style={{ marginTop: 16, marginBottom: 18 }}>
-                              <div className="eb" style={{ marginBottom: 10, fontSize: 9 }}>References</div>
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                {course.refs.map((ref, ri) => (
-                                  <div key={ri} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                                    <span style={{ color: 'var(--accent)', fontSize: '0.8rem', marginTop: 1, flexShrink: 0 }}>—</span>
-                                    <span className="df" style={{ fontSize: '0.95rem', fontStyle: 'italic', color: 'var(--ink2)', lineHeight: 1.5 }}>{ref}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                          <div style={{ marginTop: course.refs.length > 0 ? 0 : 16, padding: '12px 16px', background: 'color-mix(in srgb, var(--border) 30%, transparent)', borderRadius: 'calc(var(--r) - 2px)', borderLeft: '2px solid var(--border)' }}>
-                            {course.description
-                              ? <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--ink2)', lineHeight: 1.75 }}>{course.description}</p>
-                              : <p style={{ margin: 0, fontSize: '0.83rem', color: 'var(--ink3)', fontStyle: 'italic', lineHeight: 1.7 }}>A few lines about this course can go here.</p>
-                            }
+                      <div>
+                        {/* Area tag */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                          <span style={{
+                            fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.2em',
+                            textTransform: 'uppercase', color: 'var(--accent)', opacity: 0.8,
+                          }}>{course.area}</span>
+                          <span style={{
+                            fontSize: '0.7rem', color: 'var(--ink3)', letterSpacing: '0.06em',
+                            fontStyle: 'italic',
+                          }}>flip →</span>
+                        </div>
+
+                        {/* Symbol — large, editorial */}
+                        <div style={{
+                          fontFamily: 'var(--fd)', fontSize: '2.2rem', color: 'var(--accent)',
+                          opacity: 0.65, lineHeight: 1, marginBottom: 16,
+                        }}>{course.symbol}</div>
+
+                        {/* Course name */}
+                        <h3 className="df" style={{
+                          fontSize: 'clamp(1.12rem,2.2vw,1.32rem)', fontWeight: 600,
+                          color: 'var(--ink)', lineHeight: 1.25, margin: 0, letterSpacing: '-0.01em',
+                        }}>{course.name}</h3>
+                      </div>
+
+                      {/* Refs preview at bottom */}
+                      <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
+                        {course.refs.map((ref, ri) => (
+                          <div key={ri} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: ri < course.refs.length - 1 ? 5 : 0 }}>
+                            <span style={{ color: 'var(--accent)', fontSize: '0.75rem', flexShrink: 0, marginTop: 1 }}>—</span>
+                            <span className="df" style={{ fontSize: '0.82rem', fontStyle: 'italic', color: 'var(--ink3)', lineHeight: 1.45 }}>{ref}</span>
                           </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            </FadeIn>
-          ))}
+
+                    {/* ── BACK ── */}
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)',
+                      background: 'var(--accent)',
+                      borderRadius: 'var(--r)',
+                      padding: '28px 26px 24px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      minHeight: 260,
+                      overflow: 'hidden',
+                    }}>
+                      {/* Subtle decorative symbol on back */}
+                      <span style={{
+                        position: 'absolute', bottom: 12, right: 18,
+                        fontFamily: 'var(--fd)', fontSize: '4rem', fontWeight: 700,
+                        color: '#fff', opacity: 0.07, lineHeight: 1,
+                        userSelect: 'none', pointerEvents: 'none',
+                      }}>{course.symbol}</span>
+
+                      <div>
+                        <div style={{
+                          fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.2em',
+                          textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)',
+                          marginBottom: 18,
+                        }}>— {course.id}</div>
+
+                        <p style={{
+                          fontFamily: 'var(--fd)', fontSize: 'clamp(1rem,1.8vw,1.1rem)',
+                          fontStyle: 'italic', fontWeight: 400, color: '#fff',
+                          lineHeight: 1.75, margin: 0,
+                        }}>{course.note}</p>
+                      </div>
+
+                      <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.06em', fontStyle: 'italic' }}>
+                        click to flip back
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </FadeIn>
+            );
+          })}
         </div>
 
-        <FadeIn delay={300}>
-          <p style={{ marginTop: 64, fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic', textAlign: 'center' }}>
-            References reflect primary texts studied. Abbreviations in the nav are used informally.
-          </p>
+        {/* Footer note */}
+        <FadeIn delay={200}>
+          <div style={{
+            borderTop: '1px solid var(--border)',
+            paddingTop: 32,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 12,
+          }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic', margin: 0 }}>
+              References reflect primary texts studied. Flip each card for a note.
+            </p>
+            <span className="df" style={{ fontSize: '0.88rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
+              {coursesData.length} courses &nbsp;·&nbsp; still counting.
+            </span>
+          </div>
         </FadeIn>
+
       </div>
     </PageWrapper>
   );
