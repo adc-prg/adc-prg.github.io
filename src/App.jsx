@@ -105,7 +105,7 @@ const cvData = {
       description: "Gave the first Openboard talk. More about that talk can be looked at on the Openboard website.",
       link: { url: "https://openboard-web.vercel.app/", text: "Openboard website" } },
     { title: "खेल-culus", tag: "Organised",
-      description: "खेल, in Hindi, stands for sport. खेल-culus (khel-culus; /kʰeːl/) represents the treatise of calculus as a sport — the name for the integration bee held during the annual math fest, Continuum, organised by the department of math at IISER Bhopal. I organised the event, along with Yash Sharma, to fruition despite several unavoidable obstacles." },
+      description: "खेल, in Hindi, stands for sport. खेल-culus (khel-culus; /kʰeːl/) represents the treatise of calculus as a sport — the name for the integration bee held during the annual math fest, Continuum, organised by the department of math at IISER Bhopal. I organised the event, along with Yash Sharma." },
     { title: "Big-Tac-Toe", tag: "Organised",
       description: "A wordplay on Big + Tic-tac-toe — another name for ultimate tic-tac-toe. Held at Continuum in collaboration with the board games club, Ingenium. The event featured a knockout stage with Saurav Kanetkar emerging as the Big-Tac-Toe champion, 2025 edition.",
       link: { url: "https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe", text: "Ultimate Tic-Tac-Toe" } },
@@ -118,7 +118,7 @@ const cvData = {
 const navPages = [
   { label: 'AcadEx',    path: '/acadex',    desc: 'Academic internships and summer schools.' },
   { label: 'Research',  path: '/research',  desc: 'Research projects.' },
-  { label: 'Courses',   path: '/courses',   desc: 'Some mathematics worth sitting with.' },
+  { label: 'Courses',   path: '/courses',   desc: 'Some mathematics that I genuinely enjoyed.' },
   { label: 'Events',    path: '/events',    desc: 'Academic and extracurricular events I\'ve organised.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'An independent student-led ideas initiative.' },
   { label: 'Contact',   path: '/contact',   desc: 'Get in touch for collaborations or inquiries.' },
@@ -554,7 +554,7 @@ const ResearchPage = () => (
           Advisor: Dr. Vivek Sadhu
         </div>
         <p style={{ fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.8 }}>
-          This project focuses on the study of <strong style={{ color:'var(--ink)', fontWeight:600 }}>homological algebra</strong> building upon the foundations of homological algebra I have encountered during my courses <em style={{ color:'var(--ink3)' }}>Commutative Algebra</em> and <em style={{ color:'var(--ink3)' }}>Algebraic Topology II</em>; the focus will also be towards working through the book by Mac Lane, on Categories.
+          The primary focus would be the study of <strong style={{ color:'var(--ink)', fontWeight:600 }}>homological algebra</strong> building upon some elementary homological algebra I have encountered during my courses <em style={{ color:'var(--ink3)' }}>Commutative Algebra</em> and <em style={{ color:'var(--ink3)' }}>Algebraic Topology II</em>; the focus will also be towards learning some category theory. The current plan is to work through the book by Mac Lane.
         </p>
       </div>
     </FadeIn>
@@ -747,15 +747,15 @@ const coursesData = [
     area: "Topology",
     symbol: "π₁",
     refs: ["Hatcher — Algebraic Topology"],
-    note: "The course where I first understood that shape has algebra living inside it. Homotopy, fundamental groups, covering spaces — it permanently altered how I see geometric objects. Mathematics stopped being about numbers.",
+    note: "I enjoyed group theory, I enjoyed topology, so this just felt like a match made in heaven. I am glad my hunch was correct.",
   },
   {
     id: "02",
-    name: "Algebraic Topology II",
-    area: "Topology",
-    symbol: "Hₙ",
-    refs: ["Hatcher — Algebraic Topology"],
-    note: "Homology and cohomology: machinery that counts holes without ever finding them explicitly. This is where I first fell for abstraction as a tool of genuine power, not just elegance.",
+    name: "Commutative Algebra",
+    area: "Algebra",
+    symbol: "Spec",
+    refs: ["N.S. Gopalkrishnan", "Matsumura — Commutative Ring Theory"],
+    note: "I took this course just as a precursor for algebraic geometry. Somehow, it ended up being much more than that.",
   },
   {
     id: "03",
@@ -763,15 +763,15 @@ const coursesData = [
     area: "Geometry",
     symbol: "𝒪ₓ",
     refs: ["Hartshorne — Algebraic Geometry"],
-    note: "Hartshorne is notorious for a reason — it asks a lot. Learning to think in schemes, sheaves, and the language of functors rewired something in me. The effort was the point.",
+    note: "This course brought life to my course on Commutative Algebra.",
   },
   {
     id: "04",
-    name: "Commutative Algebra",
-    area: "Algebra",
-    symbol: "Spec",
-    refs: ["N.S. Gopalkrishnan", "Matsumura — Commutative Ring Theory"],
-    note: "The structural grammar of algebraic geometry. Localisation, completion, dimension theory — I keep returning to these ideas every time I hit a wall in something harder.",
+    name: "Topology - II",
+    area: "Topology",
+    symbol: "Hₙ",
+    refs: ["Hatcher - Algebraic Topology"],
+    note: "In my first course on Rings and Modules, I remember proving that all abelian groups are modules over the ring of integers. After that, this course just felt like applied commutative algebra :).",
   },
   {
     id: "05",
@@ -779,7 +779,7 @@ const coursesData = [
     area: "Analysis",
     symbol: "𝔼[·]",
     refs: ["Durrett — Probability: Theory and Examples"],
-    note: "Measure-theoretic probability is unexpectedly beautiful. Durrett gave me a rigour I did not expect to find here — and a deep appreciation for the interplay of analysis and randomness.",
+    note: "I took this course along side my actual course on Measure theory and my experience was wildly different. Beautiful.",
   },
 ];
 
