@@ -785,176 +785,232 @@ const coursesData = [
 
 // ─── Courses Page ─────────────────────────────────────────────────────────────
 const CoursesPage = () => {
-  const [flipped, setFlipped] = useState(null);
+  const [active, setActive] = useState(0);
 
   return (
     <PageWrapper>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+      <style>{`
+        .ta-row {
+          border-top: 1px solid var(--border);
+          cursor: pointer;
+          position: relative;
+          transition: background 0.3s;
+          overflow: hidden;
+        }
+        .ta-row:last-of-type { border-bottom: 1px solid var(--border); }
+        .ta-row:hover { background: color-mix(in srgb, var(--accent) 3%, transparent); }
+        .ta-row.ta-open { background: transparent; }
 
-        {/* Header */}
+        .ta-header {
+          display: flex;
+          align-items: baseline;
+          gap: 20px;
+          padding: 20px 0;
+          user-select: none;
+        }
+
+        .ta-num {
+          font-family: var(--fb);
+          font-size: 0.62rem;
+          font-weight: 700;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          min-width: 28px;
+          flex-shrink: 0;
+          transition: color 0.35s;
+          padding-top: 4px;
+        }
+
+        .ta-name {
+          font-family: var(--fd);
+          font-weight: 600;
+          letter-spacing: -0.015em;
+          line-height: 1.12;
+          transition: font-size 0.55s cubic-bezier(0.16,1,0.3,1),
+                      color 0.35s,
+                      padding-bottom 0.55s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        .ta-area {
+          margin-left: auto;
+          font-family: var(--fb);
+          font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--ink3);
+          flex-shrink: 0;
+          transition: opacity 0.3s;
+        }
+
+        .ta-body {
+          overflow: hidden;
+          transition: max-height 0.6s cubic-bezier(0.16,1,0.3,1),
+                      opacity 0.45s ease;
+        }
+
+        .ta-ghost {
+          position: absolute;
+          right: -8px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-family: var(--fd);
+          font-weight: 700;
+          line-height: 1;
+          color: var(--accent);
+          pointer-events: none;
+          user-select: none;
+          letter-spacing: -0.04em;
+          transition: opacity 0.5s ease, font-size 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        .ta-divider {
+          height: 1px;
+          background: linear-gradient(to right, var(--accent), transparent);
+          margin: 4px 0 28px;
+          opacity: 0.35;
+        }
+
+        @media (max-width: 600px) {
+          .ta-area { display: none; }
+        }
+      `}</style>
+
+      <div style={{ maxWidth: 860, margin: '0 auto' }}>
+
+        {/* ── Header ── */}
         <FadeIn style={{ marginBottom: 64 }}>
           <div className="eb" style={{ marginBottom: 12 }}>Coursework</div>
-          <h2 className="df" style={{ fontSize: 'clamp(2.4rem,5.5vw,3.4rem)', fontWeight: 600, lineHeight: 1.06, color: 'var(--ink)', letterSpacing: '-0.02em', marginBottom: 22 }}>
+          <h2 className="df" style={{
+            fontSize: 'clamp(2.4rem,5.5vw,3.4rem)', fontWeight: 600,
+            lineHeight: 1.06, color: 'var(--ink)', letterSpacing: '-0.02em', marginBottom: 22,
+          }}>
             Five rooms I keep<br />returning to.
           </h2>
-          <p style={{ fontSize: '0.93rem', color: 'var(--ink2)', lineHeight: 1.9, maxWidth: 500 }}>
-            Not a transcript. These are the courses that left marks — that changed the way I read a definition, follow an argument, or sit with a problem.
+          <p style={{ fontSize: '0.9rem', color: 'var(--ink2)', lineHeight: 1.9, maxWidth: 480 }}>
+            Not a transcript. These are the courses that left marks — that changed
+            the way I read a definition, follow an argument, or sit with a problem.
           </p>
         </FadeIn>
 
-        {/* Cards grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 64 }}>
-          {coursesData.map((course, i) => {
-            const isFlipped = flipped === i;
-            return (
-              <FadeIn key={course.id} delay={i * 70}>
-                {/* Flip card wrapper */}
+        {/* ── Typographic accordion ── */}
+        <FadeIn delay={60}>
+          <div>
+            {coursesData.map((course, i) => {
+              const isOpen = active === i;
+              return (
                 <div
-                  onClick={() => setFlipped(isFlipped ? null : i)}
-                  style={{
-                    cursor: 'pointer',
-                    perspective: '1000px',
-                    minHeight: 260,
-                    position: 'relative',
-                  }}
+                  key={course.id}
+                  className={`ta-row${isOpen ? ' ta-open' : ''}`}
+                  onClick={() => setActive(isOpen ? -1 : i)}
                 >
-                  {/* Inner flip container */}
-                  <div style={{
-                    position: 'relative',
-                    width: '100%',
-                    minHeight: 260,
-                    transformStyle: 'preserve-3d',
-                    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                    transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1)',
-                  }}>
+                  {/* Ghost symbol — behind everything */}
+                  <div
+                    className="ta-ghost"
+                    style={{
+                      fontSize: isOpen ? 'clamp(6rem,14vw,9.5rem)' : 'clamp(2.5rem,5vw,4rem)',
+                      opacity: isOpen ? 0.055 : 0,
+                    }}
+                  >
+                    {course.symbol}
+                  </div>
 
-                    {/* ── FRONT ── */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden',
-                      background: 'var(--surface)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 'var(--r)',
-                      padding: '28px 26px 24px',
-                      boxShadow: 'var(--sh-sm)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      overflow: 'hidden',
-                      minHeight: 260,
-                    }}>
-                      {/* Watermark number */}
-                      <span style={{
-                        position: 'absolute', top: 14, right: 20,
-                        fontFamily: 'var(--fd)', fontSize: '5.5rem', fontWeight: 700,
-                        color: 'var(--accent)', opacity: 0.055, lineHeight: 1,
-                        userSelect: 'none', pointerEvents: 'none',
-                        letterSpacing: '-0.04em',
-                      }}>{course.id}</span>
+                  {/* Clickable header row */}
+                  <div className="ta-header">
+                    <span
+                      className="ta-num"
+                      style={{ color: isOpen ? 'var(--accent)' : 'var(--ink3)' }}
+                    >
+                      {course.id}
+                    </span>
 
-                      <div>
-                        {/* Area tag */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-                          <span style={{
-                            fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.2em',
-                            textTransform: 'uppercase', color: 'var(--accent)', opacity: 0.8,
-                          }}>{course.area}</span>
-                          <span style={{
-                            fontSize: '0.7rem', color: 'var(--ink3)', letterSpacing: '0.06em',
-                            fontStyle: 'italic',
-                          }}>flip →</span>
-                        </div>
+                    <span
+                      className="ta-name"
+                      style={{
+                        fontSize: isOpen
+                          ? 'clamp(1.75rem,4.2vw,2.8rem)'
+                          : 'clamp(1.05rem,2.2vw,1.25rem)',
+                        color: isOpen ? 'var(--ink)' : 'var(--ink2)',
+                        paddingBottom: isOpen ? '10px' : '0px',
+                      }}
+                    >
+                      {course.name}
+                    </span>
 
-                        {/* Symbol — large, editorial */}
-                        <div style={{
-                          fontFamily: 'var(--fd)', fontSize: '2.2rem', color: 'var(--accent)',
-                          opacity: 0.65, lineHeight: 1, marginBottom: 16,
-                        }}>{course.symbol}</div>
+                    <span
+                      className="ta-area"
+                      style={{ opacity: isOpen ? 0 : 1 }}
+                    >
+                      {course.area}
+                    </span>
+                  </div>
 
-                        {/* Course name */}
-                        <h3 className="df" style={{
-                          fontSize: 'clamp(1.12rem,2.2vw,1.32rem)', fontWeight: 600,
-                          color: 'var(--ink)', lineHeight: 1.25, margin: 0, letterSpacing: '-0.01em',
-                        }}>{course.name}</h3>
+                  {/* Expandable body */}
+                  <div
+                    className="ta-body"
+                    style={{
+                      maxHeight: isOpen ? '420px' : '0px',
+                      opacity: isOpen ? 1 : 0,
+                    }}
+                  >
+                    <div style={{ padding: '0 0 36px 48px' }}>
+
+                      {/* Thin accent line */}
+                      <div className="ta-divider" />
+
+                      {/* Symbol + area inline */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
+                        <span style={{
+                          fontFamily: 'var(--fd)', fontSize: '1.45rem',
+                          color: 'var(--accent)', opacity: 0.6, lineHeight: 1, flexShrink: 0,
+                        }}>{course.symbol}</span>
+                        <span style={{
+                          fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.2em',
+                          textTransform: 'uppercase', color: 'var(--accent)', opacity: 0.75,
+                        }}>{course.area}</span>
                       </div>
 
-                      {/* Refs preview at bottom */}
-                      <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
+                      {/* Personal note */}
+                      <p className="df" style={{
+                        fontSize: 'clamp(1rem,1.8vw,1.1rem)', fontStyle: 'italic',
+                        color: 'var(--ink)', lineHeight: 1.82, marginBottom: 28,
+                        maxWidth: 620,
+                      }}>
+                        {course.note}
+                      </p>
+
+                      {/* References */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {course.refs.map((ref, ri) => (
-                          <div key={ri} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: ri < course.refs.length - 1 ? 5 : 0 }}>
-                            <span style={{ color: 'var(--accent)', fontSize: '0.75rem', flexShrink: 0, marginTop: 1 }}>—</span>
-                            <span className="df" style={{ fontSize: '0.82rem', fontStyle: 'italic', color: 'var(--ink3)', lineHeight: 1.45 }}>{ref}</span>
+                          <div key={ri} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                            <span style={{ color: 'var(--accent)', fontSize: '0.75rem', flexShrink: 0, marginTop: 2 }}>—</span>
+                            <span className="df" style={{
+                              fontSize: '0.85rem', fontStyle: 'italic',
+                              color: 'var(--ink3)', lineHeight: 1.5,
+                            }}>{ref}</span>
                           </div>
                         ))}
                       </div>
+
                     </div>
-
-                    {/* ── BACK ── */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden',
-                      transform: 'rotateY(180deg)',
-                      background: 'var(--accent)',
-                      borderRadius: 'var(--r)',
-                      padding: '28px 26px 24px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      minHeight: 260,
-                      overflow: 'hidden',
-                    }}>
-                      {/* Subtle decorative symbol on back */}
-                      <span style={{
-                        position: 'absolute', bottom: 12, right: 18,
-                        fontFamily: 'var(--fd)', fontSize: '4rem', fontWeight: 700,
-                        color: '#fff', opacity: 0.07, lineHeight: 1,
-                        userSelect: 'none', pointerEvents: 'none',
-                      }}>{course.symbol}</span>
-
-                      <div>
-                        <div style={{
-                          fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.2em',
-                          textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)',
-                          marginBottom: 18,
-                        }}>— {course.id}</div>
-
-                        <p style={{
-                          fontFamily: 'var(--fd)', fontSize: 'clamp(1rem,1.8vw,1.1rem)',
-                          fontStyle: 'italic', fontWeight: 400, color: '#fff',
-                          lineHeight: 1.75, margin: 0,
-                        }}>{course.note}</p>
-                      </div>
-
-                      <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.06em', fontStyle: 'italic' }}>
-                        click to flip back
-                      </div>
-                    </div>
-
                   </div>
                 </div>
-              </FadeIn>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </FadeIn>
 
-        {/* Footer note */}
-        <FadeIn delay={200}>
+        {/* ── Footer ── */}
+        <FadeIn delay={180}>
           <div style={{
-            borderTop: '1px solid var(--border)',
-            paddingTop: 32,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 12,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            flexWrap: 'wrap', gap: 10, marginTop: 44,
           }}>
-            <p style={{ fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic', margin: 0 }}>
-              References reflect primary texts studied. Flip each card for a note.
+            <p style={{ fontSize: '0.76rem', color: 'var(--ink3)', fontStyle: 'italic', margin: 0 }}>
+              References reflect primary texts studied.
             </p>
-            <span className="df" style={{ fontSize: '0.88rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
-              {coursesData.length} courses &nbsp;·&nbsp; still counting.
+            <span className="df" style={{ fontSize: '0.82rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
+              {coursesData.length}&thinsp;courses &middot; still counting.
             </span>
           </div>
         </FadeIn>
