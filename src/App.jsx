@@ -548,13 +548,13 @@ const ResearchPage = () => (
           Summer 2026 &mdash; Ongoing
         </div>
         <h3 className="df" style={{ fontSize:'clamp(1.15rem,2.5vw,1.55rem)', fontWeight:600, color:'var(--ink)', marginBottom:8, lineHeight:1.3 }}>
-          Categories
+          Derived Categories
         </h3>
         <div style={{ fontSize:'0.82rem', color:'var(--ink2)', fontWeight:500, marginBottom:12 }}>
           Advisor: Dr. Vivek Sadhu
         </div>
         <p style={{ fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.8 }}>
-          Currently reading up on some category theory and working out examples from algebraic geometry and commutative algebra. 
+          The goal is to work through some theory of abelian categories, and bulk up on relevant texts which are supplementary to learning derived categories.   
         </p>
       </div>
     </FadeIn>
