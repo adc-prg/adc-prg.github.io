@@ -548,7 +548,7 @@ const ResearchPage = () => (
           Summer 2026 &mdash; Ongoing
         </div>
         <h3 className="df" style={{ fontSize:'clamp(1.15rem,2.5vw,1.55rem)', fontWeight:600, color:'var(--ink)', marginBottom:8, lineHeight:1.3 }}>
-          Derived Categories
+          Abelian Categories
         </h3>
         <div style={{ fontSize:'0.82rem', color:'var(--ink2)', fontWeight:500, marginBottom:12 }}>
           Advisor: Dr. Vivek Sadhu
