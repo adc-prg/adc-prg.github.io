@@ -195,9 +195,12 @@ const CSS = `
   .sr { opacity:0; transform:translateY(18px); transition:opacity 0.75s cubic-bezier(0.16,1,0.3,1),transform 0.75s cubic-bezier(0.16,1,0.3,1); }
   .sr.in { opacity:1; transform:translateY(0); }
 
-  /* Paper card */
-  .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); box-shadow:var(--sh-sm); transition:box-shadow 0.35s ease,transform 0.35s ease; }
-  .card:hover { box-shadow:var(--sh-lg); transform:translateY(-2px); }
+  /* Paper card — a touch of wabi-sabi: no two corners quite the same */
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:8px 7px 9px 6px; box-shadow:var(--sh-sm); transition:box-shadow 0.35s ease,transform 0.35s ease; }
+  .card:hover { box-shadow:var(--sh-lg); transform:translateY(-2px) rotate(-0.15deg); }
+
+  /* A quiet, imperfect underline for section titles — like a brushstroke, not a ruler */
+  .wabi-mark { display:inline-block; width:34px; height:2px; background:var(--accent); opacity:0.55; border-radius:2px; transform:rotate(-1deg); margin-bottom:10px; }
 
   /* Nav: inner pages */
   .ni { position:relative; background:none; border:none; cursor:pointer; font-family:var(--fb); font-weight:500; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink2); transition:color 0.25s; padding:3px 0; text-decoration:none; display:inline-block; }
@@ -300,6 +303,7 @@ const SectionHead = ({ eyebrow, title }) => (
   <FadeIn style={{ marginBottom: 52 }}>
     <div className="eb" style={{ marginBottom: 10 }}>{eyebrow}</div>
     <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em' }}>{title}</h2>
+    <span className="wabi-mark" />
   </FadeIn>
 );
 
@@ -548,13 +552,13 @@ const ResearchPage = () => (
           Summer 2026 &mdash; Ongoing
         </div>
         <h3 className="df" style={{ fontSize:'clamp(1.15rem,2.5vw,1.55rem)', fontWeight:600, color:'var(--ink)', marginBottom:8, lineHeight:1.3 }}>
-          Abelian Categories
+          MS Thesis Project - Homotopical Algebra
         </h3>
         <div style={{ fontSize:'0.82rem', color:'var(--ink2)', fontWeight:500, marginBottom:12 }}>
           Advisor: Dr. Vivek Sadhu
         </div>
         <p style={{ fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.8 }}>
-          The goal is to work through some theory of abelian categories, and bulk up on relevant texts which are supplementary to learning derived categories.   
+          My plan is to cover and work out examples of model categories, and, if time permits, work through some theory of infinity categories. For now though, my goal is simply to bulk up on the things relevant to learning derived categories, and derived categories themselves.
         </p>
       </div>
     </FadeIn>
@@ -569,7 +573,6 @@ const ResearchPage = () => (
           <p style={{ fontSize:'0.95rem', color:'var(--ink2)', lineHeight:1.85 }}>
             <strong style={{ color:'var(--ink)', fontWeight:600 }}>Cayley graphs</strong> exhibit the nature of the action of a group G on a set S closed under inverses. A graph is <strong style={{ color:'var(--ink)', fontWeight:600 }}>integral</strong> if each eigenvalue of its adjacency matrix is an integer. The <strong style={{ color:'var(--ink)', fontWeight:600 }}>genus</strong> is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without edge crossings. The goal of the project was to read relevant literature and try to come up with expressions for genus of generalized cayley graphs (cayley graphs over fields). I tried using computational and algebraic tools to explore these two properties of Cayley graphs on finite abelian groups and generalized cayley graphs.
           </p>
-          <p style={{ marginTop:14, fontSize:'0.85rem', fontStyle:'italic', color:'var(--ink3)' }}>More about my work updating soon.</p>
         </div>
       </FadeIn>
     ))}
