@@ -558,7 +558,7 @@ const ResearchPage = () => (
           Advisor: Dr. Vivek Sadhu
         </div>
         <p style={{ fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.8 }}>
-          My plan is to cover and work out examples of model categories, and, if time permits, work through some theory of infinity categories. For now though, my goal is simply to bulk up on the things relevant to learning derived categories, and derived categories themselves.
+          The plan is to cover and work out examples of model categories, and, if time permits, work through some theory of infinity categories. For now though, my goal is simply to bulk up on the things relevant to learning derived categories, and derived categories themselves.
         </p>
       </div>
     </FadeIn>
