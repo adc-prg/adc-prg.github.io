@@ -151,6 +151,11 @@ const CSS = `
     --sh-sm:   0 1px 4px rgba(114,47,55,0.07);
     --sh-md:   0 4px 24px rgba(114,47,55,0.10);
     --sh-lg:   0 14px 48px rgba(114,47,55,0.13);
+    --on-accent:    #FFFFFF;
+    --on-accent-70: rgba(255,255,255,0.7);
+    --on-accent-55: rgba(255,255,255,0.55);
+    --on-accent-45: rgba(255,255,255,0.45);
+    --on-accent-10: rgba(255,255,255,0.1);
     --fd: 'Cormorant Garamond', Georgia, serif;
     --fb: 'Jost', system-ui, sans-serif;
     --r:  7px;
@@ -166,6 +171,11 @@ const CSS = `
     --sh-sm:   0 1px 4px rgba(2,6,16,0.35);
     --sh-md:   0 4px 24px rgba(2,6,16,0.45);
     --sh-lg:   0 14px 48px rgba(2,6,16,0.55);
+    --on-accent:    #1C1206;
+    --on-accent-70: rgba(28,18,6,0.7);
+    --on-accent-55: rgba(28,18,6,0.55);
+    --on-accent-45: rgba(28,18,6,0.45);
+    --on-accent-10: rgba(28,18,6,0.12);
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; zoom: 1; }
@@ -277,7 +287,7 @@ const CSS = `
   .ev-tag { display:inline-block; font-size:0.7rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); border:1px dashed var(--accent); border-radius:20px; padding:2px 9px; margin-bottom:10px; opacity:0.75; }
 
   /* Crimson CTA button */
-  .cta-btn { display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#fff; border:none; border-radius:var(--r); padding:10px 20px; font-family:var(--fb); font-size:0.82rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:opacity 0.2s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); transform-origin:center; }
+  .cta-btn { display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:var(--on-accent); border:none; border-radius:var(--r); padding:10px 20px; font-family:var(--fb); font-size:0.82rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:opacity 0.2s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); transform-origin:center; }
   .cta-btn:hover { opacity:0.88; transform:translateY(-2px) scale(1.05); }
 
   /* Grassmannian card accent border */
@@ -956,25 +966,25 @@ const CoursesPage = () => {
                       <span style={{
                         position: 'absolute', bottom: 12, right: 18,
                         fontFamily: 'var(--fd)', fontSize: '4rem', fontWeight: 700,
-                        color: '#fff', opacity: 0.07, lineHeight: 1,
+                        color: 'var(--on-accent)', opacity: 0.07, lineHeight: 1,
                         userSelect: 'none', pointerEvents: 'none',
                       }}>{course.symbol}</span>
 
                       <div>
                         <div style={{
                           fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.2em',
-                          textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)',
+                          textTransform: 'uppercase', color: 'var(--on-accent-55)',
                           marginBottom: 18,
                         }}>— {course.id}</div>
 
                         <p style={{
                           fontFamily: 'var(--fd)', fontSize: 'clamp(1rem,1.8vw,1.1rem)',
-                          fontStyle: 'italic', fontWeight: 400, color: '#fff',
+                          fontStyle: 'italic', fontWeight: 400, color: 'var(--on-accent)',
                           lineHeight: 1.75, margin: 0,
                         }}>{course.note}</p>
                       </div>
 
-                      <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.06em', fontStyle: 'italic' }}>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--on-accent-45)', letterSpacing: '0.06em', fontStyle: 'italic' }}>
                         click to flip back
                       </div>
                     </div>
