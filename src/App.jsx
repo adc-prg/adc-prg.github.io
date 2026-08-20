@@ -62,42 +62,41 @@ const cvData = {
   }],
   
   education: [
-    { institution: "Indian Institute of Science Education and Research, Bhopal", degree: "BS-MS (Dual Degree), Major: Mathematics", duration: "2022 – 2027 (Expected)", grades: ["Cumulative performance: 8.81 / 10"] },
-    { institution: "Puna International School, Gandhinagar", degree: "Senior Secondary (CBSE), Science Stream", duration: "2020 – 2022" },
-    { institution: "Kendriya Vidyalaya", degree: "Secondary School (CBSE)", duration: "2016 – 2020" }
+    { institution: "Indian Institute of Science Education and Research, Bhopal", degree: "BS-MS (Dual Degree), Major: Mathematics", duration: "2022 – 2027 (Expected)", grades: ["Cumulative performance: 8.81 / 10"] }
+    
   ],
   responsibilities: [
     { role: "Department Representative, Math Dept.", institution: "IISER Bhopal", duration: "Sep 2024 – Sep 2025",
-      description: "Elected representative for the batch of 2022, responsible for facilitating student concerns and academic feedback between students and faculty." },
+      description: "I was eleected as the batch representative for the batch of '22, math department. Primary responsibilities included facilitating effective communication between the students and the administration." },
     { role: "Core Member, Math Club", institution: "IISER Bhopal", duration: "Jun 2024 – Jul 2025",
-      description: "Actively involved in organising guest lectures, weekly academic discussions, and student outreach events to foster a mathematical community." },
+      description: "Joined with the intent of helping towards a better culture and acceptance towards math. I hope i was able to achieve that." },
     { role: "Peer Counselor", institution: "IISER Bhopal", duration: "Jul 2023 – Jul 2025",
-      description: "Part of the Institute Counselling Cell, offering peer support and guidance to students on academic and personal issues." }
+      description: "A brilliant initiative by the counselling cell @IISERB, which fosters this idea that you don't have to look far for help." }
   ],
   openboard: {
     role: "Co-founder, Openboard",
     institution: "IISER Bhopal",
     duration: "Ongoing",
-    cofounder: { name: "Samriddha", url: "https://samriddhas-quantum-realm.vercel.app/" },
+    cofounder: { name: "Samriddha", url: "https://samriddhaganguly.github.io/" },
     website: "https://openboard-web.vercel.app/",
     description: "Along with my friend Samriddha we have started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.",
-    mission: "Openboard is a student-run platform at IISER Bhopal dedicated to independent, idea-driven talks. We believe that intellectual curiosity should have an outlet beyond the classroom; a space where students can address a general audience on topics they genuinely care about, spanning mathematics, science, philosophy, art, and beyond.",
+    mission: "Openboard is a formal platform to be informal, or an informal platform to be formal. It is dedicated to ideas. Samriddha and I believed that curiosity should have an outlet beyond the classroom; a space where students can address a general audience on topics they genuinely care about.",
     talks: [
-      { title: "The Probabilistic Method", speaker: "Adeetya Choubey", description: "The innaugral talk for the student-led initiative, Openboard. The probabilistic method is a way of proving existence of any object without explcitly constructing it, through the means of Probability. The famous proof by Erdős for the bounds on ramsey number was discussed in this talk." }
+      { title: "The Probabilistic Method", speaker: "Adeetya Choubey", description: "I gave the innaugral talk for this small initiative of ours. The probabilistic method is a way of proving existence of any object without explcitly constructing it, through the means of Probability. The famous proof by Erdős for the bounds on ramsey number was discussed in this talk." }
     ]
   },
   academicExperiences: {
     internships: [
       { title: "Summer Intern", institution: "Institute of Science, Banaras Hindu University", duration: "May 2025 – Aug 2025",
-        description: "First phase involved getting used to with some algebraic topology, referring to books like hatcher, harper and munkres. Towards the end, the focus shifted to finding out groups with integral cayley graphs of genus one through computational and algebraic means." },
+        description: "The first phase involved getting used to with some algebraic topology, referring to books like hatcher, harper and munkres. Towards the end, the focus shifted to finding out groups with integral cayley graphs of genus one through computational and algebraic means." },
       { title: "Summer Intern", institution: "Institute of Science, Banaras Hindu University", duration: "May – July 2024",
         description: "This project focussed on studying general topology from the book by J Dugundji, while working through problems, along with reading the book by Murasugi on Braids." }
     ],
     summerSchools: [
       { title: "Summer Program", institution: "TIFR — Centre for Applicable Mathematics", duration: "June – July 2025",
-        description: "The program included short  on RKHS, Geometric Measure Theory, Geometric Function Theory, Gibbs Measure and Entropy, Multiscale problems in PDE, Microlocal Analysis and Inverse Problems, along with several keynote lectures on ongoing research in Analysis and Combinatorics." },
+        description: "The program included short on RKHS, Geometric Measure Theory, Geometric Function Theory, Gibbs Measure and Entropy, Multiscale problems in PDE, Microlocal Analysis and Inverse Problems, along with several keynote lectures on ongoing research in Analysis and Combinatorics." },
       { title: "Mathematics Summer Program", institution: "Indraprastha Institute of Information Technology, Delhi", duration: "June 2024",
-        description: "Two week residential summer program covering some elementary aspects of Analysis, Algebra, Topology. This program included daily lectures on the aforementioned topics, along with problem solving sessions." }
+        description: "This was a two week residential summer program covering some elementary aspects of Analysis, Algebra, Topology. This program included daily lectures on the aforementioned topics, along with problem solving sessions." }
     ]
   },
   events: [
@@ -105,23 +104,23 @@ const cvData = {
       description: "Gave the first Openboard talk. More about that talk can be looked at on the Openboard website.",
       link: { url: "https://openboard-web.vercel.app/", text: "Openboard website" } },
     { title: "खेल-culus", tag: "Organised",
-      description: "खेल, in Hindi, stands for sport. खेल-culus (khel-culus; /kʰeːl/) represents the treatise of calculus as a sport — the name for the integration bee held during the annual math fest, Continuum, organised by the department of math at IISER Bhopal. I organised the event, along with Yash Sharma." },
+      description: "खेल, in Hindi, stands for sport. खेल-culus (khel-culus; /kʰeːl/) represents the treatise of calculus as a sport — the name for the integration bee held during the annual math fest, Continuum, organised by the department of math at IISER Bhopal. I helped organised the event (and gave the idea for the even and the name), along with Yash Sharma." },
     { title: "Big-Tac-Toe", tag: "Organised",
       description: "A wordplay on Big + Tic-tac-toe — another name for ultimate tic-tac-toe. Held at Continuum in collaboration with the board games club, Ingenium. The event featured a knockout stage with Saurav Kanetkar emerging as the Big-Tac-Toe champion, 2025 edition.",
       link: { url: "https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe", text: "Ultimate Tic-Tac-Toe" } },
     { title: "Realizing Grassmannian as a Projective Variety and the Segre embedding", tag: "Seminar Talk",
-      description: "Department Seminar presentation on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to discussing the Segre embedding and how it helps to see product of two projective spaces as a projective variety embedded into a much larger projective space." }
+      description: "I gave a seminar on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to discussing the Segre embedding and how it helps to see product of two projective spaces as a projective variety embedded into a much larger projective space." }
   ],
   contact: { email: "adeetya22@iiserb.ac.in", linkedin: "https://www.linkedin.com/in/adeetya-choubey-6b2a44254/" }
 };
 
 const navPages = [
-  { label: 'AcadEx',    path: '/acadex',    desc: 'Academic internships and summer schools.' },
-  { label: 'Research',  path: '/research',  desc: 'Research projects.' },
-  { label: 'Courses',   path: '/courses',   desc: 'Some mathematics that I genuinely enjoyed.' },
-  { label: 'Events',    path: '/events',    desc: 'Academic and extracurricular events I\'ve organised.' },
-  { label: 'OpenBoard', path: '/openboard', desc: 'An independent student-led ideas initiative.' },
-  { label: 'Contact',   path: '/contact',   desc: 'Get in touch for collaborations or inquiries.' },
+  { label: 'AcadEx',    path: '/acadex',    desc: 'academic venture during the summer' },
+  { label: 'Research',  path: '/research',  desc: 'attempts to be more academically acceptable :)' },
+  { label: 'Courses',   path: '/courses',   desc: 'some math that I genuinely enjoyed.' },
+  { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
+  { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
+  { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
 
 
@@ -195,11 +194,10 @@ const CSS = `
   .sr { opacity:0; transform:translateY(18px); transition:opacity 0.75s cubic-bezier(0.16,1,0.3,1),transform 0.75s cubic-bezier(0.16,1,0.3,1); }
   .sr.in { opacity:1; transform:translateY(0); }
 
-  /* Paper card — a touch of wabi-sabi: no two corners quite the same */
+  /* Paper card */
   .card { background:var(--surface); border:1px solid var(--border); border-radius:8px 7px 9px 6px; box-shadow:var(--sh-sm); transition:box-shadow 0.35s ease,transform 0.35s ease; }
   .card:hover { box-shadow:var(--sh-lg); transform:translateY(-2px) rotate(-0.15deg); }
 
-  /* A quiet, imperfect underline for section titles — like a brushstroke, not a ruler */
   .wabi-mark { display:inline-block; width:34px; height:2px; background:var(--accent); opacity:0.55; border-radius:2px; transform:rotate(-1deg); margin-bottom:10px; }
 
   /* Nav: inner pages */
