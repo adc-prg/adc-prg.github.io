@@ -120,7 +120,6 @@ const navPages = [
   { label: 'Courses',   path: '/courses',   desc: 'some math that I genuinely enjoyed.' },
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
-  { label: 'Blog',      path: '/blog',      desc: 'writing, when it exists' },
   { label: 'PDFs',      path: '/pdfs',      desc: 'notes worth revisiting' },
   { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
@@ -638,42 +637,23 @@ const EventsPage = () => {
 };
 
 // ─── Coming Soon (shared) ──────────────────────────────────────────────────────
-const ComingSoon = ({ eyebrow, title, message, footnote }) => (
+const ComingSoon = ({ eyebrow, title }) => (
   <PageWrapper>
     <div style={{ minHeight:'52vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'60px 24px' }}>
       <FadeIn>
         <div className="eb" style={{ marginBottom:14 }}>{eyebrow}</div>
         <h2 className="df" style={{ fontSize:'clamp(2rem,5vw,3rem)', fontWeight:600, color:'var(--ink)', marginBottom:20, lineHeight:1.15 }}>{title}</h2>
-        <p className="iq" style={{ maxWidth:460, margin:'0 auto', color:'var(--ink2)', fontSize:'1.02rem' }}>{message}</p>
-        <div className="bento-wip" style={{ marginTop:26 }}>
+        <div className="bento-wip" style={{ marginTop:6 }}>
           <span className="wip-dot" /> Under construction
         </div>
-        {footnote && (
-          <p style={{ marginTop:28, fontSize:'0.78rem', color:'var(--ink3)', fontStyle:'italic', letterSpacing:'0.02em' }}>{footnote}</p>
-        )}
       </FadeIn>
     </div>
   </PageWrapper>
 );
 
-// ─── Blog Page ─────────────────────────────────────────────────────────────────
-const BlogPage = () => (
-  <ComingSoon
-    eyebrow="Blog"
-    title="Currently an open conjecture"
-    message="Believed to be true, not yet proven. Words are being gathered and arguments sharpened somewhere off-page — a rigorous(ish) writeup is on its way."
-    footnote="Proof left as an exercise for future me."
-  />
-);
-
 // ─── PDFs Page ─────────────────────────────────────────────────────────────────
 const PdfsPage = () => (
-  <ComingSoon
-    eyebrow="PDFs"
-    title="A shelf, mid-assembly"
-    message="Lecture notes, references, and things worth re-reading are being rounded up and typeset properly before they land here."
-    footnote="Rounding, as always, done with intent."
-  />
+  <ComingSoon eyebrow="PDFs" title="Coming soon" />
 );
 
 // ─── OpenBoard Page ───────────────────────────────────────────────────────────
@@ -1084,11 +1064,6 @@ function AnimatedRoutes({ theme, toggleTheme }) {
         <Route path="/openboard" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <OpenBoardPage />
-          </InnerLayout>
-        } />
-        <Route path="/blog" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <BlogPage />
           </InnerLayout>
         } />
         <Route path="/pdfs" element={
