@@ -804,7 +804,7 @@ const coursesData = [
     area: "Topology",
     symbol: "π₁",
     refs: ["Hatcher — Algebraic Topology"],
-    note: "I enjoyed group theory, I enjoyed topology, so this just felt like a match made in heaven. I am glad my hunch was correct.",
+    note: "I enjoyed group theory, I enjoyed topology, so this just felt like a match made in heaven, and I was not wrong.",
   },
   {
     id: "02",
@@ -828,16 +828,9 @@ const coursesData = [
     area: "Topology",
     symbol: "Hₙ",
     refs: ["Hatcher - Algebraic Topology"],
-    note: "In my first course on Rings and Modules, I remember proving that all abelian groups are modules over integers. After that, this course just felt like applied commutative algebra :).",
+    note: "This course just reinforced my interest in homological algebra from my course on commutative algebra.",
   },
-  {
-    id: "05",
-    name: "Probability Theory",
-    area: "Analysis",
-    symbol: "𝔼[·]",
-    refs: ["Durrett — Probability: Theory and Examples"],
-    note: "I took this course along side my actual course on Measure theory and my experience was wildly different. Beautiful.",
-  },
+  
 ];
 
 // ─── Courses Page ─────────────────────────────────────────────────────────────
