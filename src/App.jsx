@@ -120,6 +120,8 @@ const navPages = [
   { label: 'Courses',   path: '/courses',   desc: 'some math that I genuinely enjoyed.' },
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
+  { label: 'Blog',      path: '/blog',      desc: 'writing, when it exists' },
+  { label: 'PDFs',      path: '/pdfs',      desc: 'notes worth revisiting' },
   { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
 
@@ -247,6 +249,16 @@ const CSS = `
   .hdr-inner { display:flex; justify-content:space-between; align-items:center; padding:15px 0; gap:20px; }
   .hdr-right { display:flex; align-items:center; gap:18px; }
   .hdr-nav { display:flex; flex-wrap:wrap; gap:4px 18px; justify-content:flex-end; align-items:center; }
+
+  /* Home bio + education grid — proportionate widths, slight askewness */
+  .home-bento { display:grid; grid-template-columns: 1.6fr 1fr; gap:20px; margin-bottom:20px; align-items:start; }
+  .tilt-a { transform:rotate(-0.6deg); }
+  .tilt-b { transform:rotate(0.55deg); }
+  .tilt-c { transform:rotate(-0.35deg); }
+  @media(max-width:760px) {
+    .home-bento { grid-template-columns:1fr; }
+    .tilt-a, .tilt-b, .tilt-c { transform:none; }
+  }
 
   /* Bento grid */
   .bento-grid { display:grid; gap:14px; grid-template-columns:repeat(4, 1fr); }
@@ -402,10 +414,10 @@ const HomePage = ({ theme, toggleTheme }) => {
 
         {/* Integrated Bio Sketch */}
         <p className="au d3 df" style={{ maxWidth:560, fontSize:'clamp(1rem,2vw,1.2rem)', fontStyle:'italic', color:'var(--ink)', lineHeight:1.72, marginBottom:16 }}>
-          {cvData.profile.intro}
+          Math undergrad at <a href="https://maths.iiserb.ac.in/" target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontStyle:'italic' }}>IISER Bhopal</a>.
         </p>
-        <p className="au d3" style={{ maxWidth:520, fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.75, marginBottom:44 }}>
-          {cvData.profile.interests}
+        <p className="au d3" style={{ maxWidth:480, fontSize:'0.88rem', color:'var(--ink3)', lineHeight:1.7, marginBottom:44, fontStyle:'italic' }}>
+          An informal introduction to my formal (academic) self.
         </p>
 
         {/* Decorative rule */}
@@ -441,11 +453,11 @@ const HomePage = ({ theme, toggleTheme }) => {
 
 
         {/* Bio + Education Grid */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:20, marginBottom:20 }}>
+        <div className="home-bento">
 
           {/* Full bio card */}
           <FadeIn delay={80}>
-            <div className="card" style={{ padding:'32px 28px', height:'100%' }}>
+            <div className="card tilt-a" style={{ padding:'32px 28px' }}>
               <div className="eb" style={{ marginBottom:14 }}>Bio-Sketch</div>
               <p className="iq" style={{ marginBottom:18 }}>{cvData.profile.intro}</p>
               <Divider style={{ margin:'18px 0' }} />
@@ -457,7 +469,7 @@ const HomePage = ({ theme, toggleTheme }) => {
 
           {/* Education card */}
           <FadeIn delay={160}>
-            <div className="card" style={{ padding:'32px 28px', height:'100%' }}>
+            <div className="card tilt-b" style={{ padding:'32px 28px' }}>
               <div className="eb" style={{ marginBottom:18 }}>Education</div>
               <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
                 {cvData.education.map(edu => (
@@ -477,7 +489,7 @@ const HomePage = ({ theme, toggleTheme }) => {
 
         {/* Positions of Responsibility */}
         <FadeIn delay={220}>
-          <div className="card" style={{ padding:'32px 28px' }}>
+          <div className="card tilt-c" style={{ padding:'32px 28px' }}>
             <div className="eb" style={{ marginBottom:18 }}>Positions of Responsibility</div>
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(230px,1fr))', gap:24 }}>
               {cvData.responsibilities.map(resp => (
@@ -609,6 +621,48 @@ const EventsPage = () => {
   </PageWrapper>
   );
 };
+
+// ─── Coming Soon (shared) ──────────────────────────────────────────────────────
+const ComingSoon = ({ eyebrow, title, symbol, message, footnote }) => (
+  <PageWrapper>
+    <div style={{ minHeight:'52vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'60px 24px' }}>
+      <FadeIn>
+        <div className="eb" style={{ marginBottom:14 }}>{eyebrow}</div>
+        <h2 className="df" style={{ fontSize:'clamp(2rem,5vw,3rem)', fontWeight:600, color:'var(--ink)', marginBottom:20, lineHeight:1.15 }}>{title}</h2>
+        <div className="df" style={{ fontSize:'clamp(1.6rem,4vw,2.4rem)', color:'var(--accent)', opacity:0.55, marginBottom:22, fontStyle:'italic' }}>{symbol}</div>
+        <p className="iq" style={{ maxWidth:460, margin:'0 auto', color:'var(--ink2)', fontSize:'1.02rem' }}>{message}</p>
+        <div className="bento-wip" style={{ marginTop:26 }}>
+          <span className="wip-dot" /> Under construction
+        </div>
+        {footnote && (
+          <p style={{ marginTop:28, fontSize:'0.78rem', color:'var(--ink3)', fontStyle:'italic', letterSpacing:'0.02em' }}>{footnote}</p>
+        )}
+      </FadeIn>
+    </div>
+  </PageWrapper>
+);
+
+// ─── Blog Page ─────────────────────────────────────────────────────────────────
+const BlogPage = () => (
+  <ComingSoon
+    eyebrow="Blog"
+    title="Currently an open conjecture"
+    symbol="∃ posts, TBD"
+    message="Believed to be true, not yet proven. Words are being gathered and arguments sharpened somewhere off-page — a rigorous(ish) writeup is on its way."
+    footnote="Proof left as an exercise for future me."
+  />
+);
+
+// ─── PDFs Page ─────────────────────────────────────────────────────────────────
+const PdfsPage = () => (
+  <ComingSoon
+    eyebrow="PDFs"
+    title="A shelf, mid-assembly"
+    symbol="⌈ notes ⌉"
+    message="Lecture notes, references, and things worth re-reading are being rounded up and typeset properly before they land here."
+    footnote="Rounding, as always, done with intent."
+  />
+);
 
 // ─── OpenBoard Page ───────────────────────────────────────────────────────────
 const OpenBoardPage = () => (
@@ -1018,6 +1072,16 @@ function AnimatedRoutes({ theme, toggleTheme }) {
         <Route path="/openboard" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <OpenBoardPage />
+          </InnerLayout>
+        } />
+        <Route path="/blog" element={
+          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
+            <BlogPage />
+          </InnerLayout>
+        } />
+        <Route path="/pdfs" element={
+          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
+            <PdfsPage />
           </InnerLayout>
         } />
         <Route path="/contact" element={
