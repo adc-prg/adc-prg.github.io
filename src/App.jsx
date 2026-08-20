@@ -157,16 +157,16 @@ const CSS = `
     --r:  7px;
   }
   .dark {
-    --bg:      #1A1714;
-    --surface: #221E1A;
-    --ink:     #F2EEE8;
-    --ink2:    #D4C4C0;
-    --ink3:    #8A7A7D;
-    --accent:  #D4556A;
-    --border:  #352E29;
-    --sh-sm:   0 1px 4px rgba(0,0,0,0.28);
-    --sh-md:   0 4px 24px rgba(0,0,0,0.32);
-    --sh-lg:   0 14px 48px rgba(0,0,0,0.40);
+    --bg:      #0A1120;
+    --surface: #101B30;
+    --ink:     #F4EFE3;
+    --ink2:    #C7CEDD;
+    --ink3:    #7E8CAA;
+    --accent:  #E3B23C;
+    --border:  #22314E;
+    --sh-sm:   0 1px 4px rgba(2,6,16,0.35);
+    --sh-md:   0 4px 24px rgba(2,6,16,0.45);
+    --sh-lg:   0 14px 48px rgba(2,6,16,0.55);
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; zoom: 1; }
@@ -309,12 +309,29 @@ const ThemeToggle = ({ theme, toggleTheme }) => (
 
 const Divider = ({ style = {} }) => <hr className="dv" style={style} />;
 
-const SectionHead = ({ eyebrow, title }) => (
+const SectionHead = ({ eyebrow, title, quote }) => (
   <FadeIn style={{ marginBottom: 52 }}>
     <div className="eb" style={{ marginBottom: 10 }}>{eyebrow}</div>
     <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em' }}>{title}</h2>
     <span className="wabi-mark" />
+    {quote && (
+      <p className="df" style={{ fontSize: '1.02rem', fontStyle: 'italic', color: 'var(--ink2)', lineHeight: 1.7, maxWidth: 540, marginTop: 16 }}>{quote}</p>
+    )}
   </FadeIn>
+);
+
+// Reusable entry header (title / subtitle / duration) — used across timeline-style lists
+const EntryHeader = ({ title, subtitle, duration, size = '1rem' }) => (
+  <>
+    <div className="df" style={{ fontSize: size, fontWeight: 600, color: 'var(--ink)', marginBottom: 4, lineHeight: 1.3 }}>{title}</div>
+    {subtitle && <div style={{ fontSize: '0.82rem', color: 'var(--ink2)', marginBottom: 2 }}>{subtitle}</div>}
+    {duration && <div style={{ fontSize: '0.77rem', color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.05em', marginBottom: 10 }}>{duration}</div>}
+  </>
+);
+
+// Reusable body paragraph
+const Prose = ({ children, size = '0.88rem', lh = 1.8, color = 'var(--ink2)', style = {} }) => (
+  <p style={{ fontSize: size, color, lineHeight: lh, ...style }}>{children}</p>
 );
 
 const FadeIn = ({ children, delay = 0, style = {}, className = '' }) => {
@@ -474,9 +491,7 @@ const HomePage = ({ theme, toggleTheme }) => {
               <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
                 {cvData.education.map(edu => (
                   <div key={edu.institution} className="tl">
-                    <div className="df" style={{ fontSize:'1rem', fontWeight:600, color:'var(--ink)', marginBottom:4, lineHeight:1.3 }}>{edu.institution}</div>
-                    <div style={{ fontSize:'0.82rem', color:'var(--ink2)', marginBottom:3 }}>{edu.degree}</div>
-                    <div style={{ fontSize:'0.76rem', color:'var(--accent)', fontWeight:500, letterSpacing:'0.05em', marginBottom:6 }}>{edu.duration}</div>
+                    <EntryHeader title={edu.institution} subtitle={edu.degree} duration={edu.duration} />
                     {edu.grades?.map(g => (
                       <span key={g} style={{ display:'inline-block', fontSize:'0.75rem', color:'var(--ink2)', background:'var(--bg)', border:'1px solid var(--border)', borderRadius:20, padding:'2px 10px' }}>{g}</span>
                     ))}
@@ -494,10 +509,8 @@ const HomePage = ({ theme, toggleTheme }) => {
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(230px,1fr))', gap:24 }}>
               {cvData.responsibilities.map(resp => (
                 <div key={resp.role} style={{ borderLeft:'2px solid var(--border)', paddingLeft:16 }}>
-                  <div className="df" style={{ fontSize:'0.98rem', fontWeight:600, color:'var(--ink)', marginBottom:4, lineHeight:1.3 }}>{resp.role}</div>
-                  <div style={{ fontSize:'0.79rem', color:'var(--ink2)', marginBottom:2 }}>{resp.institution}</div>
-                  <div style={{ fontSize:'0.74rem', color:'var(--accent)', fontWeight:500, letterSpacing:'0.05em', marginBottom:10 }}>{resp.duration}</div>
-                  <p style={{ fontSize:'0.85rem', color:'var(--ink2)', lineHeight:1.75 }}>{resp.description}</p>
+                  <EntryHeader title={resp.role} subtitle={resp.institution} duration={resp.duration} size="0.98rem" />
+                  <Prose size="0.85rem" lh={1.75}>{resp.description}</Prose>
                 </div>
               ))}
             </div>
@@ -511,7 +524,11 @@ const HomePage = ({ theme, toggleTheme }) => {
 // ─── Academic Experiences Page ─────────────────────────────────────────────────
 const AcademicExperiencesPage = () => (
   <PageWrapper>
-    <SectionHead eyebrow="Academic Experiences" title="Where I've learned" />
+    <SectionHead
+      eyebrow="Academic Experiences"
+      title="Where I've learned"
+      quote="Not all of it happened in a classroom — some of it happened in library corners, over a summer, or in the middle of a proof that refused to close."
+    />
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(290px,1fr))', gap:20 }}>
       <FadeIn delay={80}>
         <div className="card" style={{ padding:'34px 30px', height:'100%' }}>
@@ -519,10 +536,8 @@ const AcademicExperiencesPage = () => (
           <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
             {cvData.academicExperiences.internships.map((exp, i) => (
               <div key={exp.duration}>
-                <div className="df" style={{ fontSize:'1.05rem', fontWeight:600, color:'var(--ink)', marginBottom:4, lineHeight:1.3 }}>{exp.title}</div>
-                <div style={{ fontSize:'0.83rem', color:'var(--ink2)', marginBottom:2 }}>{exp.institution}</div>
-                <div style={{ fontSize:'0.77rem', color:'var(--accent)', fontWeight:500, letterSpacing:'0.05em', marginBottom:12 }}>{exp.duration}</div>
-                <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8 }}>{exp.description}</p>
+                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.05rem" />
+                <Prose size="0.88rem">{exp.description}</Prose>
                 {i < cvData.academicExperiences.internships.length - 1 && <Divider style={{ margin:'26px 0' }} />}
               </div>
             ))}
@@ -535,10 +550,8 @@ const AcademicExperiencesPage = () => (
           <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
             {cvData.academicExperiences.summerSchools.map((exp, i) => (
               <div key={exp.institution}>
-                <div className="df" style={{ fontSize:'1.05rem', fontWeight:600, color:'var(--ink)', marginBottom:4, lineHeight:1.3 }}>{exp.title}</div>
-                <div style={{ fontSize:'0.83rem', color:'var(--ink2)', marginBottom:2 }}>{exp.institution}</div>
-                <div style={{ fontSize:'0.77rem', color:'var(--accent)', fontWeight:500, letterSpacing:'0.05em', marginBottom:12 }}>{exp.duration}</div>
-                <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8 }}>{exp.description}</p>
+                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.05rem" />
+                <Prose size="0.88rem">{exp.description}</Prose>
                 {i < cvData.academicExperiences.summerSchools.length - 1 && <Divider style={{ margin:'26px 0' }} />}
               </div>
             ))}
@@ -552,7 +565,11 @@ const AcademicExperiencesPage = () => (
 // ─── Research Page ─────────────────────────────────────────────────────────────
 const ResearchPage = () => (
   <PageWrapper>
-    <SectionHead eyebrow="Research" title="Past work & what's ahead" />
+    <SectionHead
+      eyebrow="Research"
+      title="Past work & what's ahead"
+      quote="Half conjecture, half work-in-progress — an honest account of what's been proven, and what's still being chased."
+    />
 
     {/* Summer 2026 — Upcoming Thesis Work */}
     <FadeIn delay={60}>
@@ -598,7 +615,11 @@ const EventsPage = () => {
   ];
   return (
   <PageWrapper>
-    <SectionHead eyebrow="Events" title="Things I've made happen" />
+    <SectionHead
+      eyebrow="Events"
+      title="Things I've made happen"
+      quote="Proof that mathematics occasionally leaves the page and turns into something people show up for."
+    />
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))', gap:20 }}>
       {sortedEvents.map((ev, i) => (
         <FadeIn key={ev.title} delay={80 * i}>
@@ -667,7 +688,11 @@ const PdfsPage = () => (
 // ─── OpenBoard Page ───────────────────────────────────────────────────────────
 const OpenBoardPage = () => (
   <PageWrapper>
-    <SectionHead eyebrow="OpenBoard" title="Ideas, spoken freely" />
+    <SectionHead
+      eyebrow="OpenBoard"
+      title="Ideas, spoken freely"
+      quote="Built on the belief that curiosity shouldn't need permission to be shared out loud."
+    />
 
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:20, marginBottom:20 }}>
 
@@ -698,14 +723,12 @@ const OpenBoardPage = () => (
       <FadeIn delay={160}>
         <div className="card" style={{ padding:'34px 30px', height:'100%' }}>
           <div className="eb" style={{ marginBottom:16 }}>Co-founder</div>
-          <div className="df" style={{ fontSize:'1.5rem', fontWeight:600, color:'var(--ink)', marginBottom:4 }}>{cvData.openboard.role}</div>
-          <div style={{ fontSize:'0.82rem', color:'var(--ink2)', marginBottom:2 }}>{cvData.openboard.institution}</div>
-          <div style={{ fontSize:'0.77rem', color:'var(--accent)', fontWeight:500, letterSpacing:'0.05em', marginBottom:20 }}>{cvData.openboard.duration}</div>
-          <p style={{ fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.82 }}>
+          <EntryHeader title={cvData.openboard.role} subtitle={cvData.openboard.institution} duration={cvData.openboard.duration} size="1.5rem" />
+          <Prose size="0.9rem" lh={1.82}>
             Along with my friend{' '}
             <a href={cvData.openboard.cofounder.url} target="_blank" rel="noopener noreferrer" className="lnk">{cvData.openboard.cofounder.name}</a>
             , we started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.
-          </p>
+          </Prose>
           <Divider style={{ margin:'22px 0' }} />
           <div className="eb" style={{ marginBottom:12 }}>From the team</div>
           <p style={{ fontSize:'0.84rem', color:'var(--ink3)', fontStyle:'italic', lineHeight:1.75 }}>
@@ -724,9 +747,8 @@ const OpenBoardPage = () => (
             <div key={talk.title}>
               <div style={{ display:'flex', flexWrap:'wrap', gap:12, alignItems:'flex-start' }}>
                 <div style={{ flex:1, minWidth:220 }}>
-                  <div className="df" style={{ fontSize:'1.1rem', fontWeight:600, color:'var(--ink)', marginBottom:4, lineHeight:1.3 }}>{talk.title}</div>
-                  <div style={{ fontSize:'0.8rem', color:'var(--accent)', fontWeight:500, letterSpacing:'0.05em', marginBottom:10 }}>{talk.speaker}</div>
-                  <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8 }}>{talk.description}</p>
+                  <EntryHeader title={talk.title} duration={talk.speaker} size="1.1rem" />
+                  <Prose size="0.88rem">{talk.description}</Prose>
                 </div>
                 <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontSize:'0.78rem', display:'flex', alignItems:'center', gap:5, marginTop:4 }}>
                   View <ExternalLink />
