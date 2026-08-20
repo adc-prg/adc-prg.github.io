@@ -67,11 +67,11 @@ const cvData = {
   ],
   responsibilities: [
     { role: "Department Representative, Math Dept.", institution: "IISER Bhopal", duration: "Sep 2024 – Sep 2025",
-      description: "I was eleected as the batch representative for the batch of '22, math department. Primary responsibilities included facilitating effective communication between the students and the administration." },
+      description: "I was elected as the batch representative for the batch of '22, math department. Primary responsibilities included facilitating effective communication between the students and the administration." },
     { role: "Core Member, Math Club", institution: "IISER Bhopal", duration: "Jun 2024 – Jul 2025",
       description: "Joined with the intent of helping towards a better culture and acceptance towards math. I hope i was able to achieve that." },
     { role: "Peer Counselor", institution: "IISER Bhopal", duration: "Jul 2023 – Jul 2025",
-      description: "A brilliant initiative by the counselling cell @IISERB, which fosters this idea that you don't have to look far for help." }
+      description: "A brilliant initiative (theoretically) by the counselling cell @IISERB, which fosters this idea that help is closer than you think. The counselling cell selects a few students on campus who work towards a more acceptiung culture in the student community. " }
   ],
   openboard: {
     role: "Co-founder, Openboard",
