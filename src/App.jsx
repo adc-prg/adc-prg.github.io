@@ -52,8 +52,8 @@ const cvData = {
   location: "Bhopal, Madhya Pradesh, India",
   profile: {
     intro: "Math undergrad at IISER Bhopal.",
-    interests: "I am interested in abstract algebra. To be specific, my interests are in homological algebra, and algebraic geometry with a lot of categorical flavor.",
-    ambition: "Apart from academics, I enjoy football, table tennis, badminton and some board games. I am recently exploring a lot of music, outside of my usual interests, like Indian classical and Rock, and I enjoy working on creative personal projects from time to time."
+    interests: "Academically, I am interested in abstract algebra. To be specific, my interests are in homological algebra, and algebraic geometry with a lot of categorical flavor. I am a final year BS-MS student at the department of mathematics, IISER Bhopal.",
+    ambition: "Apart from academics, I enjoy. I want to enjoy whatever I can, however I can, whenever I can. Things like football, music, mangas, board games, table tennis, are just some of the things that bring me joy. I am recently exploring a lot of music, outside of my usual interests (Hip-Hop and RnB), like Indian classical, Rock, Soul, and I enjoy working on creative personal projects from time to time."
   },
   research: [{
     title: "Exploring Integrality and Genus of some specific Cayley Graphs",
