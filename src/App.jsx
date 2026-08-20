@@ -116,7 +116,7 @@ const cvData = {
 
 const navPages = [
   { label: 'AcadEx',    path: '/acadex',    desc: 'academic venture during the summer' },
-  { label: 'Research',  path: '/research',  desc: 'attempts to be more academically acceptable :)' },
+  { label: 'Projects',  path: '/projects',  desc: 'attempts to be more academically acceptable :)' },
   { label: 'Courses',   path: '/courses',   desc: 'some math that I genuinely enjoyed.' },
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
@@ -309,14 +309,11 @@ const ThemeToggle = ({ theme, toggleTheme }) => (
 
 const Divider = ({ style = {} }) => <hr className="dv" style={style} />;
 
-const SectionHead = ({ eyebrow, title, quote }) => (
+const SectionHead = ({ eyebrow, title }) => (
   <FadeIn style={{ marginBottom: 52 }}>
     <div className="eb" style={{ marginBottom: 10 }}>{eyebrow}</div>
     <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em' }}>{title}</h2>
     <span className="wabi-mark" />
-    {quote && (
-      <p className="df" style={{ fontSize: '1.02rem', fontStyle: 'italic', color: 'var(--ink2)', lineHeight: 1.7, maxWidth: 540, marginTop: 16 }}>{quote}</p>
-    )}
   </FadeIn>
 );
 
@@ -452,8 +449,8 @@ const HomePage = ({ theme, toggleTheme }) => {
         </nav>
 
         {/* Hover description */}
-        <div className="au d5" style={{ height:28, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <p className="df" style={{ fontSize:'0.88rem', fontStyle:'italic', color:'var(--ink3)', transition:'opacity 0.35s ease', opacity: hovered ? 1 : 0 }}>
+        <div className="au d5" style={{ height:32, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <p className="df" style={{ fontSize:'1.05rem', fontStyle:'italic', color:'var(--ink2)', transition:'opacity 0.35s ease', opacity: hovered ? 1 : 0 }}>
             {hovered ? navPages.find(p => p.label === hovered)?.desc : ''}
           </p>
         </div>
@@ -527,7 +524,6 @@ const AcademicExperiencesPage = () => (
     <SectionHead
       eyebrow="Academic Experiences"
       title="Where I've learned"
-      quote="Not all of it happened in a classroom — some of it happened in library corners, over a summer, or in the middle of a proof that refused to close."
     />
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(290px,1fr))', gap:20 }}>
       <FadeIn delay={80}>
@@ -562,13 +558,12 @@ const AcademicExperiencesPage = () => (
   </PageWrapper>
 );
 
-// ─── Research Page ─────────────────────────────────────────────────────────────
+// ─── Projects Page ──────────────────────────────────────────────────────────
 const ResearchPage = () => (
   <PageWrapper>
     <SectionHead
-      eyebrow="Research"
+      eyebrow="Projects"
       title="Past work & what's ahead"
-      quote="Half conjecture, half work-in-progress — an honest account of what's been proven, and what's still being chased."
     />
 
     {/* Summer 2026 — Upcoming Thesis Work */}
@@ -618,7 +613,6 @@ const EventsPage = () => {
     <SectionHead
       eyebrow="Events"
       title="Things I've made happen"
-      quote="Proof that mathematics occasionally leaves the page and turns into something people show up for."
     />
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))', gap:20 }}>
       {sortedEvents.map((ev, i) => (
@@ -644,13 +638,12 @@ const EventsPage = () => {
 };
 
 // ─── Coming Soon (shared) ──────────────────────────────────────────────────────
-const ComingSoon = ({ eyebrow, title, symbol, message, footnote }) => (
+const ComingSoon = ({ eyebrow, title, message, footnote }) => (
   <PageWrapper>
     <div style={{ minHeight:'52vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'60px 24px' }}>
       <FadeIn>
         <div className="eb" style={{ marginBottom:14 }}>{eyebrow}</div>
         <h2 className="df" style={{ fontSize:'clamp(2rem,5vw,3rem)', fontWeight:600, color:'var(--ink)', marginBottom:20, lineHeight:1.15 }}>{title}</h2>
-        <div className="df" style={{ fontSize:'clamp(1.6rem,4vw,2.4rem)', color:'var(--accent)', opacity:0.55, marginBottom:22, fontStyle:'italic' }}>{symbol}</div>
         <p className="iq" style={{ maxWidth:460, margin:'0 auto', color:'var(--ink2)', fontSize:'1.02rem' }}>{message}</p>
         <div className="bento-wip" style={{ marginTop:26 }}>
           <span className="wip-dot" /> Under construction
@@ -668,7 +661,6 @@ const BlogPage = () => (
   <ComingSoon
     eyebrow="Blog"
     title="Currently an open conjecture"
-    symbol="∃ posts, TBD"
     message="Believed to be true, not yet proven. Words are being gathered and arguments sharpened somewhere off-page — a rigorous(ish) writeup is on its way."
     footnote="Proof left as an exercise for future me."
   />
@@ -679,7 +671,6 @@ const PdfsPage = () => (
   <ComingSoon
     eyebrow="PDFs"
     title="A shelf, mid-assembly"
-    symbol="⌈ notes ⌉"
     message="Lecture notes, references, and things worth re-reading are being rounded up and typeset properly before they land here."
     footnote="Rounding, as always, done with intent."
   />
@@ -691,7 +682,6 @@ const OpenBoardPage = () => (
     <SectionHead
       eyebrow="OpenBoard"
       title="Ideas, spoken freely"
-      quote="Built on the belief that curiosity shouldn't need permission to be shared out loud."
     />
 
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:20, marginBottom:20 }}>
@@ -1076,7 +1066,7 @@ function AnimatedRoutes({ theme, toggleTheme }) {
             <AcademicExperiencesPage />
           </InnerLayout>
         } />
-        <Route path="/research" element={
+        <Route path="/projects" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <ResearchPage />
           </InnerLayout>
