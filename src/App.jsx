@@ -589,7 +589,7 @@ const ResearchPage = () => (
           Advisor: Dr. Vivek Sadhu
         </div>
         <p style={{ fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.8 }}>
-          The plan is to cover and work out examples of model categories, and, if time permits, work through some theory of infinity categories. For now though, my goal is simply to bulk up on the things relevant to learning derived categories, and derived categories themselves.
+          Homotopical algebra grew out of the observation that alot of things one can do in topology, can be carried out in a "well behaved category". Quillen's definition of a model category isolates the bare minimum conditions one needs to impose on a category, so that one can talk about homotopy theory. The primary goal is to understand the definition and basic theory of a model category, together with enough worked out examples, including the classical model structure on the category of Topological spaces. This will be followed by some applications in algebraic K theory and higher homotopy theory (hopefully!). 
         </p>
       </div>
     </FadeIn>
