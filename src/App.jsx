@@ -640,9 +640,31 @@ const EventsPage = () => {
         <FadeIn key={ev.title} delay={80 * i}>
           <div className="card" style={{ padding:'30px 26px', height:'100%' }}>
             <div className="ev-tag">{ev.tag}</div>
-            <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:6, lineHeight:1.2 }}>
+            <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:6, lineHeight:1.2, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
               {ev.link && featuredTitles.includes(ev.title) ? (
-                <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk">{ev.title}</a>
+                <>
+                  <span>{ev.title}</span>
+                  <a
+                    href={ev.link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visit ${ev.link.text}`}
+                    style={{
+                      display:'inline-flex',
+                      alignItems:'center',
+                      justifyContent:'center',
+                      width:22,
+                      height:22,
+                      minWidth:22,
+                      borderRadius:5,
+                      border:'1px solid var(--border)',
+                      color:'var(--ink2)',
+                      flexShrink:0,
+                    }}
+                  >
+                    <ExternalLink />
+                  </a>
+                </>
               ) : ev.title}
             </h3>
             <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8 }}>
@@ -651,7 +673,7 @@ const EventsPage = () => {
                   {/* Add your description for this event here */}
                   Description coming soon.
                 </span>
-              ) : ev.link ? (
+              ) : ev.link && !featuredTitles.includes(ev.title) ? (
                 <>
                   {ev.description.split(ev.link.text)[0]}
                   <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk">{ev.link.text}</a>
