@@ -147,6 +147,14 @@ const useTheme = () => {
 
 // ─── CSS ──────────────────────────────────────────────────────────────────────
 const CSS = `
+  .ev-link-btn {
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  .ev-link-btn:hover {
+    transform: scale(1.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
   :root {
     --bg:      #FFFFF0;
     --surface: #FDFDF5;
@@ -622,7 +630,7 @@ const EventsPage = () => {
   // New cards (Discussion Meeting, GANIT Symposium) first, then Grassmannian seminar, then the rest
   const featuredTitles = [
     "Discussion Meeting on Topics in Algebra",
-    "GANIT Symposium on Connections in Commutative Algebra, Algebraic Geometry and Number Theory",
+    "GANIT Symposium",
   ];
   const sortedEvents = [
     ...featuredTitles.map(t => cvData.events.find(e => e.title === t)).filter(Boolean),
@@ -649,6 +657,7 @@ const EventsPage = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Visit ${ev.link.text}`}
+                    className="ev-link-btn"
                     style={{
                       display:'inline-flex',
                       alignItems:'center',
