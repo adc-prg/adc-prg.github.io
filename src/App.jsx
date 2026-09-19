@@ -50,8 +50,6 @@ const ArrowRight = (p) => (
 const cvData = {
   name: "Adeetya Choubey",
   location: "Bhopal, Madhya Pradesh, India",
-  // Add your own longer personal description here — it will show up on the home page below the bio sketch.
-  description: "",
   profile: {
     intro: "Math undergrad at IISER Bhopal.",
     interests: "Academically, I am interested in abstract algebra. To be specific, my interests are in homological algebra, and algebraic geometry with a lot of categorical flavor. I am a final year BS-MS student at the department of mathematics, IISER Bhopal.",
@@ -102,12 +100,6 @@ const cvData = {
     ]
   },
   events: [
-    { title: "Discussion Meeting on Topics in Algebra", tag: "Attended",
-      description: "Attended the discussion meeting on Topics in Algebra.",
-      link: { url: "https://dmtia-iiserb.github.io/", text: "https://dmtia-iiserb.github.io/" } },
-    { title: "GANIT - CAAG", tag: "Attended",
-      description: "Attended the GANIT Symposium on Connections in Commutative Algebra, Algebraic Geometry and Number Theory.",
-      link: { url: "https://events.iitgn.ac.in/2026/caag/", text: "https://events.iitgn.ac.in/2026/caag/" } },
     { title: "The Probabilistic Method", tag: "Openboard Talk",
       description: "Gave the first Openboard talk. More about that talk can be looked at on the Openboard website.",
       link: { url: "https://openboard-web.vercel.app/", text: "Openboard website" } },
@@ -129,7 +121,6 @@ const navPages = [
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
   { label: 'PDFs',      path: '/pdfs',      desc: 'notes worth revisiting' },
-  { label: 'Frames',    path: '/frames',    desc: 'a visual log, still developing' },
   { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
 
@@ -167,7 +158,6 @@ const CSS = `
     --on-accent-10: rgba(255,255,255,0.1);
     --fd: 'Cormorant Garamond', Georgia, serif;
     --fb: 'Jost', system-ui, sans-serif;
-    --fc: 'Fraunces', Georgia, serif;
     --r:  7px;
   }
   .dark {
@@ -386,7 +376,8 @@ const Navbar = ({ theme, toggleTheme }) => {
       <div style={{ maxWidth:1100, margin:'0 auto', padding:'0 24px' }}>
         <div className="hdr-inner">
           <Link to="/" style={{ textDecoration:'none' }}>
-            <div style={{ fontFamily:'var(--fc)', fontSize:'1.35rem', fontWeight:800, fontStyle:'italic', color:'var(--ink)', letterSpacing:'-0.01em', lineHeight:1.2 }}>{cvData.name}</div>
+            <div className="df" style={{ fontSize:'1.2rem', fontWeight:600, color:'var(--ink)', letterSpacing:'-0.01em', lineHeight:1.2 }}>{cvData.name}</div>
+            <div style={{ fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--ink3)', marginTop:2 }}>Mathematics · IISER Bhopal</div>
           </Link>
           <div className="hdr-right">
             <nav className="hdr-nav">
@@ -435,7 +426,7 @@ const HomePage = ({ theme, toggleTheme }) => {
 
 
         {/* Name */}
-        <h1 className="au d1" style={{ fontSize:'clamp(3rem,13vw,7.5rem)', fontWeight:900, lineHeight:0.93, color:'var(--ink)', marginBottom:26, letterSpacing:'-0.02em', fontFamily:'var(--fc)', fontStyle:'italic' }}>
+        <h1 className="au d1" style={{ fontSize:'clamp(3rem,13vw,7.5rem)', fontWeight:900, lineHeight:0.93, color:'var(--ink)', marginBottom:26, letterSpacing:'-0.02em', fontFamily:"'Playfair Display', Georgia, serif", fontStyle:'italic' }}>
           Adeetya
         </h1>
 
@@ -451,13 +442,6 @@ const HomePage = ({ theme, toggleTheme }) => {
         <p className="au d3" style={{ maxWidth:480, fontSize:'0.88rem', color:'var(--ink3)', lineHeight:1.7, marginBottom:44, fontStyle:'italic' }}>
           An informal introduction to my formal (academic) self.
         </p>
-
-        {/* Personal description — fill cvData.description above */}
-        {cvData.description && (
-          <p className="au d3" style={{ maxWidth:560, fontSize:'0.95rem', color:'var(--ink2)', lineHeight:1.8, marginBottom:44 }}>
-            {cvData.description}
-          </p>
-        )}
 
         {/* Decorative rule */}
         <div className="au d4" style={{ display:'flex', margin:'0 auto 44px', maxWidth:320, height:1, background:'linear-gradient(to right, transparent, var(--border), transparent)' }} />
@@ -628,25 +612,25 @@ const ResearchPage = () => (
 
 // ─── Events Page ───────────────────────────────────────────────────────────────
 const EventsPage = () => {
+  // Put Grassmannian seminar first
+  const sortedEvents = [
+    ...cvData.events.filter(e => e.title.includes('Grassmannian')),
+    ...cvData.events.filter(e => !e.title.includes('Grassmannian')),
+  ];
   return (
   <PageWrapper>
     <SectionHead
       eyebrow="Events"
-      title="Things I have been a part of"
+      title="Things I've made happen"
     />
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))', gap:20 }}>
-      {cvData.events.map((ev, i) => (
+      {sortedEvents.map((ev, i) => (
         <FadeIn key={ev.title} delay={80 * i}>
           <div className="card" style={{ padding:'30px 26px', height:'100%' }}>
             <div className="ev-tag">{ev.tag}</div>
-            <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:6, lineHeight:1.2 }}>{ev.title}</h3>
-            {ev.link && ev.link.text === ev.link.url && (
-              <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontSize:'0.78rem', display:'inline-block', marginBottom:16, wordBreak:'break-all' }}>
-                {ev.link.url}
-              </a>
-            )}
-            <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8, marginTop: ev.link && ev.link.text === ev.link.url ? 0 : 16 }}>
-              {ev.link && ev.link.text !== ev.link.url ? (
+            <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:16, lineHeight:1.2 }}>{ev.title}</h3>
+            <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8 }}>
+              {ev.link ? (
                 <>
                   {ev.description.split(ev.link.text)[0]}
                   <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk">{ev.link.text}</a>
@@ -680,11 +664,6 @@ const ComingSoon = ({ eyebrow, title }) => (
 // ─── PDFs Page ─────────────────────────────────────────────────────────────────
 const PdfsPage = () => (
   <ComingSoon eyebrow="PDFs" title="Coming soon" />
-);
-
-// ─── Frames Page (gallery) ─────────────────────────────────────────────────────
-const FramesPage = () => (
-  <ComingSoon eyebrow="Frames" title="Under construction" />
 );
 
 // ─── OpenBoard Page ───────────────────────────────────────────────────────────
@@ -1095,11 +1074,6 @@ function AnimatedRoutes({ theme, toggleTheme }) {
             <PdfsPage />
           </InnerLayout>
         } />
-        <Route path="/frames" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <FramesPage />
-          </InnerLayout>
-        } />
         <Route path="/contact" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <ContactPage />
@@ -1128,7 +1102,7 @@ export default function App() {
 
   // Inject Google Fonts
   useEffect(() => {
-    const href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Jost:wght@300;400;500;600&family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700;1,900&display=swap";
+    const href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Jost:wght@300;400;500;600&display=swap";
     if (!document.querySelector(`link[href="${href}"]`)) {
       const l = document.createElement('link');
       l.href = href; l.rel = 'stylesheet';
