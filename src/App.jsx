@@ -100,6 +100,12 @@ const cvData = {
     ]
   },
   events: [
+    { title: "Discussion Meeting on Topics in Algebra", tag: "Attended",
+      description: "PLACEHOLDER_DESCRIPTION",
+      link: { url: "https://dmtia-iiserb.github.io/", text: "Discussion meeting" } },
+    { title: "GANIT Symposium on Connections in Commutative Algebra, Algebraic Geometry and Number Theory", tag: "Attended",
+      description: "PLACEHOLDER_DESCRIPTION",
+      link: { url: "https://events.iitgn.ac.in/2026/caag/", text: "GANIT Symposium" } },
     { title: "The Probabilistic Method", tag: "Openboard Talk",
       description: "Gave the first Openboard talk. More about that talk can be looked at on the Openboard website.",
       link: { url: "https://openboard-web.vercel.app/", text: "Openboard website" } },
@@ -121,6 +127,7 @@ const navPages = [
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
   { label: 'PDFs',      path: '/pdfs',      desc: 'notes worth revisiting' },
+  { label: 'Frames',    path: '/frames',    desc: 'a gallery, eventually' },
   { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
 
@@ -612,25 +619,39 @@ const ResearchPage = () => (
 
 // ─── Events Page ───────────────────────────────────────────────────────────────
 const EventsPage = () => {
-  // Put Grassmannian seminar first
+  // New cards (Discussion Meeting, GANIT Symposium) first, then Grassmannian seminar, then the rest
+  const featuredTitles = [
+    "Discussion Meeting on Topics in Algebra",
+    "GANIT Symposium on Connections in Commutative Algebra, Algebraic Geometry and Number Theory",
+  ];
   const sortedEvents = [
+    ...featuredTitles.map(t => cvData.events.find(e => e.title === t)).filter(Boolean),
     ...cvData.events.filter(e => e.title.includes('Grassmannian')),
-    ...cvData.events.filter(e => !e.title.includes('Grassmannian')),
+    ...cvData.events.filter(e => !featuredTitles.includes(e.title) && !e.title.includes('Grassmannian')),
   ];
   return (
   <PageWrapper>
     <SectionHead
       eyebrow="Events"
-      title="Things I've made happen"
+      title="Things I have been a part of"
     />
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))', gap:20 }}>
       {sortedEvents.map((ev, i) => (
         <FadeIn key={ev.title} delay={80 * i}>
           <div className="card" style={{ padding:'30px 26px', height:'100%' }}>
             <div className="ev-tag">{ev.tag}</div>
-            <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:16, lineHeight:1.2 }}>{ev.title}</h3>
+            <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:6, lineHeight:1.2 }}>
+              {ev.link && featuredTitles.includes(ev.title) ? (
+                <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk">{ev.title}</a>
+              ) : ev.title}
+            </h3>
             <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8 }}>
-              {ev.link ? (
+              {ev.description === "PLACEHOLDER_DESCRIPTION" ? (
+                <span style={{ fontStyle:'italic', color:'var(--ink3)' }}>
+                  {/* Add your description for this event here */}
+                  Description coming soon.
+                </span>
+              ) : ev.link ? (
                 <>
                   {ev.description.split(ev.link.text)[0]}
                   <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk">{ev.link.text}</a>
@@ -664,6 +685,11 @@ const ComingSoon = ({ eyebrow, title }) => (
 // ─── PDFs Page ─────────────────────────────────────────────────────────────────
 const PdfsPage = () => (
   <ComingSoon eyebrow="PDFs" title="Coming soon" />
+);
+
+// ─── Frames (Gallery) Page ──────────────────────────────────────────────────────
+const FramesPage = () => (
+  <ComingSoon eyebrow="Frames" title="Under construction" />
 );
 
 // ─── OpenBoard Page ───────────────────────────────────────────────────────────
@@ -1072,6 +1098,11 @@ function AnimatedRoutes({ theme, toggleTheme }) {
         <Route path="/pdfs" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <PdfsPage />
+          </InnerLayout>
+        } />
+        <Route path="/frames" element={
+          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
+            <FramesPage />
           </InnerLayout>
         } />
         <Route path="/contact" element={
