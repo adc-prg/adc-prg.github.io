@@ -101,10 +101,10 @@ const cvData = {
   },
   events: [
     { title: "Discussion Meeting on Topics in Algebra", tag: "Attended",
-      description: "PLACEHOLDER_DESCRIPTION",
+      description: "I was a participant, and a student volunteer for this event held at IISER Bhopal. Vibecoded the website and Vibe attended all the talks. Good talks, good food and great people, along with a lot to learn, even outside of Math.",
       link: { url: "https://dmtia-iiserb.github.io/", text: "Discussion meeting" } },
-    { title: "GANIT Symposium on Connections in Commutative Algebra, Algebraic Geometry and Number Theory", tag: "Attended",
-      description: "PLACEHOLDER_DESCRIPTION",
+    { title: "GANIT Symposium", tag: "Attended",
+      description: "I attended this 2.5 day symposium @IIT Gandhinagar, which featured mini series and lectures, discussing Commutative Algebra, Algebraic Geometry and Number theory. I bit a more than I could chew here but this was one of those turning points which pushed me more towards pursuing Algebra in general.",
       link: { url: "https://events.iitgn.ac.in/2026/caag/", text: "GANIT Symposium" } },
     { title: "The Probabilistic Method", tag: "Openboard Talk",
       description: "Gave the first Openboard talk. More about that talk can be looked at on the Openboard website.",
