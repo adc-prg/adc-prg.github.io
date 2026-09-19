@@ -50,6 +50,8 @@ const ArrowRight = (p) => (
 const cvData = {
   name: "Adeetya Choubey",
   location: "Bhopal, Madhya Pradesh, India",
+  // Add your own longer personal description here — it will show up on the home page below the bio sketch.
+  description: "",
   profile: {
     intro: "Math undergrad at IISER Bhopal.",
     interests: "Academically, I am interested in abstract algebra. To be specific, my interests are in homological algebra, and algebraic geometry with a lot of categorical flavor. I am a final year BS-MS student at the department of mathematics, IISER Bhopal.",
@@ -109,7 +111,13 @@ const cvData = {
       description: "A wordplay on Big + Tic-tac-toe — another name for ultimate tic-tac-toe. Held at Continuum in collaboration with the board games club, Ingenium. The event featured a knockout stage with Saurav Kanetkar emerging as the Big-Tac-Toe champion, 2025 edition.",
       link: { url: "https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe", text: "Ultimate Tic-Tac-Toe" } },
     { title: "Realizing Grassmannian as a Projective Variety and the Segre embedding", tag: "Seminar Talk",
-      description: "I gave a seminar on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to discussing the Segre embedding and how it helps to see product of two projective spaces as a projective variety embedded into a much larger projective space." }
+      description: "I gave a seminar on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to discussing the Segre embedding and how it helps to see product of two projective spaces as a projective variety embedded into a much larger projective space." },
+    { title: "Discussion Meeting on Topics in Algebra", tag: "Attended",
+      description: "Attended the discussion meeting on Topics in Algebra.",
+      link: { url: "https://dmtia-iiserb.github.io/", text: "Discussion Meeting on Topics in Algebra" } },
+    { title: "GANIT Symposium on Connections in Commutative Algebra, Algebraic Geometry and Number Theory", tag: "Attended",
+      description: "Attended the GANIT Symposium on Connections in Commutative Algebra, Algebraic Geometry and Number Theory.",
+      link: { url: "https://events.iitgn.ac.in/2026/caag/", text: "GANIT Symposium on Connections in Commutative Algebra, Algebraic Geometry and Number Theory" } }
   ],
   contact: { email: "adeetya22@iiserb.ac.in", linkedin: "https://www.linkedin.com/in/adeetya-choubey-6b2a44254/" }
 };
@@ -121,6 +129,7 @@ const navPages = [
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
   { label: 'PDFs',      path: '/pdfs',      desc: 'notes worth revisiting' },
+  { label: 'Frames',    path: '/frames',    desc: 'a visual log, still developing' },
   { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
 
@@ -158,6 +167,7 @@ const CSS = `
     --on-accent-10: rgba(255,255,255,0.1);
     --fd: 'Cormorant Garamond', Georgia, serif;
     --fb: 'Jost', system-ui, sans-serif;
+    --fc: 'Alex Brush', cursive;
     --r:  7px;
   }
   .dark {
@@ -376,8 +386,7 @@ const Navbar = ({ theme, toggleTheme }) => {
       <div style={{ maxWidth:1100, margin:'0 auto', padding:'0 24px' }}>
         <div className="hdr-inner">
           <Link to="/" style={{ textDecoration:'none' }}>
-            <div className="df" style={{ fontSize:'1.2rem', fontWeight:600, color:'var(--ink)', letterSpacing:'-0.01em', lineHeight:1.2 }}>{cvData.name}</div>
-            <div style={{ fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--ink3)', marginTop:2 }}>Mathematics · IISER Bhopal</div>
+            <div style={{ fontFamily:'var(--fc)', fontSize:'1.7rem', fontWeight:400, color:'var(--ink)', letterSpacing:'0.01em', lineHeight:1.2 }}>{cvData.name}</div>
           </Link>
           <div className="hdr-right">
             <nav className="hdr-nav">
@@ -426,7 +435,7 @@ const HomePage = ({ theme, toggleTheme }) => {
 
 
         {/* Name */}
-        <h1 className="au d1" style={{ fontSize:'clamp(3rem,13vw,7.5rem)', fontWeight:900, lineHeight:0.93, color:'var(--ink)', marginBottom:26, letterSpacing:'-0.02em', fontFamily:"'Playfair Display', Georgia, serif", fontStyle:'italic' }}>
+        <h1 className="au d1" style={{ fontSize:'clamp(3.5rem,15vw,9rem)', fontWeight:400, lineHeight:1, color:'var(--ink)', marginBottom:26, letterSpacing:'0.01em', fontFamily:'var(--fc)' }}>
           Adeetya
         </h1>
 
@@ -442,6 +451,13 @@ const HomePage = ({ theme, toggleTheme }) => {
         <p className="au d3" style={{ maxWidth:480, fontSize:'0.88rem', color:'var(--ink3)', lineHeight:1.7, marginBottom:44, fontStyle:'italic' }}>
           An informal introduction to my formal (academic) self.
         </p>
+
+        {/* Personal description — fill cvData.description above */}
+        {cvData.description && (
+          <p className="au d3" style={{ maxWidth:560, fontSize:'0.95rem', color:'var(--ink2)', lineHeight:1.8, marginBottom:44 }}>
+            {cvData.description}
+          </p>
+        )}
 
         {/* Decorative rule */}
         <div className="au d4" style={{ display:'flex', margin:'0 auto 44px', maxWidth:320, height:1, background:'linear-gradient(to right, transparent, var(--border), transparent)' }} />
@@ -621,16 +637,29 @@ const EventsPage = () => {
   <PageWrapper>
     <SectionHead
       eyebrow="Events"
-      title="Things I've made happen"
+      title="Things I have been a part of"
     />
     <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))', gap:20 }}>
-      {sortedEvents.map((ev, i) => (
+      {sortedEvents.map((ev, i) => {
+        const titleIsLink = ev.link && ev.link.text === ev.title;
+        return (
         <FadeIn key={ev.title} delay={80 * i}>
           <div className="card" style={{ padding:'30px 26px', height:'100%' }}>
             <div className="ev-tag">{ev.tag}</div>
-            <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:16, lineHeight:1.2 }}>{ev.title}</h3>
+            {titleIsLink ? (
+              <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, marginBottom:6, lineHeight:1.2 }}>
+                <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk" style={{ color:'var(--ink)' }}>{ev.title}</a>
+              </h3>
+            ) : (
+              <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:16, lineHeight:1.2 }}>{ev.title}</h3>
+            )}
+            {titleIsLink && (
+              <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontSize:'0.78rem', display:'inline-block', marginBottom:16, wordBreak:'break-all' }}>
+                {ev.link.url}
+              </a>
+            )}
             <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8 }}>
-              {ev.link ? (
+              {ev.link && !titleIsLink ? (
                 <>
                   {ev.description.split(ev.link.text)[0]}
                   <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk">{ev.link.text}</a>
@@ -640,7 +669,8 @@ const EventsPage = () => {
             </p>
           </div>
         </FadeIn>
-      ))}
+        );
+      })}
     </div>
   </PageWrapper>
   );
@@ -664,6 +694,11 @@ const ComingSoon = ({ eyebrow, title }) => (
 // ─── PDFs Page ─────────────────────────────────────────────────────────────────
 const PdfsPage = () => (
   <ComingSoon eyebrow="PDFs" title="Coming soon" />
+);
+
+// ─── Frames Page (gallery) ─────────────────────────────────────────────────────
+const FramesPage = () => (
+  <ComingSoon eyebrow="Frames" title="Under construction" />
 );
 
 // ─── OpenBoard Page ───────────────────────────────────────────────────────────
@@ -1074,6 +1109,11 @@ function AnimatedRoutes({ theme, toggleTheme }) {
             <PdfsPage />
           </InnerLayout>
         } />
+        <Route path="/frames" element={
+          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
+            <FramesPage />
+          </InnerLayout>
+        } />
         <Route path="/contact" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <ContactPage />
@@ -1102,7 +1142,7 @@ export default function App() {
 
   // Inject Google Fonts
   useEffect(() => {
-    const href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Jost:wght@300;400;500;600&display=swap";
+    const href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Jost:wght@300;400;500;600&family=Alex+Brush&display=swap";
     if (!document.querySelector(`link[href="${href}"]`)) {
       const l = document.createElement('link');
       l.href = href; l.rel = 'stylesheet';
