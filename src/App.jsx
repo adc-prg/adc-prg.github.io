@@ -53,7 +53,7 @@ const cvData = {
   profile: {
     intro: "Math undergrad at IISER Bhopal.",
     interests: "Academically, I am interested in abstract algebra. To be specific, my interests are in homological algebra, and algebraic geometry with a lot of categorical flavor. I am a final year BS-MS student at the department of mathematics, IISER Bhopal.",
-    ambition: "Apart from academics, I enjoy. I want to enjoy whatever I can, however I can, whenever I can. Things like football, music, mangas, board games, table tennis, are just some of the things that bring me joy. I am recently exploring a lot of music, outside of my usual interests (Hip-Hop and RnB), like Indian classical, Rock, Soul, and I enjoy working on creative personal projects from time to time."
+    ambition: "Apart from academics, I enjoy. I want to enjoy whatever I can, however I can, whenever I can. Things like football, music, mangas, board games, table tennis, are just some of the things that bring me joy. I am recently exploring a lot of music, outside of my usual interests (Hip-Hop, and RnB), like Indian classical, Rock, Soul, and I enjoy working on creative personal projects from time to time."
   },
   research: [{
     title: "Exploring Integrality and Genus of some specific Cayley Graphs",
@@ -69,7 +69,7 @@ const cvData = {
     { role: "Department Representative, Math Dept.", institution: "IISER Bhopal", duration: "Sep 2024 – Sep 2025",
       description: "I was elected as the batch representative for the batch of '22, math department. Primary responsibilities included facilitating effective communication between the students and the administration." },
     { role: "Core Member, Math Club", institution: "IISER Bhopal", duration: "Jun 2024 – Jul 2025",
-      description: "Joined with the intent of helping towards a better culture and acceptance towards math. I hope i was able to achieve that." },
+      description: "Joined with the intent of helping towards a better culture and acceptance towards math. I hope I was able to achieve that." },
     { role: "Peer Counselor", institution: "IISER Bhopal", duration: "Jul 2023 – Jul 2025",
       description: "A brilliant initiative (theoretically) by the counselling cell @IISERB, which fosters this idea that help is closer than you think. The counselling cell selects a few students on campus who work towards a more acceptiung culture in the student community. " }
   ],
