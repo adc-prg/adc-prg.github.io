@@ -126,7 +126,6 @@ const navPages = [
   { label: 'Courses',   path: '/courses',   desc: 'some math that I genuinely enjoyed.' },
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
-  { label: 'PDFs',      path: '/pdfs',      desc: 'notes worth revisiting' },
   { label: 'Frames',    path: '/frames',    desc: 'a gallery, eventually' },
   { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
@@ -447,7 +446,8 @@ const HomePage = ({ theme, toggleTheme }) => {
 
         {/* Subtitle */}
         <p className="au d2" style={{ fontSize:'16px', fontWeight:400, letterSpacing:'0.22em', textTransform:'uppercase', color:'var(--ink3)', marginBottom:32 }}>
-          Algebra&nbsp;<span style={{ color:'var(--accent)', opacity:0.7 }}>·</span>&nbsp;&nbsp;Topology&nbsp;<span style={{ color:'var(--accent)', opacity:0.7 }}>·</span>&nbsp;&nbsp;Category Theory
+          Idle Category Theorist&nbsp;
+          <span className="df" style={{ color:'var(--accent)', opacity:0.85, fontStyle:'italic', textTransform:'lowercase', letterSpacing:'0.04em', fontSize:'1.1em' }}>(aspiring)</span>
         </p>
 
         {/* Integrated Bio Sketch */}
@@ -713,11 +713,6 @@ const ComingSoon = ({ eyebrow, title }) => (
   </PageWrapper>
 );
 
-// ─── PDFs Page ─────────────────────────────────────────────────────────────────
-const PdfsPage = () => (
-  <ComingSoon eyebrow="PDFs" title="Coming soon" />
-);
-
 // ─── Frames (Gallery) Page ──────────────────────────────────────────────────────
 const FramesPage = () => (
   <ComingSoon eyebrow="Frames" title="Under construction" />
@@ -774,6 +769,24 @@ const OpenBoardPage = () => (
         </div>
       </FadeIn>
     </div>
+
+    {/* On-hold note */}
+    <FadeIn delay={200}>
+      <div style={{ background:'var(--surface)', border:'1px dashed var(--accent)', borderRadius:'var(--r)', padding:'26px 30px', marginBottom:20 }}>
+        <div className="eb" style={{ marginBottom:10, display:'flex', alignItems:'center', gap:8 }}>
+          <span className="wip-dot" />
+          Currently on hold
+        </div>
+        <p className="df" style={{ fontSize:'1.12rem', fontStyle:'italic', color:'var(--ink2)', lineHeight:1.75, margin:0 }}>
+          Due to academic commitments, we are currently on hold. We would like your help to bring it back. Reach out if you have ideas.
+        </p>
+        <div style={{ marginTop:18 }}>
+          <a href={`mailto:${cvData.contact.email}`} className="cta-btn">
+            Reach out <ArrowRight />
+          </a>
+        </div>
+      </div>
+    </FadeIn>
 
     {/* Talks section */}
     <FadeIn delay={240}>
@@ -1124,11 +1137,6 @@ function AnimatedRoutes({ theme, toggleTheme }) {
         <Route path="/openboard" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
             <OpenBoardPage />
-          </InnerLayout>
-        } />
-        <Route path="/pdfs" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <PdfsPage />
           </InnerLayout>
         } />
         <Route path="/frames" element={
