@@ -169,7 +169,7 @@ const CSS = `
     --surface: #FDFDF5;
     --ink:     #1C1012;
     --ink2:    #3E2229;
-    --ink3:    #9B7A80;
+    --ink3:    #7D5C63;
     --accent:  #722F37;
     --border:  #E8DECE;
     --sh-sm:   0 1px 4px rgba(114,47,55,0.07);
@@ -183,6 +183,8 @@ const CSS = `
     --fd: 'Cormorant Garamond', Georgia, serif;
     --fb: 'Libron', Georgia, 'Times New Roman', serif;
     --r:  7px;
+    --fs-body: 1.0625rem;
+    --lh-body: 1.75;
   }
   .dark {
     --bg:      #0A1120;
@@ -203,7 +205,16 @@ const CSS = `
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; zoom: 1; }
-  body { background:var(--bg); color:var(--ink); font-family:var(--fb); -webkit-font-smoothing:antialiased; transition:background 0.4s,color 0.4s; margin:0; }
+  body { background:var(--bg); color:var(--ink); font-family:var(--fb); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; font-kerning:normal; font-feature-settings:"kern" 1,"liga" 1; transition:background 0.4s,color 0.4s; margin:0; }
+  h1,h2,h3,h4,p { margin:0; }
+  p { text-wrap:pretty; overflow-wrap:break-word; }
+  h1,h2,h3 { text-wrap:balance; }
+  strong { font-weight:600; }
+  ::selection { background:var(--accent); color:var(--on-accent); }
+  a:focus-visible, button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
 
   /* Grain overlay */
   .grain::after {
@@ -231,21 +242,21 @@ const CSS = `
 
   /* Paper card */
   .card { background:var(--surface); border:1px solid var(--border); border-radius:8px 7px 9px 6px; box-shadow:var(--sh-sm); transition:box-shadow 0.35s ease,transform 0.35s ease; }
-  .card:hover { box-shadow:var(--sh-lg); transform:translateY(-2px) rotate(-0.15deg); }
+  .card:hover { box-shadow:var(--sh-lg); transform:translateY(-2px); }
 
-  .wabi-mark { display:inline-block; width:34px; height:2px; background:var(--accent); opacity:0.55; border-radius:2px; transform:rotate(-1deg); margin-bottom:10px; }
+  .wabi-mark { display:block; width:40px; height:2px; background:var(--accent); opacity:0.6; border-radius:2px; margin-top:24px; }
 
   /* Nav: inner pages */
-  .ni { position:relative; background:none; border:none; cursor:pointer; font-family:var(--fb); font-weight:500; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink2); transition:color 0.25s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); padding:3px 0; text-decoration:none; display:inline-block; transform-origin:center; }
+  .ni { position:relative; background:none; border:none; cursor:pointer; font-family:var(--fb); font-weight:500; font-size:12.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink2); transition:color 0.25s; padding:4px 0; text-decoration:none; display:inline-block; transform-origin:center; }
   .ni::after { content:''; position:absolute; bottom:0; left:0; width:0; height:1px; background:var(--accent); transition:width 0.3s cubic-bezier(0.16,1,0.3,1); }
-  .ni:hover { color:var(--ink); transform:scale(1.08); }
+  .ni:hover { color:var(--ink); }
   .ni:hover::after,.ni.active::after { width:100%; }
   .ni.active { color:var(--accent); }
 
   /* Nav: landing */
-  .lni { position:relative; background:none; border:none; cursor:pointer; font-family:var(--fb); font-weight:300; font-size:15px; letter-spacing:0.04em; color:var(--ink2); transition:color 0.3s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); padding:5px 0; text-decoration:none; display:inline-block; transform-origin:center; }
+  .lni { position:relative; background:none; border:none; cursor:pointer; font-family:var(--fb); font-weight:400; font-size:16.5px; letter-spacing:0.05em; color:var(--ink2); transition:color 0.3s; padding:6px 0; text-decoration:none; display:inline-block; transform-origin:center; }
   .lni::after { content:''; position:absolute; bottom:0; left:0; width:0; height:1px; background:var(--accent); transition:width 0.4s cubic-bezier(0.16,1,0.3,1); }
-  .lni:hover { color:var(--ink); transform:scale(1.1); }
+  .lni:hover { color:var(--ink); }
   .lni:hover::after { width:100%; }
 
   /* Theme toggle */
@@ -253,41 +264,41 @@ const CSS = `
   .tt:hover { border-color:var(--accent); color:var(--accent); }
 
   /* Eyebrow label */
-  .eb { font-family:var(--fb); font-size:10px; font-weight:600; letter-spacing:0.24em; text-transform:uppercase; color:var(--accent); }
+  .eb { font-family:var(--fb); font-size:0.78rem; line-height:1.4; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); }
 
   /* Display font helper */
   .df { font-family:var(--fd); }
 
   /* Timeline dot + line */
-  .tl { position:relative; padding-left:22px; }
-  .tl::before { content:''; position:absolute; left:0; top:10px; width:5px; height:5px; border-radius:50%; background:var(--accent); }
-  .tl::after { content:''; position:absolute; left:2px; top:18px; bottom:-18px; width:1px; background:var(--border); }
+  .tl { position:relative; padding-left:26px; }
+  .tl::before { content:''; position:absolute; left:0; top:12px; width:6px; height:6px; border-radius:50%; background:var(--accent); }
+  .tl::after { content:''; position:absolute; left:2.5px; top:24px; bottom:-22px; width:1px; background:var(--border); }
   .tl:last-child::after { display:none; }
 
   /* Inline link */
-  .lnk { display:inline-block; color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; transition:border-color 0.2s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); transform-origin:center; }
-  .lnk:hover { border-bottom-color:var(--accent); transform:scale(1.1); }
+  .lnk { display:inline-block; color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; transition:border-color 0.2s; }
+  .lnk:hover { border-bottom-color:var(--accent); }
 
   /* Divider */
   .dv { border:none; border-top:1px solid var(--border); }
 
   /* Intro quote style */
-  .iq { font-family:var(--fd); font-size:clamp(1.15rem,2.2vw,1.45rem); font-style:italic; font-weight:400; line-height:1.7; color:var(--ink); }
+  .iq { font-family:var(--fd); font-size:clamp(1.3rem,2.4vw,1.6rem); font-style:italic; font-weight:400; line-height:1.55; color:var(--ink); }
 
   /* Contact link block */
-  .clink { display:flex; align-items:center; gap:14px; padding:14px 20px; border:1px solid var(--border); border-radius:var(--r); text-decoration:none; transition:border-color 0.25s, background 0.25s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s; }
-  .clink:hover { border-color:var(--accent); background:var(--bg); transform:scale(1.03) translateY(-2px); box-shadow:var(--sh-md); }
+  .clink { display:flex; align-items:center; gap:16px; padding:16px 22px; border:1px solid var(--border); border-radius:var(--r); text-decoration:none; transition:border-color 0.25s, background 0.25s, transform 0.25s ease, box-shadow 0.3s; }
+  .clink:hover { border-color:var(--accent); background:var(--bg); transform:translateY(-2px); box-shadow:var(--sh-md); }
 
   /* Responsive header layout */
-  .hdr-inner { display:flex; justify-content:space-between; align-items:center; padding:15px 0; gap:20px; }
-  .hdr-right { display:flex; align-items:center; gap:18px; }
-  .hdr-nav { display:flex; flex-wrap:wrap; gap:4px 18px; justify-content:flex-end; align-items:center; }
+  .hdr-inner { display:flex; justify-content:space-between; align-items:center; padding:18px 0; gap:24px; }
+  .hdr-right { display:flex; align-items:center; gap:24px; }
+  .hdr-nav { display:flex; flex-wrap:wrap; gap:6px 26px; justify-content:flex-end; align-items:center; }
 
   /* Home bio + education grid — proportionate widths, slight askewness */
-  .home-bento { display:grid; grid-template-columns: 1.6fr 1fr; gap:20px; margin-bottom:20px; align-items:start; }
-  .tilt-a { transform:rotate(-0.6deg); }
-  .tilt-b { transform:rotate(0.55deg); }
-  .tilt-c { transform:rotate(-0.35deg); }
+  .home-bento { display:grid; grid-template-columns: 1.6fr 1fr; gap:28px; margin-bottom:28px; align-items:start; }
+  .tilt-a { transform:none; }
+  .tilt-b { transform:none; }
+  .tilt-c { transform:none; }
   @media(max-width:760px) {
     .home-bento { grid-template-columns:1fr; }
     .tilt-a, .tilt-b, .tilt-c { transform:none; }
@@ -301,18 +312,18 @@ const CSS = `
   .bento-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--accent), transparent); opacity:0; transition:opacity 0.3s; }
   .bento-card:hover::before { opacity:1; }
   .bento-icon { font-size:2rem; margin-bottom:12px; font-family:var(--fd); line-height:1; color:var(--accent); opacity:0.75; }
-  .bento-wip { display:inline-flex; align-items:center; gap:6px; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink3); border:1px solid var(--border); border-radius:20px; padding:3px 10px; margin-top:10px; }
+  .bento-wip { display:inline-flex; align-items:center; gap:8px; font-size:0.78rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink3); border:1px solid var(--border); border-radius:20px; padding:5px 14px; margin-top:12px; }
   .wip-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); opacity:0.6; animation:pulse 2s ease-in-out infinite; }
 
   /* OpenBoard tag */
-  .ob-tag { display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:20px; padding:3px 10px; opacity:0.8; }
+  .ob-tag { display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:20px; padding:4px 12px; }
 
   /* Event tag */
-  .ev-tag { display:inline-block; font-size:0.7rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); border:1px dashed var(--accent); border-radius:20px; padding:2px 9px; margin-bottom:10px; opacity:0.75; }
+  .ev-tag { display:inline-block; font-size:0.76rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); border:1px dashed var(--accent); border-radius:20px; padding:4px 12px; margin-bottom:16px; }
 
   /* Crimson CTA button */
-  .cta-btn { display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:var(--on-accent); border:none; border-radius:var(--r); padding:10px 20px; font-family:var(--fb); font-size:0.82rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:opacity 0.2s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); transform-origin:center; }
-  .cta-btn:hover { opacity:0.88; transform:translateY(-2px) scale(1.05); }
+  .cta-btn { display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:var(--on-accent); border:none; border-radius:var(--r); padding:12px 24px; font-family:var(--fb); font-size:0.85rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:opacity 0.2s, transform 0.25s ease; }
+  .cta-btn:hover { opacity:0.9; transform:translateY(-2px); }
 
   /* Grassmannian card accent border */
   .grass-card { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:var(--r); box-shadow:var(--sh-sm); padding:36px 32px; transition:box-shadow 0.3s; }
@@ -343,24 +354,24 @@ const ThemeToggle = ({ theme, toggleTheme }) => (
 const Divider = ({ style = {} }) => <hr className="dv" style={style} />;
 
 const SectionHead = ({ eyebrow, title }) => (
-  <FadeIn style={{ marginBottom: 52 }}>
-    <div className="eb" style={{ marginBottom: 10 }}>{eyebrow}</div>
-    <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.08, color: 'var(--ink)', letterSpacing: '-0.01em' }}>{title}</h2>
+  <FadeIn style={{ marginBottom: 56 }}>
+    <div className="eb" style={{ marginBottom: 16 }}>{eyebrow}</div>
+    <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.12, color: 'var(--ink)', letterSpacing: '-0.01em' }}>{title}</h2>
     <span className="wabi-mark" />
   </FadeIn>
 );
 
 // Reusable entry header (title / subtitle / duration) — used across timeline-style lists
-const EntryHeader = ({ title, subtitle, duration, size = '1rem' }) => (
+const EntryHeader = ({ title, subtitle, duration, size = '1.2rem' }) => (
   <>
-    <div className="df" style={{ fontSize: size, fontWeight: 600, color: 'var(--ink)', marginBottom: 4, lineHeight: 1.3 }}>{title}</div>
-    {subtitle && <div style={{ fontSize: '0.82rem', color: 'var(--ink2)', marginBottom: 2 }}>{subtitle}</div>}
-    {duration && <div style={{ fontSize: '0.77rem', color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.05em', marginBottom: 10 }}>{duration}</div>}
+    <div className="df" style={{ fontSize: size, fontWeight: 600, color: 'var(--ink)', marginBottom: 6, lineHeight: 1.3 }}>{title}</div>
+    {subtitle && <div style={{ fontSize: '0.95rem', color: 'var(--ink2)', marginBottom: 4, lineHeight: 1.5 }}>{subtitle}</div>}
+    {duration && <div style={{ fontSize: '0.875rem', color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.04em', marginBottom: 14 }}>{duration}</div>}
   </>
 );
 
 // Reusable body paragraph
-const Prose = ({ children, size = '0.88rem', lh = 1.8, color = 'var(--ink2)', style = {} }) => (
+const Prose = ({ children, size = 'var(--fs-body)', lh = 'var(--lh-body)', color = 'var(--ink2)', style = {} }) => (
   <p style={{ fontSize: size, color, lineHeight: lh, ...style }}>{children}</p>
 );
 
@@ -397,11 +408,11 @@ const Navbar = ({ theme, toggleTheme }) => {
   const location = useLocation();
   return (
     <header style={{ position:'sticky', top:0, zIndex:20, background:'color-mix(in srgb, var(--bg) 86%, transparent)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderBottom:'1px solid var(--border)' }}>
-      <div style={{ maxWidth:1100, margin:'0 auto', padding:'0 24px' }}>
+      <div style={{ maxWidth:1100, margin:'0 auto', padding:'0 28px' }}>
         <div className="hdr-inner">
           <Link to="/" style={{ textDecoration:'none' }}>
-            <div className="df" style={{ fontSize:'1.2rem', fontWeight:600, color:'var(--ink)', letterSpacing:'-0.01em', lineHeight:1.2 }}>{cvData.name}</div>
-            <div style={{ fontSize:'9px', fontWeight:500, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--ink3)', marginTop:2 }}>Mathematics · IISER Bhopal</div>
+            <div className="df" style={{ fontSize:'1.5rem', fontWeight:600, color:'var(--ink)', letterSpacing:'-0.01em', lineHeight:1.2 }}>{cvData.name}</div>
+            <div style={{ fontSize:'11px', fontWeight:500, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--ink3)', marginTop:4 }}>Mathematics · IISER Bhopal</div>
           </Link>
           <div className="hdr-right">
             <nav className="hdr-nav">
@@ -418,8 +429,8 @@ const Navbar = ({ theme, toggleTheme }) => {
 };
 
 const Footer = () => (
-  <footer style={{ borderTop:'1px solid var(--border)', padding:'22px 24px', textAlign:'center' }}>
-    <p style={{ fontSize:'0.76rem', color:'var(--ink3)', letterSpacing:'0.05em' }}>
+  <footer style={{ borderTop:'1px solid var(--border)', padding:'32px 24px', textAlign:'center' }}>
+    <p style={{ fontSize:'0.88rem', color:'var(--ink3)', letterSpacing:'0.03em', lineHeight:1.6 }}>
       © {new Date().getFullYear()} Adeetya Choubey &nbsp;·&nbsp; You may use, share, and adapt with proper credits.
     </p>
   </footer>
@@ -455,16 +466,16 @@ const HomePage = ({ theme, toggleTheme }) => {
         </h1>
 
         {/* Subtitle */}
-        <p className="au d2" style={{ fontSize:'16px', fontWeight:400, letterSpacing:'0.22em', textTransform:'uppercase', color:'var(--ink3)', marginBottom:32 }}>
+        <p className="au d2" style={{ fontSize:'0.95rem', fontWeight:400, letterSpacing:'0.2em', textTransform:'uppercase', color:'var(--ink3)', marginBottom:32 }}>
           Idle Category Theorist&nbsp;
           <span className="df" style={{ color:'var(--accent)', opacity:0.85, fontStyle:'italic', textTransform:'lowercase', letterSpacing:'0.04em', fontSize:'1.1em' }}>(aspiring)</span>
         </p>
 
         {/* Integrated Bio Sketch */}
-        <p className="au d3 df" style={{ maxWidth:560, fontSize:'clamp(1rem,2vw,1.2rem)', fontStyle:'italic', color:'var(--ink)', lineHeight:1.72, marginBottom:16 }}>
+        <p className="au d3 df" style={{ maxWidth:620, fontSize:'clamp(1.25rem,2.6vw,1.55rem)', fontStyle:'italic', color:'var(--ink)', lineHeight:1.72, marginBottom:16 }}>
           Math undergrad at <a href="https://maths.iiserb.ac.in/" target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontStyle:'italic' }}>IISER Bhopal</a>.
         </p>
-        <p className="au d3" style={{ maxWidth:480, fontSize:'0.88rem', color:'var(--ink3)', lineHeight:1.7, marginBottom:44, fontStyle:'italic' }}>
+        <p className="au d3" style={{ maxWidth:500, fontSize:'1rem', color:'var(--ink3)', lineHeight:1.7, marginBottom:48, fontStyle:'italic' }}>
           An informal introduction to my formal (academic) self.
         </p>
 
@@ -483,21 +494,21 @@ const HomePage = ({ theme, toggleTheme }) => {
         </nav>
 
         {/* Hover description */}
-        <div className="au d5" style={{ height:32, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <p className="df" style={{ fontSize:'1.05rem', fontStyle:'italic', color:'var(--ink2)', transition:'opacity 0.35s ease', opacity: hovered ? 1 : 0 }}>
+        <div className="au d5" style={{ height:44, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <p className="df" style={{ fontSize:'1.3rem', fontStyle:'italic', color:'var(--ink2)', transition:'opacity 0.35s ease', opacity: hovered ? 1 : 0 }}>
             {hovered ? navPages.find(p => p.label === hovered)?.desc : ''}
           </p>
         </div>
 
         {/* Scroll cue */}
-        <div className="au d6" style={{ marginTop:40, display:'flex', flexDirection:'column', alignItems:'center', gap:6, color:'var(--ink3)', fontSize:'0.72rem', letterSpacing:'0.14em', textTransform:'uppercase' }}>
+        <div className="au d6" style={{ marginTop:40, display:'flex', flexDirection:'column', alignItems:'center', gap:6, color:'var(--ink3)', fontSize:'0.78rem', letterSpacing:'0.14em', textTransform:'uppercase' }}>
           <span>Scroll</span>
           <ChevronDown style={{ animation:'fadeUp 1.2s ease infinite alternate' }} />
         </div>
       </section>
 
       {/* ── Below-fold content ── */}
-      <section style={{ maxWidth:960, margin:'0 auto', padding:'20px 24px 80px', position:'relative', zIndex:1 }}>
+      <section style={{ maxWidth:1000, margin:'0 auto', padding:'24px 28px 104px', position:'relative', zIndex:1 }}>
 
 
         {/* Bio + Education Grid */}
@@ -505,26 +516,26 @@ const HomePage = ({ theme, toggleTheme }) => {
 
           {/* Full bio card */}
           <FadeIn delay={80}>
-            <div className="card tilt-a" style={{ padding:'32px 28px' }}>
-              <div className="eb" style={{ marginBottom:14 }}>Bio-Sketch</div>
-              <p className="iq" style={{ marginBottom:18 }}>{cvData.profile.intro}</p>
-              <Divider style={{ margin:'18px 0' }} />
-              <p style={{ color:'var(--ink2)', lineHeight:1.8, fontSize:'0.91rem' }}>{cvData.profile.interests}</p>
-              <Divider style={{ margin:'18px 0' }} />
-              <p style={{ color:'var(--ink2)', lineHeight:1.8, fontSize:'0.91rem' }}>{cvData.profile.ambition}</p>
+            <div className="card tilt-a" style={{ padding:'40px 36px' }}>
+              <div className="eb" style={{ marginBottom:18 }}>Bio-Sketch</div>
+              <p className="iq" style={{ marginBottom:4 }}>{cvData.profile.intro}</p>
+              <Divider style={{ margin:'28px 0' }} />
+              <p style={{ color:'var(--ink2)', lineHeight:'var(--lh-body)', fontSize:'var(--fs-body)' }}>{cvData.profile.interests}</p>
+              <Divider style={{ margin:'28px 0' }} />
+              <p style={{ color:'var(--ink2)', lineHeight:'var(--lh-body)', fontSize:'var(--fs-body)' }}>{cvData.profile.ambition}</p>
             </div>
           </FadeIn>
 
           {/* Education card */}
           <FadeIn delay={160}>
-            <div className="card tilt-b" style={{ padding:'32px 28px' }}>
-              <div className="eb" style={{ marginBottom:18 }}>Education</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
+            <div className="card tilt-b" style={{ padding:'40px 36px' }}>
+              <div className="eb" style={{ marginBottom:22 }}>Education</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:30 }}>
                 {cvData.education.map(edu => (
                   <div key={edu.institution} className="tl">
                     <EntryHeader title={edu.institution} subtitle={edu.degree} duration={edu.duration} />
                     {edu.grades?.map(g => (
-                      <span key={g} style={{ display:'inline-block', fontSize:'0.75rem', color:'var(--ink2)', background:'var(--bg)', border:'1px solid var(--border)', borderRadius:20, padding:'2px 10px' }}>{g}</span>
+                      <span key={g} style={{ display:'inline-block', fontSize:'0.85rem', color:'var(--ink2)', background:'var(--bg)', border:'1px solid var(--border)', borderRadius:20, padding:'4px 14px' }}>{g}</span>
                     ))}
                   </div>
                 ))}
@@ -535,13 +546,13 @@ const HomePage = ({ theme, toggleTheme }) => {
 
         {/* Positions of Responsibility */}
         <FadeIn delay={220}>
-          <div className="card tilt-c" style={{ padding:'32px 28px' }}>
-            <div className="eb" style={{ marginBottom:18 }}>Positions of Responsibility</div>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(230px,1fr))', gap:24 }}>
+          <div className="card tilt-c" style={{ padding:'40px 36px' }}>
+            <div className="eb" style={{ marginBottom:24 }}>Positions of Responsibility</div>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:36 }}>
               {cvData.responsibilities.map(resp => (
-                <div key={resp.role} style={{ borderLeft:'2px solid var(--border)', paddingLeft:16 }}>
-                  <EntryHeader title={resp.role} subtitle={resp.institution} duration={resp.duration} size="0.98rem" />
-                  <Prose size="0.85rem" lh={1.75}>{resp.description}</Prose>
+                <div key={resp.role} style={{ borderLeft:'2px solid var(--border)', paddingLeft:22 }}>
+                  <EntryHeader title={resp.role} subtitle={resp.institution} duration={resp.duration} size="1.2rem" />
+                  <Prose>{resp.description}</Prose>
                 </div>
               ))}
             </div>
@@ -559,30 +570,30 @@ const AcademicExperiencesPage = () => (
       eyebrow="Academic Experiences"
       title="Where I've learned"
     />
-    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(290px,1fr))', gap:20 }}>
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(340px,1fr))', gap:28 }}>
       <FadeIn delay={80}>
-        <div className="card" style={{ padding:'34px 30px', height:'100%' }}>
-          <div className="eb" style={{ marginBottom:20 }}>Research Internships</div>
+        <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
+          <div className="eb" style={{ marginBottom:26 }}>Research Internships</div>
           <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
             {cvData.academicExperiences.internships.map((exp, i) => (
               <div key={exp.duration}>
-                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.05rem" />
-                <Prose size="0.88rem">{exp.description}</Prose>
-                {i < cvData.academicExperiences.internships.length - 1 && <Divider style={{ margin:'26px 0' }} />}
+                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.3rem" />
+                <Prose>{exp.description}</Prose>
+                {i < cvData.academicExperiences.internships.length - 1 && <Divider style={{ margin:'34px 0' }} />}
               </div>
             ))}
           </div>
         </div>
       </FadeIn>
       <FadeIn delay={160}>
-        <div className="card" style={{ padding:'34px 30px', height:'100%' }}>
-          <div className="eb" style={{ marginBottom:20 }}>Summer Schools</div>
+        <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
+          <div className="eb" style={{ marginBottom:26 }}>Summer Schools</div>
           <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
             {cvData.academicExperiences.summerSchools.map((exp, i) => (
               <div key={exp.institution}>
-                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.05rem" />
-                <Prose size="0.88rem">{exp.description}</Prose>
-                {i < cvData.academicExperiences.summerSchools.length - 1 && <Divider style={{ margin:'26px 0' }} />}
+                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.3rem" />
+                <Prose>{exp.description}</Prose>
+                {i < cvData.academicExperiences.summerSchools.length - 1 && <Divider style={{ margin:'34px 0' }} />}
               </div>
             ))}
           </div>
@@ -602,18 +613,18 @@ const ResearchPage = () => (
 
     {/* Summer 2026 — Upcoming Thesis Work */}
     <FadeIn delay={60}>
-      <div style={{ background:'var(--surface)', border:'1px dashed var(--accent)', borderRadius:'var(--r)', padding:'32px 30px', marginBottom:20, opacity:0.92 }}>
+      <div style={{ background:'var(--surface)', border:'1px dashed var(--accent)', borderRadius:'var(--r)', padding:'40px 38px', marginBottom:28 }}>
         <div className="eb" style={{ marginBottom:10, display:'flex', alignItems:'center', gap:8 }}>
           <span className="wip-dot" style={{ display:'inline-block', width:7, height:7, borderRadius:'50%', background:'var(--accent)', opacity:0.7, animation:'pulse 2s ease-in-out infinite' }} />
           MS Thesis - Ongoing
         </div>
-        <h3 className="df" style={{ fontSize:'clamp(1.15rem,2.5vw,1.55rem)', fontWeight:600, color:'var(--ink)', marginBottom:8, lineHeight:1.3 }}>
+        <h3 className="df" style={{ fontSize:'clamp(1.45rem,3vw,1.9rem)', fontWeight:600, color:'var(--ink)', marginBottom:10, lineHeight:1.25 }}>
           Homotopical Algebra
         </h3>
-        <div style={{ fontSize:'0.82rem', color:'var(--ink2)', fontWeight:500, marginBottom:12 }}>
+        <div style={{ fontSize:'0.95rem', color:'var(--ink2)', fontWeight:500, marginBottom:20 }}>
           Advisor: Dr. Vivek Sadhu
         </div>
-        <p style={{ fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.8 }}>
+        <p style={{ fontSize:'var(--fs-body)', color:'var(--ink2)', lineHeight:'var(--lh-body)', maxWidth:'70ch' }}>
           Homotopical algebra grew out of the observation that alot of things one can do in topology, can be carried out in a "well behaved category". Quillen's definition of a model category isolates the bare minimum conditions one needs to impose on a category, so that one can talk about homotopy theory. The primary goal is to understand the definition and basic theory of a model category, together with enough worked out examples, including the classical model structure on the category of Topological spaces. This will be followed by some applications in algebraic K theory and higher homotopy theory (hopefully!). 
         </p>
       </div>
@@ -621,12 +632,12 @@ const ResearchPage = () => (
 
     {cvData.research.map((item, i) => (
       <FadeIn key={item.title} delay={80 * (i + 1)}>
-        <div className="card" style={{ padding:'40px 36px', marginBottom:20 }}>
-          <div className="eb" style={{ marginBottom:12 }}>Completed Project</div>
-          <h3 className="df" style={{ fontSize:'clamp(1.25rem,3vw,1.75rem)', fontWeight:600, color:'var(--ink)', marginBottom:6, lineHeight:1.3 }}>{item.title}</h3>
-          <div style={{ fontSize:'0.82rem', color:'var(--ink2)', fontWeight:500, marginBottom:2 }}>{item.guide}</div>
-          <Divider style={{ margin:'22px 0' }} />
-          <p style={{ fontSize:'0.95rem', color:'var(--ink2)', lineHeight:1.85 }}>
+        <div className="card" style={{ padding:'44px 40px', marginBottom:28 }}>
+          <div className="eb" style={{ marginBottom:16 }}>Completed Project</div>
+          <h3 className="df" style={{ fontSize:'clamp(1.5rem,3.2vw,2rem)', fontWeight:600, color:'var(--ink)', marginBottom:10, lineHeight:1.25 }}>{item.title}</h3>
+          <div style={{ fontSize:'0.95rem', color:'var(--ink2)', fontWeight:500 }}>{item.guide}</div>
+          <Divider style={{ margin:'28px 0' }} />
+          <p style={{ fontSize:'var(--fs-body)', color:'var(--ink2)', lineHeight:1.8, maxWidth:'70ch' }}>
             <strong style={{ color:'var(--ink)', fontWeight:600 }}>Cayley graphs</strong> exhibit the nature of the action of a group G on a set S closed under inverses. A graph is <strong style={{ color:'var(--ink)', fontWeight:600 }}>integral</strong> if each eigenvalue of its adjacency matrix is an integer. The <strong style={{ color:'var(--ink)', fontWeight:600 }}>genus</strong> is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without edge crossings. The goal of the project was to read relevant literature and try to come up with expressions for genus of generalized cayley graphs (cayley graphs over fields). I tried using computational and algebraic tools to explore these two properties of Cayley graphs on finite abelian groups and generalized cayley graphs.
           </p>
         </div>
@@ -653,12 +664,12 @@ const EventsPage = () => {
       eyebrow="Events"
       title="Things I have been a part of"
     />
-    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))', gap:20 }}>
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))', gap:28 }}>
       {sortedEvents.map((ev, i) => (
         <FadeIn key={ev.title} delay={80 * i}>
-          <div className="card" style={{ padding:'30px 26px', height:'100%' }}>
+          <div className="card" style={{ padding:'36px 32px', height:'100%' }}>
             <div className="ev-tag">{ev.tag}</div>
-            <h3 className="df" style={{ fontSize:'1.4rem', fontWeight:600, color:'var(--ink)', marginBottom:6, lineHeight:1.2, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
+            <h3 className="df" style={{ fontSize:'1.6rem', fontWeight:600, color:'var(--ink)', marginBottom:14, lineHeight:1.2, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
               {ev.link && featuredTitles.includes(ev.title) ? (
                 <>
                   <span>{ev.title}</span>
@@ -686,7 +697,7 @@ const EventsPage = () => {
                 </>
               ) : ev.title}
             </h3>
-            <p style={{ fontSize:'0.88rem', color:'var(--ink2)', lineHeight:1.8 }}>
+            <p style={{ fontSize:'var(--fs-body)', color:'var(--ink2)', lineHeight:'var(--lh-body)' }}>
               {ev.description === "PLACEHOLDER_DESCRIPTION" ? (
                 <span style={{ fontStyle:'italic', color:'var(--ink3)' }}>
                   {/* Add your description for this event here */}
@@ -736,24 +747,24 @@ const OpenBoardPage = () => (
       title="Ideas, spoken freely"
     />
 
-    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:20, marginBottom:20 }}>
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(340px,1fr))', gap:28, marginBottom:28 }}>
 
       {/* About OpenBoard */}
       <FadeIn delay={80}>
-        <div className="card" style={{ padding:'34px 30px', height:'100%' }}>
-          <div style={{ display:'flex', gap:10, alignItems:'center', marginBottom:20 }}>
+        <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
+          <div style={{ display:'flex', gap:12, alignItems:'center', marginBottom:24 }}>
             <div className="eb">Initiative</div>
             <span className="ob-tag">Student-run</span>
           </div>
 
-          <p className="iq" style={{ marginBottom:20 }}>
+          <p className="iq">
             A space for students to speak about what they care about, to a general audience.
           </p>
-          <Divider style={{ margin:'20px 0' }} />
-          <p style={{ fontSize:'0.9rem', color:'var(--ink2)', lineHeight:1.82 }}>
+          <Divider style={{ margin:'28px 0' }} />
+          <p style={{ fontSize:'var(--fs-body)', color:'var(--ink2)', lineHeight:'var(--lh-body)' }}>
             {cvData.openboard.mission}
           </p>
-          <div style={{ marginTop:24 }}>
+          <div style={{ marginTop:32 }}>
             <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="cta-btn">
               Visit Openboard <ExternalLink />
             </a>
@@ -763,17 +774,17 @@ const OpenBoardPage = () => (
 
       {/* Co-founder section */}
       <FadeIn delay={160}>
-        <div className="card" style={{ padding:'34px 30px', height:'100%' }}>
-          <div className="eb" style={{ marginBottom:16 }}>Co-founder</div>
-          <EntryHeader title={cvData.openboard.role} subtitle={cvData.openboard.institution} duration={cvData.openboard.duration} size="1.5rem" />
-          <Prose size="0.9rem" lh={1.82}>
+        <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
+          <div className="eb" style={{ marginBottom:20 }}>Co-founder</div>
+          <EntryHeader title={cvData.openboard.role} subtitle={cvData.openboard.institution} duration={cvData.openboard.duration} size="1.6rem" />
+          <Prose>
             Along with my friend{' '}
             <a href={cvData.openboard.cofounder.url} target="_blank" rel="noopener noreferrer" className="lnk">{cvData.openboard.cofounder.name}</a>
             , we started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.
           </Prose>
-          <Divider style={{ margin:'22px 0' }} />
-          <div className="eb" style={{ marginBottom:12 }}>From the team</div>
-          <p style={{ fontSize:'0.84rem', color:'var(--ink3)', fontStyle:'italic', lineHeight:1.75 }}>
+          <Divider style={{ margin:'28px 0' }} />
+          <div className="eb" style={{ marginBottom:14 }}>From the team</div>
+          <p style={{ fontSize:'1rem', color:'var(--ink3)', fontStyle:'italic', lineHeight:1.7 }}>
             We welcome all disciplines. If you have an idea you'd like to talk about, reach out.
           </p>
         </div>
@@ -782,15 +793,15 @@ const OpenBoardPage = () => (
 
     {/* On-hold note */}
     <FadeIn delay={200}>
-      <div style={{ background:'var(--surface)', border:'1px dashed var(--accent)', borderRadius:'var(--r)', padding:'26px 30px', marginBottom:20 }}>
+      <div style={{ background:'var(--surface)', border:'1px dashed var(--accent)', borderRadius:'var(--r)', padding:'36px 38px', marginBottom:28 }}>
         <div className="eb" style={{ marginBottom:10, display:'flex', alignItems:'center', gap:8 }}>
           <span className="wip-dot" />
           Currently on hold
         </div>
-        <p className="df" style={{ fontSize:'1.12rem', fontStyle:'italic', color:'var(--ink2)', lineHeight:1.75, margin:0 }}>
+        <p className="df" style={{ fontSize:'1.3rem', fontStyle:'italic', color:'var(--ink2)', lineHeight:1.65, margin:0, maxWidth:'60ch' }}>
           Due to academic commitments, we are currently on hold. We would like your help to bring it back. Reach out if you have ideas.
         </p>
-        <div style={{ marginTop:18 }}>
+        <div style={{ marginTop:26 }}>
           <a href={`mailto:${cvData.contact.email}`} className="cta-btn">
             Reach out <ArrowRight />
           </a>
@@ -800,21 +811,21 @@ const OpenBoardPage = () => (
 
     {/* Talks section */}
     <FadeIn delay={240}>
-      <div className="card" style={{ padding:'34px 30px' }}>
-        <div className="eb" style={{ marginBottom:20 }}>Talks so far</div>
+      <div className="card" style={{ padding:'40px 36px' }}>
+        <div className="eb" style={{ marginBottom:26 }}>Talks so far</div>
         <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
           {cvData.openboard.talks.map((talk, i) => (
             <div key={talk.title}>
               <div style={{ display:'flex', flexWrap:'wrap', gap:12, alignItems:'flex-start' }}>
                 <div style={{ flex:1, minWidth:220 }}>
-                  <EntryHeader title={talk.title} duration={talk.speaker} size="1.1rem" />
-                  <Prose size="0.88rem">{talk.description}</Prose>
+                  <EntryHeader title={talk.title} duration={talk.speaker} size="1.3rem" />
+                  <Prose>{talk.description}</Prose>
                 </div>
-                <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontSize:'0.78rem', display:'flex', alignItems:'center', gap:5, marginTop:4 }}>
+                <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontSize:'0.9rem', display:'flex', alignItems:'center', gap:6, marginTop:6 }}>
                   View <ExternalLink />
                 </a>
               </div>
-              {i < cvData.openboard.talks.length - 1 && <Divider style={{ margin:'24px 0' }} />}
+              {i < cvData.openboard.talks.length - 1 && <Divider style={{ margin:'30px 0' }} />}
             </div>
           ))}
         </div>
@@ -828,14 +839,14 @@ const ContactPage = () => (
   <PageWrapper>
     <div style={{
       display:'flex', alignItems:'center', justifyContent:'center',
-      minHeight:'calc(100vh - 62px)',  /* subtract sticky navbar height */
-      padding:'40px 24px',
+      minHeight:'calc(100vh - 150px)',  /* sticky navbar + footer */
+      padding:'24px 24px',
     }}>
-      <div style={{ width:'100%', maxWidth:480 }}>
+      <div style={{ width:'100%', maxWidth:540 }}>
 
         {/* Header */}
-        <div style={{ textAlign:'center', marginBottom:40 }}>
-          <div className="eb" style={{ marginBottom:10 }}>Contact</div>
+        <div style={{ textAlign:'center', marginBottom:44 }}>
+          <div className="eb" style={{ marginBottom:16 }}>Contact</div>
           <h2 className="df" style={{ fontSize:'clamp(2.4rem,5vw,3.2rem)', fontWeight:600, lineHeight:1.08, color:'var(--ink)', letterSpacing:'-0.01em', marginBottom:0 }}>
             Get in touch
           </h2>
@@ -843,32 +854,32 @@ const ContactPage = () => (
 
         {/* Card */}
         <FadeIn delay={80}>
-          <div className="card" style={{ padding:'40px 36px' }}>
-            <p className="df" style={{ fontSize:'1.08rem', fontStyle:'italic', color:'var(--ink2)', marginBottom:32, lineHeight:1.72, textAlign:'center' }}>
+          <div className="card" style={{ padding:'44px 40px' }}>
+            <p className="df" style={{ fontSize:'1.3rem', fontStyle:'italic', color:'var(--ink2)', marginBottom:36, lineHeight:1.6, textAlign:'center' }}>
               Feel free to reach out for collaborations, academic discussions, or just a friendly exchange of ideas.
             </p>
 
             <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
               <a href={`mailto:${cvData.contact.email}`} className="clink">
                 <Mail style={{ color:'var(--accent)', flexShrink:0 }} />
-                <span style={{ fontSize:'0.88rem', color:'var(--ink2)' }}>{cvData.contact.email}</span>
+                <span style={{ fontSize:'1rem', color:'var(--ink2)' }}>{cvData.contact.email}</span>
               </a>
               <a href={cvData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="clink">
                 <Linkedin style={{ color:'var(--accent)', flexShrink:0 }} />
-                <span style={{ fontSize:'0.88rem', color:'var(--ink2)' }}>LinkedIn Profile</span>
+                <span style={{ fontSize:'1rem', color:'var(--ink2)' }}>LinkedIn Profile</span>
               </a>
             </div>
 
-            <Divider style={{ margin:'28px 0 20px' }} />
+            <Divider style={{ margin:'32px 0 24px' }} />
 
-            <div style={{ textAlign:'center', fontSize:'0.78rem', color:'var(--ink3)', letterSpacing:'0.05em' }}>
+            <div style={{ textAlign:'center', fontSize:'0.9rem', color:'var(--ink3)', letterSpacing:'0.04em' }}>
               {cvData.location}
             </div>
           </div>
         </FadeIn>
 
         {/* Social footnote */}
-        <p style={{ textAlign:'center', marginTop:20, fontSize:'0.78rem', color:'var(--ink3)', fontStyle:'italic' }}>
+        <p style={{ textAlign:'center', marginTop:24, fontSize:'0.9rem', color:'var(--ink3)', fontStyle:'italic' }}>
           Response times vary — email is most reliable.
         </p>
       </div>
@@ -923,17 +934,17 @@ const CoursesPage = () => {
 
         {/* Header */}
         <FadeIn style={{ marginBottom: 64 }}>
-          <div className="eb" style={{ marginBottom: 12 }}>Coursework</div>
-          <h2 className="df" style={{ fontSize: 'clamp(2.4rem,5.5vw,3.4rem)', fontWeight: 600, lineHeight: 1.06, color: 'var(--ink)', letterSpacing: '-0.02em', marginBottom: 22 }}>
+          <div className="eb" style={{ marginBottom: 16 }}>Coursework</div>
+          <h2 className="df" style={{ fontSize: 'clamp(2.4rem,5.5vw,3.4rem)', fontWeight: 600, lineHeight: 1.06, color: 'var(--ink)', letterSpacing: '-0.02em', marginBottom: 26 }}>
             Some courses that<br />stuck with me.
           </h2>
-          <p style={{ fontSize: '0.93rem', color: 'var(--ink2)', lineHeight: 1.9, maxWidth: 500 }}>
+          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--ink2)', lineHeight: 1.8, maxWidth: 540 }}>
             Not a transcript. Just the courses that have shaped my thinking and my interests. 
           </p>
         </FadeIn>
 
         {/* Cards grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 64 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: 22, marginBottom: 72 }}>
           {coursesData.map((course, i) => {
             const isFlipped = flipped === i;
             return (
@@ -944,7 +955,7 @@ const CoursesPage = () => {
                   style={{
                     cursor: 'pointer',
                     perspective: '1000px',
-                    minHeight: 260,
+                    minHeight: 340,
                     position: 'relative',
                   }}
                 >
@@ -952,7 +963,7 @@ const CoursesPage = () => {
                   <div style={{
                     position: 'relative',
                     width: '100%',
-                    minHeight: 260,
+                    minHeight: 340,
                     transformStyle: 'preserve-3d',
                     transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                     transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1)',
@@ -966,13 +977,13 @@ const CoursesPage = () => {
                       background: 'var(--surface)',
                       border: '1px solid var(--border)',
                       borderRadius: 'var(--r)',
-                      padding: '28px 26px 24px',
+                      padding: '32px 30px 28px',
                       boxShadow: 'var(--sh-sm)',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
                       overflow: 'hidden',
-                      minHeight: 260,
+                      minHeight: 340,
                     }}>
                       {/* Watermark number */}
                       <span style={{
@@ -987,11 +998,11 @@ const CoursesPage = () => {
                         {/* Area tag */}
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                           <span style={{
-                            fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.2em',
-                            textTransform: 'uppercase', color: 'var(--accent)', opacity: 0.8,
+                            fontSize: '0.76rem', fontWeight: 600, letterSpacing: '0.18em',
+                            textTransform: 'uppercase', color: 'var(--accent)',
                           }}>{course.area}</span>
                           <span style={{
-                            fontSize: '0.7rem', color: 'var(--ink3)', letterSpacing: '0.06em',
+                            fontSize: '0.82rem', color: 'var(--ink3)', letterSpacing: '0.04em',
                             fontStyle: 'italic',
                           }}>flip →</span>
                         </div>
@@ -1004,7 +1015,7 @@ const CoursesPage = () => {
 
                         {/* Course name */}
                         <h3 className="df" style={{
-                          fontSize: 'clamp(1.12rem,2.2vw,1.32rem)', fontWeight: 600,
+                          fontSize: 'clamp(1.3rem,2.4vw,1.5rem)', fontWeight: 600,
                           color: 'var(--ink)', lineHeight: 1.25, margin: 0, letterSpacing: '-0.01em',
                         }}>{course.name}</h3>
                       </div>
@@ -1013,8 +1024,8 @@ const CoursesPage = () => {
                       <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
                         {course.refs.map((ref, ri) => (
                           <div key={ri} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: ri < course.refs.length - 1 ? 5 : 0 }}>
-                            <span style={{ color: 'var(--accent)', fontSize: '0.75rem', flexShrink: 0, marginTop: 1 }}>—</span>
-                            <span className="df" style={{ fontSize: '0.82rem', fontStyle: 'italic', color: 'var(--ink3)', lineHeight: 1.45 }}>{ref}</span>
+                            <span style={{ color: 'var(--accent)', fontSize: '0.9rem', flexShrink: 0, marginTop: 1 }}>—</span>
+                            <span className="df" style={{ fontSize: '1rem', fontStyle: 'italic', color: 'var(--ink3)', lineHeight: 1.45 }}>{ref}</span>
                           </div>
                         ))}
                       </div>
@@ -1028,11 +1039,11 @@ const CoursesPage = () => {
                       transform: 'rotateY(180deg)',
                       background: 'var(--accent)',
                       borderRadius: 'var(--r)',
-                      padding: '28px 26px 24px',
+                      padding: '32px 30px 28px',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
-                      minHeight: 260,
+                      minHeight: 340,
                       overflow: 'hidden',
                     }}>
                       {/* Subtle decorative symbol on back */}
@@ -1045,19 +1056,19 @@ const CoursesPage = () => {
 
                       <div>
                         <div style={{
-                          fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.2em',
-                          textTransform: 'uppercase', color: 'var(--on-accent-55)',
+                          fontSize: '0.76rem', fontWeight: 600, letterSpacing: '0.18em',
+                          textTransform: 'uppercase', color: 'var(--on-accent-70)',
                           marginBottom: 18,
                         }}>— {course.id}</div>
 
                         <p style={{
-                          fontFamily: 'var(--fd)', fontSize: 'clamp(1rem,1.8vw,1.1rem)',
-                          fontStyle: 'italic', fontWeight: 400, color: 'var(--on-accent)',
-                          lineHeight: 1.75, margin: 0,
+                          fontFamily: 'var(--fd)', fontSize: 'clamp(1.1rem,1.9vw,1.2rem)',
+                          fontStyle: 'italic', fontWeight: 500, color: 'var(--on-accent)',
+                          lineHeight: 1.65, margin: 0,
                         }}>{course.note}</p>
                       </div>
 
-                      <div style={{ fontSize: '0.7rem', color: 'var(--on-accent-45)', letterSpacing: '0.06em', fontStyle: 'italic' }}>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--on-accent-70)', letterSpacing: '0.04em', fontStyle: 'italic' }}>
                         click to flip back
                       </div>
                     </div>
@@ -1073,17 +1084,17 @@ const CoursesPage = () => {
         <FadeIn delay={200}>
           <div style={{
             borderTop: '1px solid var(--border)',
-            paddingTop: 32,
+            paddingTop: 36,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: 12,
           }}>
-            <p style={{ fontSize: '0.8rem', color: 'var(--ink3)', fontStyle: 'italic', margin: 0 }}>
+            <p style={{ fontSize: '0.92rem', color: 'var(--ink3)', fontStyle: 'italic', margin: 0 }}>
               References reflect primary texts studied. Flip each card for a note.
             </p>
-            <span className="df" style={{ fontSize: '0.88rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
+            <span className="df" style={{ fontSize: '1rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
               {coursesData.length} courses &nbsp;·&nbsp; still counting.
             </span>
           </div>
@@ -1098,7 +1109,7 @@ const CoursesPage = () => {
 const InnerLayout = ({ theme, toggleTheme, children }) => (
   <>
     <Navbar theme={theme} toggleTheme={toggleTheme} />
-    <main style={{ maxWidth:1100, margin:'0 auto', padding:'60px 24px 88px' }}>
+    <main style={{ maxWidth:1100, margin:'0 auto', padding:'72px 28px 104px' }}>
       {children}
     </main>
     <Footer />
