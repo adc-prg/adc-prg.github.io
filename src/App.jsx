@@ -46,6 +46,13 @@ const ArrowRight = (p) => (
   </svg>
 );
 
+// Renders \mathbb{R}P^n / \mathbb{C}P^n without needing a LaTeX engine
+const ProjSpace = ({ field }) => (
+  <span style={{ whiteSpace:'nowrap' }}>
+    {field === 'R' ? 'ℝ' : 'ℂ'}P<sup style={{ fontStyle:'italic', fontSize:'0.75em', lineHeight:0 }}>n</sup>
+  </span>
+);
+
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const cvData = {
   name: "Adeetya Choubey",
@@ -114,10 +121,14 @@ const cvData = {
     { title: "Big-Tac-Toe", tag: "Organised",
       description: "A wordplay on Big + Tic-tac-toe — another name for ultimate tic-tac-toe. Held at Continuum in collaboration with the board games club, Ingenium. The event featured a knockout stage with Saurav Kanetkar emerging as the Big-Tac-Toe champion, 2025 edition.",
       link: { url: "https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe", text: "Ultimate Tic-Tac-Toe" } },
-    { title: "Cup Product Structure on Real and Complex Projective Space", tag: "Seminar Talk",
-      description: "This seminar was graded and was a part of my Topology II course." },
     { title: "Realizing Grassmannian as a Projective Variety and the Segre embedding", tag: "Seminar Talk",
-      description: "I gave a seminar on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to discussing the Segre embedding and how it helps to see product of two projective spaces as a projective variety embedded into a much larger projective space." }
+      description: "I gave a seminar on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to discussing the Segre embedding and how it helps to see product of two projective spaces as a projective variety embedded into a much larger projective space." },
+    { title: "Cup Product Structure on Real and Complex Projective Space", tag: "Seminar Talk",
+      description: (
+        <>
+          The seminar discussed the structure of the cohomology ring for <ProjSpace field="R" /> and <ProjSpace field="C" /> after setting up some basic definitions. This seminar was graded and was a part of my Topology II course.
+        </>
+      ) }
   ],
   contact: { email: "adeetya22@iiserb.ac.in", linkedin: "https://www.linkedin.com/in/adeetya-choubey-6b2a44254/" }
 };
@@ -125,7 +136,7 @@ const cvData = {
 const navPages = [
   { label: 'AcadEx',    path: '/acadex',    desc: 'academic venture during the summer' },
   { label: 'Projects',  path: '/projects',  desc: 'attempts to be more academically acceptable :)' },
-  { label: 'Proof Pudding', path: '/proofs', desc: 'proofs I enjoyed working through' },
+  { label: 'Proofs', path: '/proofs', desc: 'proofs I enjoyed working through' },
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
   { label: 'Frames',    path: '/frames',    desc: 'a gallery, eventually' },
@@ -660,7 +671,8 @@ const EventsPage = () => {
   const sortedEvents = [
     ...featuredTitles.map(t => cvData.events.find(e => e.title === t)).filter(Boolean),
     ...cvData.events.filter(e => e.title.includes('Grassmannian')),
-    ...cvData.events.filter(e => !featuredTitles.includes(e.title) && !e.title.includes('Grassmannian')),
+    ...cvData.events.filter(e => e.title.startsWith('Cup Product')),
+    ...cvData.events.filter(e => !featuredTitles.includes(e.title) && !e.title.includes('Grassmannian') && !e.title.startsWith('Cup Product')),
   ];
   return (
   <PageWrapper>
@@ -891,15 +903,14 @@ const ContactPage = () => (
   </PageWrapper>
 );
 
-// ─── Proof Pudding Page ───────────────────────────────────────────────────────
+// ─── Proofs Page ───────────────────────────────────────────────────────
 const ProofsPage = () => (
   <PageWrapper>
     <div style={{ minHeight:'52vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'60px 24px' }}>
       <FadeIn>
-        <div className="eb" style={{ marginBottom:14 }}>Proofs</div>
-        <h2 className="df" style={{ fontSize:'clamp(2.3rem,5vw,3.1rem)', fontWeight:600, color:'var(--ink)', marginBottom:20, lineHeight:1.15, letterSpacing:'-0.01em' }}>Proof Pudding</h2>
+        <h2 className="df" style={{ fontSize:'clamp(2.3rem,5vw,3.1rem)', fontWeight:600, color:'var(--ink)', marginBottom:20, lineHeight:1.15, letterSpacing:'-0.01em' }}>Proofs</h2>
         <Prose style={{ maxWidth:'46ch', margin:'0 auto 24px' }}>
-          This page is to showcase some of the proofs I enjoyed working through.
+          some of the abstract nonsense which really made sense
         </Prose>
         <div className="bento-wip" style={{ marginTop:6 }}>
           <span className="wip-dot" /> Under construction
