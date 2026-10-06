@@ -114,6 +114,8 @@ const cvData = {
     { title: "Big-Tac-Toe", tag: "Organised",
       description: "A wordplay on Big + Tic-tac-toe — another name for ultimate tic-tac-toe. Held at Continuum in collaboration with the board games club, Ingenium. The event featured a knockout stage with Saurav Kanetkar emerging as the Big-Tac-Toe champion, 2025 edition.",
       link: { url: "https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe", text: "Ultimate Tic-Tac-Toe" } },
+    { title: "Cup Product Structure on Real and Complex Projective Space", tag: "Seminar Talk",
+      description: "This seminar was graded and was a part of my Topology II course." },
     { title: "Realizing Grassmannian as a Projective Variety and the Segre embedding", tag: "Seminar Talk",
       description: "I gave a seminar on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to discussing the Segre embedding and how it helps to see product of two projective spaces as a projective variety embedded into a much larger projective space." }
   ],
@@ -123,7 +125,7 @@ const cvData = {
 const navPages = [
   { label: 'AcadEx',    path: '/acadex',    desc: 'academic venture during the summer' },
   { label: 'Projects',  path: '/projects',  desc: 'attempts to be more academically acceptable :)' },
-  { label: 'Courses',   path: '/courses',   desc: 'some math that I genuinely enjoyed.' },
+  { label: 'Proof Pudding', path: '/proofs', desc: 'proofs I enjoyed working through' },
   { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
   { label: 'Frames',    path: '/frames',    desc: 'a gallery, eventually' },
@@ -180,7 +182,7 @@ const CSS = `
     --on-accent-55: rgba(255,255,255,0.55);
     --on-accent-45: rgba(255,255,255,0.45);
     --on-accent-10: rgba(255,255,255,0.1);
-    --fd: 'Cormorant Garamond', Georgia, serif;
+    --fd: 'Libron', Georgia, 'Times New Roman', serif;
     --fb: 'Libron', Georgia, 'Times New Roman', serif;
     --r:  7px;
     --fs-body: 1.0625rem;
@@ -207,6 +209,7 @@ const CSS = `
   html { scroll-behavior: smooth; zoom: 1; }
   body { background:var(--bg); color:var(--ink); font-family:var(--fb); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; font-kerning:normal; font-feature-settings:"kern" 1,"liga" 1; transition:background 0.4s,color 0.4s; margin:0; }
   h1,h2,h3,h4,p { margin:0; }
+  button, input, textarea, select { font-family:inherit; }
   p { text-wrap:pretty; overflow-wrap:break-word; }
   h1,h2,h3 { text-wrap:balance; }
   strong { font-weight:600; }
@@ -227,6 +230,7 @@ const CSS = `
   @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:0.45} }
+  @keyframes blink  { 0%,100%{opacity:1; box-shadow:0 0 6px 2px var(--accent)} 50%{opacity:0.15; box-shadow:0 0 0 0 transparent} }
 
   .au  { animation:fadeUp 0.85s cubic-bezier(0.16,1,0.3,1) both; }
   .d1  { animation-delay:0.08s; }
@@ -313,7 +317,7 @@ const CSS = `
   .bento-card:hover::before { opacity:1; }
   .bento-icon { font-size:2rem; margin-bottom:12px; font-family:var(--fd); line-height:1; color:var(--accent); opacity:0.75; }
   .bento-wip { display:inline-flex; align-items:center; gap:8px; font-size:0.78rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink3); border:1px solid var(--border); border-radius:20px; padding:5px 14px; margin-top:12px; }
-  .wip-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); opacity:0.6; animation:pulse 2s ease-in-out infinite; }
+  .wip-dot { display:inline-block; flex-shrink:0; width:7px; height:7px; border-radius:50%; background:var(--accent); animation:blink 1.4s ease-in-out infinite; }
 
   /* OpenBoard tag */
   .ob-tag { display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:20px; padding:4px 12px; }
@@ -362,7 +366,7 @@ const SectionHead = ({ eyebrow, title }) => (
 );
 
 // Reusable entry header (title / subtitle / duration) — used across timeline-style lists
-const EntryHeader = ({ title, subtitle, duration, size = '1.2rem' }) => (
+const EntryHeader = ({ title, subtitle, duration, size = '1.4rem' }) => (
   <>
     <div className="df" style={{ fontSize: size, fontWeight: 600, color: 'var(--ink)', marginBottom: 6, lineHeight: 1.3 }}>{title}</div>
     {subtitle && <div style={{ fontSize: '0.95rem', color: 'var(--ink2)', marginBottom: 4, lineHeight: 1.5 }}>{subtitle}</div>}
@@ -551,7 +555,7 @@ const HomePage = ({ theme, toggleTheme }) => {
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:36 }}>
               {cvData.responsibilities.map(resp => (
                 <div key={resp.role} style={{ borderLeft:'2px solid var(--border)', paddingLeft:22 }}>
-                  <EntryHeader title={resp.role} subtitle={resp.institution} duration={resp.duration} size="1.2rem" />
+                  <EntryHeader title={resp.role} subtitle={resp.institution} duration={resp.duration} size="1.4rem" />
                   <Prose>{resp.description}</Prose>
                 </div>
               ))}
@@ -577,7 +581,7 @@ const AcademicExperiencesPage = () => (
           <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
             {cvData.academicExperiences.internships.map((exp, i) => (
               <div key={exp.duration}>
-                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.3rem" />
+                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.5rem" />
                 <Prose>{exp.description}</Prose>
                 {i < cvData.academicExperiences.internships.length - 1 && <Divider style={{ margin:'34px 0' }} />}
               </div>
@@ -591,7 +595,7 @@ const AcademicExperiencesPage = () => (
           <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
             {cvData.academicExperiences.summerSchools.map((exp, i) => (
               <div key={exp.institution}>
-                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.3rem" />
+                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.5rem" />
                 <Prose>{exp.description}</Prose>
                 {i < cvData.academicExperiences.summerSchools.length - 1 && <Divider style={{ margin:'34px 0' }} />}
               </div>
@@ -615,7 +619,7 @@ const ResearchPage = () => (
     <FadeIn delay={60}>
       <div style={{ background:'var(--surface)', border:'1px dashed var(--accent)', borderRadius:'var(--r)', padding:'40px 38px', marginBottom:28 }}>
         <div className="eb" style={{ marginBottom:10, display:'flex', alignItems:'center', gap:8 }}>
-          <span className="wip-dot" style={{ display:'inline-block', width:7, height:7, borderRadius:'50%', background:'var(--accent)', opacity:0.7, animation:'pulse 2s ease-in-out infinite' }} />
+          <span className="wip-dot" />
           MS Thesis - Ongoing
         </div>
         <h3 className="df" style={{ fontSize:'clamp(1.45rem,3vw,1.9rem)', fontWeight:600, color:'var(--ink)', marginBottom:10, lineHeight:1.25 }}>
@@ -669,7 +673,7 @@ const EventsPage = () => {
         <FadeIn key={ev.title} delay={80 * i}>
           <div className="card" style={{ padding:'36px 32px', height:'100%' }}>
             <div className="ev-tag">{ev.tag}</div>
-            <h3 className="df" style={{ fontSize:'1.6rem', fontWeight:600, color:'var(--ink)', marginBottom:14, lineHeight:1.2, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
+            <h3 className="df" style={{ fontSize:'1.7rem', fontWeight:600, color:'var(--ink)', marginBottom:14, lineHeight:1.2, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
               {ev.link && featuredTitles.includes(ev.title) ? (
                 <>
                   <span>{ev.title}</span>
@@ -776,7 +780,7 @@ const OpenBoardPage = () => (
       <FadeIn delay={160}>
         <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
           <div className="eb" style={{ marginBottom:20 }}>Co-founder</div>
-          <EntryHeader title={cvData.openboard.role} subtitle={cvData.openboard.institution} duration={cvData.openboard.duration} size="1.6rem" />
+          <EntryHeader title={cvData.openboard.role} subtitle={cvData.openboard.institution} duration={cvData.openboard.duration} size="1.8rem" />
           <Prose>
             Along with my friend{' '}
             <a href={cvData.openboard.cofounder.url} target="_blank" rel="noopener noreferrer" className="lnk">{cvData.openboard.cofounder.name}</a>
@@ -818,7 +822,7 @@ const OpenBoardPage = () => (
             <div key={talk.title}>
               <div style={{ display:'flex', flexWrap:'wrap', gap:12, alignItems:'flex-start' }}>
                 <div style={{ flex:1, minWidth:220 }}>
-                  <EntryHeader title={talk.title} duration={talk.speaker} size="1.3rem" />
+                  <EntryHeader title={talk.title} duration={talk.speaker} size="1.5rem" />
                   <Prose>{talk.description}</Prose>
                 </div>
                 <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontSize:'0.9rem', display:'flex', alignItems:'center', gap:6, marginTop:6 }}>
@@ -887,223 +891,23 @@ const ContactPage = () => (
   </PageWrapper>
 );
 
-// ─── Courses Data ─────────────────────────────────────────────────────────────
-const coursesData = [
-  {
-    id: "01",
-    name: "Algebraic Topology I",
-    area: "Topology",
-    symbol: "π₁",
-    refs: ["Hatcher — Algebraic Topology"],
-    note: "I enjoyed group theory, I enjoyed topology, so this just felt like a match made in heaven, and I was not wrong.",
-  },
-  {
-    id: "02",
-    name: "Commutative Algebra",
-    area: "Algebra",
-    symbol: "Spec",
-    refs: ["N.S. Gopalkrishnan", "Matsumura — Commutative Ring Theory"],
-    note: "I took this course just as a precursor for algebraic geometry. Somehow, it ended up being much more than that. My first introduction to elementary homological algebra.",
-  },
-  {
-    id: "03",
-    name: "Algebraic Geometry",
-    area: "Geometry",
-    symbol: "𝒪ₓ",
-    refs: ["Hartshorne — Algebraic Geometry"],
-    note: "This course brought life to my course on Commutative Algebra.",
-  },
-  {
-    id: "04",
-    name: "Topology - II",
-    area: "Topology",
-    symbol: "Hₙ",
-    refs: ["Hatcher - Algebraic Topology"],
-    note: "This course just reinforced my interest in homological algebra from my course on commutative algebra.",
-  },
-  
-];
-
-// ─── Courses Page ─────────────────────────────────────────────────────────────
-const CoursesPage = () => {
-  const [flipped, setFlipped] = useState(null);
-
-  return (
-    <PageWrapper>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
-
-        {/* Header */}
-        <FadeIn style={{ marginBottom: 64 }}>
-          <div className="eb" style={{ marginBottom: 16 }}>Coursework</div>
-          <h2 className="df" style={{ fontSize: 'clamp(2.4rem,5.5vw,3.4rem)', fontWeight: 600, lineHeight: 1.06, color: 'var(--ink)', letterSpacing: '-0.02em', marginBottom: 26 }}>
-            Some courses that<br />stuck with me.
-          </h2>
-          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--ink2)', lineHeight: 1.8, maxWidth: 540 }}>
-            Not a transcript. Just the courses that have shaped my thinking and my interests. 
-          </p>
-        </FadeIn>
-
-        {/* Cards grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: 22, marginBottom: 72 }}>
-          {coursesData.map((course, i) => {
-            const isFlipped = flipped === i;
-            return (
-              <FadeIn key={course.id} delay={i * 70}>
-                {/* Flip card wrapper */}
-                <div
-                  onClick={() => setFlipped(isFlipped ? null : i)}
-                  style={{
-                    cursor: 'pointer',
-                    perspective: '1000px',
-                    minHeight: 340,
-                    position: 'relative',
-                  }}
-                >
-                  {/* Inner flip container */}
-                  <div style={{
-                    position: 'relative',
-                    width: '100%',
-                    minHeight: 340,
-                    transformStyle: 'preserve-3d',
-                    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                    transition: 'transform 0.55s cubic-bezier(0.16,1,0.3,1)',
-                  }}>
-
-                    {/* ── FRONT ── */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden',
-                      background: 'var(--surface)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 'var(--r)',
-                      padding: '32px 30px 28px',
-                      boxShadow: 'var(--sh-sm)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      overflow: 'hidden',
-                      minHeight: 340,
-                    }}>
-                      {/* Watermark number */}
-                      <span style={{
-                        position: 'absolute', top: 14, right: 20,
-                        fontFamily: 'var(--fd)', fontSize: '5.5rem', fontWeight: 700,
-                        color: 'var(--accent)', opacity: 0.055, lineHeight: 1,
-                        userSelect: 'none', pointerEvents: 'none',
-                        letterSpacing: '-0.04em',
-                      }}>{course.id}</span>
-
-                      <div>
-                        {/* Area tag */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-                          <span style={{
-                            fontSize: '0.76rem', fontWeight: 600, letterSpacing: '0.18em',
-                            textTransform: 'uppercase', color: 'var(--accent)',
-                          }}>{course.area}</span>
-                          <span style={{
-                            fontSize: '0.82rem', color: 'var(--ink3)', letterSpacing: '0.04em',
-                            fontStyle: 'italic',
-                          }}>flip →</span>
-                        </div>
-
-                        {/* Symbol — large, editorial */}
-                        <div style={{
-                          fontFamily: 'var(--fd)', fontSize: '2.2rem', color: 'var(--accent)',
-                          opacity: 0.65, lineHeight: 1, marginBottom: 16,
-                        }}>{course.symbol}</div>
-
-                        {/* Course name */}
-                        <h3 className="df" style={{
-                          fontSize: 'clamp(1.3rem,2.4vw,1.5rem)', fontWeight: 600,
-                          color: 'var(--ink)', lineHeight: 1.25, margin: 0, letterSpacing: '-0.01em',
-                        }}>{course.name}</h3>
-                      </div>
-
-                      {/* Refs preview at bottom */}
-                      <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
-                        {course.refs.map((ref, ri) => (
-                          <div key={ri} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: ri < course.refs.length - 1 ? 5 : 0 }}>
-                            <span style={{ color: 'var(--accent)', fontSize: '0.9rem', flexShrink: 0, marginTop: 1 }}>—</span>
-                            <span className="df" style={{ fontSize: '1rem', fontStyle: 'italic', color: 'var(--ink3)', lineHeight: 1.45 }}>{ref}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* ── BACK ── */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden',
-                      transform: 'rotateY(180deg)',
-                      background: 'var(--accent)',
-                      borderRadius: 'var(--r)',
-                      padding: '32px 30px 28px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      minHeight: 340,
-                      overflow: 'hidden',
-                    }}>
-                      {/* Subtle decorative symbol on back */}
-                      <span style={{
-                        position: 'absolute', bottom: 12, right: 18,
-                        fontFamily: 'var(--fd)', fontSize: '4rem', fontWeight: 700,
-                        color: 'var(--on-accent)', opacity: 0.07, lineHeight: 1,
-                        userSelect: 'none', pointerEvents: 'none',
-                      }}>{course.symbol}</span>
-
-                      <div>
-                        <div style={{
-                          fontSize: '0.76rem', fontWeight: 600, letterSpacing: '0.18em',
-                          textTransform: 'uppercase', color: 'var(--on-accent-70)',
-                          marginBottom: 18,
-                        }}>— {course.id}</div>
-
-                        <p style={{
-                          fontFamily: 'var(--fd)', fontSize: 'clamp(1.1rem,1.9vw,1.2rem)',
-                          fontStyle: 'italic', fontWeight: 500, color: 'var(--on-accent)',
-                          lineHeight: 1.65, margin: 0,
-                        }}>{course.note}</p>
-                      </div>
-
-                      <div style={{ fontSize: '0.82rem', color: 'var(--on-accent-70)', letterSpacing: '0.04em', fontStyle: 'italic' }}>
-                        click to flip back
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </FadeIn>
-            );
-          })}
+// ─── Proof Pudding Page ───────────────────────────────────────────────────────
+const ProofsPage = () => (
+  <PageWrapper>
+    <div style={{ minHeight:'52vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'60px 24px' }}>
+      <FadeIn>
+        <div className="eb" style={{ marginBottom:14 }}>Proofs</div>
+        <h2 className="df" style={{ fontSize:'clamp(2.3rem,5vw,3.1rem)', fontWeight:600, color:'var(--ink)', marginBottom:20, lineHeight:1.15, letterSpacing:'-0.01em' }}>Proof Pudding</h2>
+        <Prose style={{ maxWidth:'46ch', margin:'0 auto 24px' }}>
+          This page is to showcase some of the proofs I enjoyed working through.
+        </Prose>
+        <div className="bento-wip" style={{ marginTop:6 }}>
+          <span className="wip-dot" /> Under construction
         </div>
-
-        {/* Footer note */}
-        <FadeIn delay={200}>
-          <div style={{
-            borderTop: '1px solid var(--border)',
-            paddingTop: 36,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 12,
-          }}>
-            <p style={{ fontSize: '0.92rem', color: 'var(--ink3)', fontStyle: 'italic', margin: 0 }}>
-              References reflect primary texts studied. Flip each card for a note.
-            </p>
-            <span className="df" style={{ fontSize: '1rem', color: 'var(--ink3)', fontStyle: 'italic' }}>
-              {coursesData.length} courses &nbsp;·&nbsp; still counting.
-            </span>
-          </div>
-        </FadeIn>
-
-      </div>
-    </PageWrapper>
-  );
-};
+      </FadeIn>
+    </div>
+  </PageWrapper>
+);
 
 // ─── Inner layout (Navbar + main + footer) ────────────────────────────────────
 const InnerLayout = ({ theme, toggleTheme, children }) => (
@@ -1145,9 +949,9 @@ function AnimatedRoutes({ theme, toggleTheme }) {
             <ResearchPage />
           </InnerLayout>
         } />
-        <Route path="/courses" element={
+        <Route path="/proofs" element={
           <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <CoursesPage />
+            <ProofsPage />
           </InnerLayout>
         } />
         <Route path="/events" element={
@@ -1193,7 +997,7 @@ export default function App() {
 
   // Inject Google Fonts
   useEffect(() => {
-    const href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap";
+    const href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap";
     if (!document.querySelector(`link[href="${href}"]`)) {
       const l = document.createElement('link');
       l.href = href; l.rel = 'stylesheet';
