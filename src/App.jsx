@@ -346,8 +346,8 @@ const CSS = `
   .brand:hover { color:var(--accent); }
   .nav-links { display:flex; align-items:center; gap:4px 26px; }
   .nav-link {
-    position:relative; display:inline-block; padding:6px 0; font-family:var(--ui); font-size:var(--fs-ui); font-weight:500;
-    color:var(--ink2); text-decoration:none;
+    position:relative; display:inline-block; padding:6px 0; font-family:var(--display); font-size:0.96875rem; font-weight:400;
+    letter-spacing:0.005em; color:var(--ink2); text-decoration:none;
   }
   .nav-link::after { content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--accent); }
   .nav-link:hover { color:var(--ink); }
@@ -356,7 +356,7 @@ const CSS = `
   .nav-tip {
     position:absolute; top:calc(100% + 12px); left:50%; z-index:60; pointer-events:none; white-space:nowrap;
     padding:6px 11px; border-radius:8px; background:var(--ink); color:var(--on-ink);
-    font-size:0.75rem; font-weight:400; line-height:1.4;
+    font-family:var(--text); font-size:0.8125rem; font-weight:400; font-style:italic; line-height:1.4;
     opacity:0; transform:translate(-50%, -4px) scale(0.96); transform-origin:50% 0;
   }
   .nav-tip::before { content:''; position:absolute; top:-4px; left:50%; width:8px; height:8px; background:inherit; transform:translateX(-50%) rotate(45deg); border-radius:1px; }
@@ -364,7 +364,7 @@ const CSS = `
   .nav-actions { display:flex; align-items:center; gap:8px; }
   .search-btn {
     display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 8px 0 14px; border-radius:999px;
-    border:1px solid var(--line); background:var(--surface); color:var(--ink3); font-family:var(--ui); font-size:var(--fs-ui-s); cursor:pointer;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink3); font-family:var(--display); font-size:0.875rem; cursor:pointer;
     transition:border-color .35s ease, color .35s ease, transform .4s var(--ease);
   }
   .search-btn:hover { color:var(--ink); border-color:var(--accent-line); }
@@ -379,7 +379,7 @@ const CSS = `
   .mobile-menu { position:fixed; top:var(--nav-h); left:0; right:0; bottom:0; z-index:49; background:var(--bg); overflow-y:auto; padding:8px 0 48px; }
   .m-link { display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--line); text-decoration:none; }
   .m-label { font-family:var(--display); font-size:1.5rem; font-weight:600; line-height:1.25; color:var(--ink); transition:color .3s ease; }
-  .m-desc  { font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); text-align:right; }
+  .m-desc  { font-family:var(--text); font-style:italic; font-size:0.875rem; color:var(--ink3); text-align:right; }
   .m-link.active .m-label { color:var(--accent); }
 
   @media (max-width: 1000px) {
@@ -403,12 +403,12 @@ const CSS = `
   .cmdk-input-row { display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid var(--line); color:var(--ink3); }
   .cmdk-input { flex:1; min-width:0; border:0; outline:none; background:transparent; font-family:var(--ui); font-size:1.125rem; color:var(--ink); }
   .cmdk-input::placeholder { color:var(--ink3); }
-  .cmdk-list { max-height:min(56vh, 420px); overflow-y:auto; padding:6px 8px 10px; overscroll-behavior:contain; }
-  .cmdk-group { padding:12px 12px 4px; font-size:var(--fs-ui-s); font-weight:500; color:var(--ink3); }
-  .cmdk-item { position:relative; isolation:isolate; display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:10px 12px; border-radius:10px; cursor:pointer; font-size:var(--fs-ui); color:var(--ink); }
+  .cmdk-list { position:relative; max-height:min(56vh, 420px); overflow-y:auto; padding:6px 8px 10px; overscroll-behavior:contain; }
+  .cmdk-group { position:relative; z-index:1; padding:12px 12px 4px; font-size:var(--fs-ui-s); font-weight:500; color:var(--ink3); }
+  .cmdk-item { position:relative; z-index:1; display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:10px 12px; border-radius:10px; cursor:pointer; font-size:var(--fs-ui); color:var(--ink); }
   .cmdk-item.active .cmdk-label { color:var(--on-accent); }
   .cmdk-item.active .cmdk-hint { color:color-mix(in srgb, var(--on-accent) 75%, transparent); }
-  .cmdk-hl { position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--accent); }
+  .cmdk-hl { position:absolute; top:0; left:8px; right:8px; z-index:0; border-radius:10px; background:var(--accent); pointer-events:none; }
   .cmdk-hint { max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:var(--fs-ui-s); color:var(--ink3); transition:color .2s ease; }
   .cmdk-empty { padding:28px 12px; text-align:center; color:var(--ink3); }
   .cmdk-foot { display:flex; gap:18px; padding:10px 20px; border-top:1px solid var(--line); font-size:var(--fs-ui-s); color:var(--ink3); }
@@ -578,12 +578,25 @@ const CSS = `
   .footer-links a:hover, .footer-links button:hover { color:var(--accent); }
 
   /* ── Responsive ──────────────────────────────────── */
-  /* Motion policy: everything only fades colours, except the nav underline and
-     tooltip below (and the Spotlight search, which is animated in script). */
+  /* Motion: short, quiet transitions everywhere; the few deliberate ones follow. */
   *, *::before, *::after {
-    transition-property:color, background-color, border-color, text-decoration-color, fill, stroke !important;
-    transition-duration:.2s !important; transition-timing-function:ease !important;
+    transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, transform !important;
+    transition-duration:.25s !important; transition-timing-function:cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
+  /* Entrance on page load (the original fadeUp) */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
+  @keyframes pageIn { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+  @keyframes blink  { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+  .au { animation:fadeUp .85s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .d1 { animation-delay:.08s; } .d2 { animation-delay:.18s; } .d3 { animation-delay:.30s; } .d4 { animation-delay:.44s; } .d5 { animation-delay:.60s; }
+  .page-in { animation:pageIn .45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  /* Scroll reveal (the original FadeIn) */
+  .sr { opacity:0; transform:translateY(18px); transition-property:opacity, transform !important; transition-duration:.75s !important; }
+  .sr.in { opacity:1; transform:none; }
+  /* Gentle lifts on hover (the original cards and buttons) */
+  .btn:hover, .pager-link:hover, .contact-row:hover { transform:translateY(-2px); }
+  .title-link:hover .title-link-icon { transform:scale(1.15); }
+  .status-dot { animation:blink 2.4s ease-in-out infinite; }
   .nav-links .nav-link::after { transition-property:width !important; transition-duration:.35s !important; transition-timing-function:cubic-bezier(0.16, 1, 0.3, 1) !important; }
   .nav-links .nav-tip { transition-property:opacity, transform !important; transition-duration:.18s !important; transition-timing-function:ease-out !important; }
 
@@ -737,8 +750,30 @@ const Button = ({ to, href, external = false, variant = 'primary', icon = 'arrow
 
 const Rule = () => <span className="rule" aria-hidden="true" />;
 
-const Entry = ({ title, href, tag, sub, date, children }) => (
-  <article className="entry">
+// Fades content up the first time it scrolls into view (as in the original)
+const FadeIn = ({ as: Tag = 'div', delay = 0, className = '', style, children, ...rest }) => {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) { setVisible(true); return; }
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setVisible(true); obs.disconnect(); }
+    }, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <Tag ref={ref} className={`sr${visible ? ' in' : ''}${className ? ' ' + className : ''}`}
+      style={{ ...style, transitionDelay: visible ? `${delay}ms` : '0ms' }} {...rest}>
+      {children}
+    </Tag>
+  );
+};
+
+const Entry = ({ title, href, tag, sub, date, children, delay = 0 }) => (
+  <FadeIn as="article" className="entry" delay={delay}>
     <header className="entry-head">
       <h3 className="entry-title">
         {href
@@ -754,7 +789,7 @@ const Entry = ({ title, href, tag, sub, date, children }) => (
       </p>
     )}
     {children && <div className="entry-body">{children}</div>}
-  </article>
+  </FadeIn>
 );
 
 const Section = ({ id, title, children }) => (
@@ -772,7 +807,7 @@ const Pager = () => {
   const prev = i > 0 ? navPages[i - 1] : { label: 'Home', path: '/' };
   const next = navPages[i + 1];
   return (
-    <nav className="pager" aria-label="Previous and next page">
+    <FadeIn as="nav" className="pager" aria-label="Previous and next page">
       <Link to={prev.path} className="pager-link prev">
         <span className="pager-dir"><ArrowLeft /> Previous</span>
         <span className="pager-label">{prev.label}</span>
@@ -783,7 +818,7 @@ const Pager = () => {
           <span className="pager-label">{next.label}</span>
         </Link>
       )}
-    </nav>
+    </FadeIn>
   );
 };
 
@@ -853,14 +888,23 @@ const CommandPalette = ({ open, onClose, theme, toggleTheme, notify }) => {
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = prev;
-      if (returnFocus.current && returnFocus.current.focus) returnFocus.current.focus();
+      const el = returnFocus.current;
+      if (el && el.isConnected && el.focus && !el.closest('.cmdk')) el.focus();
+      else if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.cmdk')) document.activeElement.blur();
     };
   }, [open]);
   useEffect(() => { setIdx(0); }, [q]);
-  useEffect(() => {
+
+  // One highlight element that glides to the selected row. (A shared layoutId
+  // here used to stop the palette from ever finishing its close animation,
+  // leaving an invisible search box that swallowed the next "/".)
+  const [hl, setHl] = useState(null);
+  useLayoutEffect(() => {
     const el = listRef.current && listRef.current.querySelector(`[data-idx="${idx}"]`);
-    if (el) el.scrollIntoView({ block: 'nearest' });
-  }, [idx]);
+    if (!el) { setHl(null); return; }
+    setHl({ top: el.offsetTop, height: el.offsetHeight });
+    el.scrollIntoView({ block: 'nearest' });
+  }, [idx, q, open]);
 
   const choose = (item) => { if (!item) return; onClose(); window.setTimeout(item.run, 80); };
   const onKeyDown = (e) => {
@@ -889,6 +933,8 @@ const CommandPalette = ({ open, onClose, theme, toggleTheme, notify }) => {
               <kbd>Esc</kbd>
             </div>
             <div className="cmdk-list" id="cmdk-list" role="listbox" ref={listRef}>
+              {hl && <motion.div className="cmdk-hl" aria-hidden="true" initial={false}
+                animate={{ y: hl.top, height: hl.height }} transition={{ type: 'spring', stiffness: 600, damping: 42 }} />}
               {results.length === 0 && <p className="cmdk-empty">No matches for “{q}”. Try a page name, like “events”.</p>}
               {results.map((item, i) => {
                 const header = item.group !== lastGroup ? item.group : null;
@@ -899,7 +945,6 @@ const CommandPalette = ({ open, onClose, theme, toggleTheme, notify }) => {
                     <div id={`cmdk-${i}`} data-idx={i} role="option" aria-selected={i === idx}
                       className={`cmdk-item${i === idx ? ' active' : ''}`}
                       onMouseMove={() => { if (i !== idx) setIdx(i); }} onClick={() => choose(item)}>
-                      {i === idx && <motion.span layoutId="cmdk-hl" className="cmdk-hl" transition={{ type: 'spring', stiffness: 600, damping: 42 }} />}
                       <span className="cmdk-label">{item.label}</span>
                       {item.hint && <span className="cmdk-hint">{item.hint}</span>}
                     </div>
@@ -1021,17 +1066,17 @@ const Footer = () => (
 const Split = ({ id, label, children }) => (
   <section className="wrap split-sec" aria-labelledby={`${id}-title`}>
     <Rule />
-    <div className="split">
+    <FadeIn className="split">
       <h2 id={`${id}-title`} className="split-label">{label}</h2>
       <div>{children}</div>
-    </div>
+    </FadeIn>
   </section>
 );
 
  // the intro plays once per visit, not on every return to Home
 
 const HeroName = () => (
-  <h1 className="hero-name">
+  <h1 className="hero-name au d1">
     {cvData.name.split(' ').map(word => <span key={word} style={{ display: 'block' }}>{word}</span>)}
   </h1>
 );
@@ -1039,7 +1084,7 @@ const HeroName = () => (
 const Portrait = () => {
   const [failed, setFailed] = useState(false);
   return (
-    <figure className="portrait">
+    <figure className="portrait au d3">
       <div className="portrait-stage">
         <svg className="portrait-ring" viewBox="0 0 100 100" aria-hidden="true">
           <circle cx="50" cy="50" r="49.5" vectorEffect="non-scaling-stroke" />
@@ -1063,15 +1108,15 @@ const HomePage = ({ onSearch }) => {
       <section className="wrap hero">
         <div>
           <HeroName />
-          <p className="hero-role">Idle category theorist (aspiring)</p>
-          <p className="hero-lead">
+          <p className="hero-role au d2">Idle category theorist (aspiring)</p>
+          <p className="hero-lead au d3">
             Math undergrad at <ExtLink href="https://maths.iiserb.ac.in/">IISER Bhopal</ExtLink>. An informal introduction to my formal (academic) self.
           </p>
-          <div className="hero-actions">
+          <div className="hero-actions au d4">
             <Button to="/projects">See my work</Button>
             <Button to="/contact" variant="ghost" icon={null}>Get in touch</Button>
           </div>
-          <p className="kbd-hint">
+          <p className="kbd-hint au d5">
             <button type="button" onClick={onSearch}>Press <kbd>/</kbd> to jump anywhere</button>
           </p>
         </div>
@@ -1096,7 +1141,7 @@ const HomePage = ({ onSearch }) => {
 
       <Split id="resp" label="Positions of responsibility">
         {cvData.responsibilities.map((r, i) => (
-          <Entry key={r.role} title={r.role} sub={r.institution} date={r.duration}>
+          <Entry key={r.role} delay={i * 80} title={r.role} sub={r.institution} date={r.duration}>
             <p>{r.description}</p>
           </Entry>
         ))}
@@ -1111,12 +1156,12 @@ const AcademicExperiencesPage = () => (
     sections={[{ id: 'internships', label: 'Research internships' }, { id: 'schools', label: 'Summer schools' }]}>
     <Section id="internships" title="Research internships">
       {cvData.academicExperiences.internships.map((exp, i) => (
-        <Entry key={exp.duration} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
+        <Entry key={exp.duration} delay={i * 80} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
       ))}
     </Section>
     <Section id="schools" title="Summer schools">
       {cvData.academicExperiences.summerSchools.map((exp, i) => (
-        <Entry key={exp.institution} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
+        <Entry key={exp.institution} delay={i * 80} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
       ))}
     </Section>
   </PageLayout>
@@ -1336,7 +1381,7 @@ function Shell({ theme, toggleTheme }) {
       <a href="#main" className="skip" onClick={focusMain}>Skip to content</a>
       <Navbar theme={theme} toggleTheme={toggleTheme} onSearch={openSearch} />
       <main id="main" tabIndex={-1}>
-        <div>
+        <div key={location.pathname} className="page-in">
           <Routes location={location}>
             <Route path="/"          element={<HomePage onSearch={openSearch} />} />
             <Route path="/acadex"    element={<AcademicExperiencesPage />} />
