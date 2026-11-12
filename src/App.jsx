@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import { HashRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, MotionConfig, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig, useScroll } from 'framer-motion';
 
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -188,10 +188,12 @@ const PROFILE_PHOTO = 'profile.jpg';
 const PROFILE_PHOTO_POSITION = '50% 50%';
 // Dark theme: 'navy' (deep navy with gold) or 'slate' (soft grey-blue with muted gold).
 const DARK_STYLE = 'navy';
+// The circular reveal when switching light/dark. Set to false for an instant switch.
+const THEME_REVEAL = true;
 
-// Type: Instrument Serif for headings, Libron (embedded above) for body text,
-// and the system UI font (San Francisco on Apple devices, Inter elsewhere) for labels and buttons.
-const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap';
+// Type: Fraunces for headings, Libron (embedded above) for body text, and the
+// system UI font (San Francisco on Apple devices, Inter elsewhere) for labels and buttons.
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Inter:wght@400;500;600&display=swap';
 
 const CSS = `
   :root {
@@ -211,17 +213,17 @@ const CSS = `
     --grain:       0.045;
     --pop-shadow:  0 24px 60px -24px rgba(40,25,15,0.35), 0 2px 6px rgba(40,25,15,0.06);
 
-    --display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+    --display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
     --text:    'Libron', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
     --ui:      -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
     --fs-ui:   0.875rem;
     --fs-ui-s: 0.8125rem;
     --fs-body: 1.0625rem;
-    --fs-lead: 1.625rem;
-    --fs-h3:   1.625rem;
-    --fs-h1:   clamp(2.75rem, 1.9rem + 3vw, 4rem);
-    --fs-hero: clamp(3.75rem, 2rem + 7vw, 7rem);
+    --fs-lead: 1.375rem;
+    --fs-h3:   1.375rem;
+    --fs-h1:   clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+    --fs-hero: clamp(3rem, 1.6rem + 5.2vw, 5.5rem);
     --lh:      1.72;
     --measure: 64ch;
 
@@ -230,8 +232,8 @@ const CSS = `
     --ease:   cubic-bezier(0.16, 1, 0.3, 1);
   }
   .dark {
-    --bg:          #0A1120;
-    --surface:     #101B30;
+    --bg:          #070D1A;
+    --surface:     #0C1526;
     --ink:         #F4EFE3;
     --ink2:        #C7CEDD;
     --ink3:        #8693B0;
@@ -239,9 +241,9 @@ const CSS = `
     --accent-soft: rgba(227,178,60,0.09);
     --accent-line: rgba(227,178,60,0.36);
     --hover:       rgba(244,239,227,0.06);
-    --line:        #1C2A44;
-    --line-strong: #2A3B5C;
-    --on-ink:      #0A1120;
+    --line:        #17233A;
+    --line-strong: #243553;
+    --on-ink:      #070D1A;
     --on-accent:   #1C1206;
     --grain:       0.05;
     --pop-shadow:  0 24px 60px -20px rgba(0,0,0,0.65), 0 2px 6px rgba(0,0,0,0.25);
@@ -272,7 +274,7 @@ const CSS = `
     -webkit-tap-highlight-color:transparent;
   }
   h1,h2,h3,h4,p,figure { margin:0; }
-  h1,h2,h3 { text-wrap:balance; font-weight:400; }
+  h1,h2,h3 { text-wrap:balance; font-weight:600; }
   p { text-wrap:pretty; overflow-wrap:break-word; }
   button, input { font:inherit; color:inherit; }
   strong { font-weight:600; color:var(--ink); }
@@ -293,8 +295,8 @@ const CSS = `
   }
 
   ::view-transition-old(root), ::view-transition-new(root) { animation:none; mix-blend-mode:normal; }
-  .theme-anim, .theme-anim *, .theme-anim *::before, .theme-anim *::after {
-    transition: background-color .45s ease, border-color .45s ease, color .45s ease, fill .45s ease, stroke .45s ease !important;
+  html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *::after {
+    transition-property:background-color, border-color, color, fill, stroke !important; transition-duration:.45s !important;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -318,43 +320,16 @@ const CSS = `
   }
   .lnk:hover { background-size:100% 1px, 100% 1px; }
 
-  /* ── Buttons ─────────────────────────────────────────
-     Pill buttons: colour sweeps up from below, the label rolls to a fresh copy,
-     and the arrow slides out and back in. On a mouse they lean gently toward
-     the cursor; on touch they simply press. */
-  .magnetic { display:inline-flex; will-change:transform; }
+  /* ── Buttons ─────────────────────────────────────── */
   .btn {
-    position:relative; isolation:isolate; overflow:hidden;
-    display:inline-flex; align-items:center; gap:12px; height:50px; padding:0 26px; border-radius:999px;
+    display:inline-flex; align-items:center; gap:10px; height:48px; padding:0 24px; border-radius:999px;
     background:var(--ink); color:var(--on-ink); border:1px solid var(--ink);
     font-family:var(--ui); font-size:0.9375rem; font-weight:500; letter-spacing:-0.005em;
     text-decoration:none; cursor:pointer; user-select:none; white-space:nowrap;
-    transition:color .45s var(--ease), border-color .45s var(--ease), transform .4s var(--ease);
   }
-  .btn::before {
-    content:''; position:absolute; inset:-1px; z-index:-1; border-radius:inherit; background:var(--accent);
-    transform:translateY(102%); transition:transform .6s var(--ease);
-  }
-  .btn:hover { color:var(--on-accent); border-color:var(--accent); }
-  .btn:hover::before { transform:translateY(0); }
-  .btn:active { transform:scale(0.96); transition-duration:.15s; }
+  .btn:hover { background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
   .btn-ghost { background:transparent; color:var(--ink); border-color:var(--line-strong); }
-  .btn-ghost::before { background:var(--ink); }
-  .btn-ghost:hover { color:var(--on-ink); border-color:var(--ink); }
-
-  .btn-roll { position:relative; display:inline-block; overflow:hidden; height:1.3em; line-height:1.3em; }
-  .btn-roll > span { display:block; transition:transform .6s var(--ease); }
-  .btn-roll > span + span { position:absolute; left:0; top:100%; }
-  .btn:hover .btn-roll > span { transform:translateY(-100%); }
-
-  .btn-arrow { position:relative; display:inline-block; width:15px; height:15px; overflow:hidden; flex-shrink:0; }
-  .btn-arrow svg { position:absolute; inset:0; width:15px; height:15px; transition:transform .6s var(--ease); }
-  .btn-arrow svg + svg { transform:translateX(-140%); }
-  .btn:hover .btn-arrow svg:first-child { transform:translateX(140%); }
-  .btn:hover .btn-arrow svg + svg { transform:translateX(0); }
-  .btn-arrow.diag svg + svg { transform:translate(-140%, 140%); }
-  .btn:hover .btn-arrow.diag svg:first-child { transform:translate(140%, -140%); }
-  .btn:hover .btn-arrow.diag svg + svg { transform:translate(0, 0); }
+  .btn-ghost:hover { background:var(--ink); border-color:var(--ink); color:var(--on-ink); }
 
   .icon-btn {
     width:40px; height:40px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
@@ -362,20 +337,30 @@ const CSS = `
     transition:border-color .35s ease, color .35s ease, transform .4s var(--ease);
   }
   .icon-btn:hover { color:var(--accent); border-color:var(--accent-line); }
-  .icon-btn:active { transform:scale(0.9); transition-duration:.15s; }
 
   /* ── Navbar ──────────────────────────────────────── */
   .nav { position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid transparent; transition:border-color .35s ease; }
   .nav.is-scrolled, .nav.is-open { border-bottom-color:var(--line); }
   .nav-inner { height:var(--nav-h); display:flex; align-items:center; justify-content:space-between; gap:24px; }
-  .brand { font-family:var(--display); font-size:1.625rem; line-height:1; letter-spacing:-0.01em; color:var(--ink); text-decoration:none; white-space:nowrap; transition:color .3s ease; }
+  .brand { font-family:var(--display); font-size:1.375rem; font-weight:600; line-height:1; letter-spacing:-0.01em; color:var(--ink); text-decoration:none; white-space:nowrap; transition:color .3s ease; }
   .brand:hover { color:var(--accent); }
-  .nav-links { display:flex; align-items:center; gap:2px; padding:4px; border-radius:999px; }
-  .nav-link { position:relative; isolation:isolate; padding:7px 14px; border-radius:999px; font-family:var(--ui); font-size:var(--fs-ui); font-weight:500; color:var(--ink2); text-decoration:none; transition:color .3s ease; }
+  .nav-links { display:flex; align-items:center; gap:4px 26px; }
+  .nav-link {
+    position:relative; display:inline-block; padding:6px 0; font-family:var(--ui); font-size:var(--fs-ui); font-weight:500;
+    color:var(--ink2); text-decoration:none;
+  }
+  .nav-link::after { content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--accent); }
   .nav-link:hover { color:var(--ink); }
+  .nav-link:hover::after, .nav-link.active::after { width:100%; }
   .nav-link.active { color:var(--accent); }
-  .nav-hover  { position:absolute; inset:0; z-index:-2; border-radius:inherit; background:var(--hover); }
-  .nav-active { position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--accent-soft); box-shadow:inset 0 0 0 1px var(--accent-line); }
+  .nav-tip {
+    position:absolute; top:calc(100% + 12px); left:50%; z-index:60; pointer-events:none; white-space:nowrap;
+    padding:6px 11px; border-radius:8px; background:var(--ink); color:var(--on-ink);
+    font-size:0.75rem; font-weight:400; line-height:1.4;
+    opacity:0; transform:translate(-50%, -4px) scale(0.96); transform-origin:50% 0;
+  }
+  .nav-tip::before { content:''; position:absolute; top:-4px; left:50%; width:8px; height:8px; background:inherit; transform:translateX(-50%) rotate(45deg); border-radius:1px; }
+  .nav-link:hover .nav-tip, .nav-link:focus-visible .nav-tip { opacity:1; transform:translate(-50%, 0) scale(1); }
   .nav-actions { display:flex; align-items:center; gap:8px; }
   .search-btn {
     display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 8px 0 14px; border-radius:999px;
@@ -383,7 +368,6 @@ const CSS = `
     transition:border-color .35s ease, color .35s ease, transform .4s var(--ease);
   }
   .search-btn:hover { color:var(--ink); border-color:var(--accent-line); }
-  .search-btn:active { transform:scale(0.96); transition-duration:.15s; }
   .menu-btn { display:none; }
   .burger { position:relative; width:16px; height:10px; }
   .burger span { position:absolute; left:0; right:0; height:1.5px; border-radius:1px; background:currentColor; transition:transform .5s var(--ease), top .5s var(--ease); }
@@ -394,7 +378,7 @@ const CSS = `
 
   .mobile-menu { position:fixed; top:var(--nav-h); left:0; right:0; bottom:0; z-index:49; background:var(--bg); overflow-y:auto; padding:8px 0 48px; }
   .m-link { display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--line); text-decoration:none; }
-  .m-label { font-family:var(--display); font-size:2rem; line-height:1.15; color:var(--ink); transition:color .3s ease; }
+  .m-label { font-family:var(--display); font-size:1.5rem; font-weight:600; line-height:1.25; color:var(--ink); transition:color .3s ease; }
   .m-desc  { font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); text-align:right; }
   .m-link.active .m-label { color:var(--accent); }
 
@@ -455,7 +439,7 @@ const CSS = `
   .page-aside-inner { position:sticky; top:calc(var(--nav-h) + 40px); }
   .kicker { display:inline-flex; align-items:center; gap:8px; font-family:var(--ui); font-size:var(--fs-ui-s); font-weight:500; color:var(--accent); margin-bottom:14px; }
   .kicker::before { content:''; width:18px; height:1px; background:currentColor; }
-  .page-title { font-family:var(--display); font-size:var(--fs-h1); line-height:1.02; letter-spacing:-0.02em; color:var(--ink); }
+  .page-title { font-family:var(--display); font-size:var(--fs-h1); font-weight:600; line-height:1.1; letter-spacing:-0.02em; color:var(--ink); }
   .page-title .line { display:block; overflow:hidden; padding-bottom:0.08em; margin-bottom:-0.08em; }
   .page-title .line > span { display:block; }
   .page-intro { margin-top:18px; max-width:30ch; font-size:1rem; line-height:1.6; color:var(--ink3); }
@@ -468,13 +452,13 @@ const CSS = `
   .page-body { min-width:0; max-width:46rem; }
   .sec { scroll-margin-top:calc(var(--nav-h) + 32px); }
   .sec + .sec { margin-top:80px; }
-  .sec-title { font-family:var(--display); font-size:1.75rem; line-height:1.2; color:var(--ink); padding-bottom:12px; }
-  .rule { display:block; height:1px; background:var(--line-strong); transform-origin:0 50%; }
+  .sec-title { font-family:var(--display); font-size:1.25rem; font-weight:600; line-height:1.3; color:var(--ink); padding-bottom:12px; }
+  .rule { display:block; height:1px; background:var(--line-strong); }
 
   .entry { padding:30px 0; border-bottom:1px solid var(--line); }
   .sec .entry:last-child, .entries > :last-child .entry { border-bottom:0; }
   .entry-head { display:flex; justify-content:space-between; align-items:baseline; gap:4px 24px; flex-wrap:wrap; }
-  .entry-title { font-family:var(--display); font-size:var(--fs-h3); line-height:1.2; letter-spacing:-0.005em; color:var(--ink); }
+  .entry-title { font-family:var(--display); font-size:var(--fs-h3); font-weight:600; line-height:1.3; letter-spacing:-0.01em; color:var(--ink); }
   .entry-date { font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); white-space:nowrap; font-variant-numeric:tabular-nums; }
   .entry-sub { margin-top:6px; font-family:var(--ui); font-size:var(--fs-ui); line-height:1.5; color:var(--ink2); }
   .tag { display:inline-block; padding:2px 10px; margin-right:10px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-size:var(--fs-ui-s); font-weight:500; }
@@ -489,9 +473,9 @@ const CSS = `
   }
   .title-link:hover { color:var(--accent); background-size:100% 1px; }
   .title-link-icon { display:inline-block; margin-left:8px; vertical-align:0.1em; color:var(--ink3); transition:color .3s ease, transform .5s var(--ease); }
-  .title-link:hover .title-link-icon { color:var(--accent); transform:translate(2px,-2px); }
+  .title-link:hover .title-link-icon { color:var(--accent); }
 
-  .lead { font-family:var(--display); font-style:italic; font-size:var(--fs-lead); line-height:1.3; color:var(--ink); max-width:30ch; }
+  .lead { font-family:var(--display); font-style:italic; font-weight:400; font-size:var(--fs-lead); line-height:1.4; color:var(--ink); max-width:36ch; }
   .prose { max-width:var(--measure); color:var(--ink2); }
   .prose > * + * { margin-top:0.9em; }
   .actions { margin-top:28px; display:flex; flex-wrap:wrap; gap:12px; }
@@ -499,8 +483,6 @@ const CSS = `
   .pill { display:inline-block; margin-top:12px; padding:4px 12px; border-radius:999px; background:var(--surface); border:1px solid var(--line); font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink2); font-variant-numeric:tabular-nums; }
   .status { display:inline-flex; align-items:center; gap:10px; font-family:var(--ui); font-size:var(--fs-ui-s); font-weight:500; color:var(--accent); }
   .status-dot { position:relative; width:6px; height:6px; border-radius:50%; background:currentColor; }
-  .status-dot::after { content:''; position:absolute; inset:-4px; border-radius:50%; border:1px solid currentColor; opacity:0; animation:ping 3s var(--ease) infinite; }
-  @keyframes ping { 0% { transform:scale(.6); opacity:.6; } 100% { transform:scale(1.9); opacity:0; } }
   .note { padding:26px 28px; border-radius:16px; background:var(--surface); border:1px solid var(--line); }
   .note p { margin-top:10px; color:var(--ink2); max-width:56ch; }
 
@@ -524,30 +506,26 @@ const CSS = `
   .pager-link::before { content:''; position:absolute; inset:0; z-index:-1; background:var(--accent-soft); opacity:0; transition:opacity .4s ease; }
   .pager-link:hover { border-color:var(--accent-line); }
   .pager-link:hover::before { opacity:1; }
-  .pager-link:active { transform:scale(0.98); transition-duration:.15s; }
   .pager-link.next { grid-column:2; align-items:flex-end; text-align:right; }
   .pager-dir { display:inline-flex; align-items:center; gap:6px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
-  .pager-label { font-family:var(--display); font-size:1.75rem; line-height:1.1; color:var(--ink); transition:color .3s ease; }
+  .pager-label { font-family:var(--display); font-size:1.25rem; font-weight:600; line-height:1.2; color:var(--ink); transition:color .3s ease; }
   .pager-link:hover .pager-label { color:var(--accent); }
   .pager-link svg { transition:transform .6s var(--ease); }
-  .pager-link.prev:hover svg { transform:translateX(-4px); }
-  .pager-link.next:hover svg { transform:translateX(4px); }
 
   .contact-row {
     position:relative; isolation:isolate;
     display:grid; grid-template-columns:44px minmax(0,1fr) auto; align-items:center; gap:18px;
     padding:18px 16px; margin:0 -16px; border-radius:16px; color:var(--ink); text-decoration:none;
   }
-  .contact-row::before { content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--surface); opacity:0; transform:scale(0.98); transition:opacity .4s ease, transform .5s var(--ease); }
-  .contact-row:hover::before { opacity:1; transform:scale(1); }
+  .contact-row::before { content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--surface); opacity:0; }
+  .contact-row:hover::before { opacity:1; }
   .contact-row + .contact-row { margin-top:6px; }
   .contact-icon { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent); transition:transform .6s var(--ease); }
-  .contact-row:hover .contact-icon { transform:scale(1.08) rotate(-6deg); }
   .contact-k { display:block; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
-  .contact-v { display:block; font-family:var(--display); font-size:1.5rem; line-height:1.25; overflow-wrap:anywhere; transition:color .3s ease; }
+  .contact-v { display:block; font-family:var(--display); font-size:1.25rem; font-weight:500; line-height:1.35; overflow-wrap:anywhere; transition:color .3s ease; }
   .contact-row:hover .contact-v { color:var(--accent); }
   .contact-go { color:var(--ink3); transition:color .3s ease, transform .6s var(--ease); }
-  .contact-row:hover .contact-go { color:var(--accent); transform:translate(3px,-3px); }
+  .contact-row:hover .contact-go { color:var(--accent); }
   .copy-btn { margin-top:18px; background:none; border:0; padding:0; font-family:var(--ui); font-size:var(--fs-ui); color:var(--ink3); cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:color .3s ease; }
   .copy-btn:hover { color:var(--accent); }
 
@@ -556,10 +534,10 @@ const CSS = `
     display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr); gap:56px; align-items:center;
     padding-top:clamp(40px, 9vw, 112px); padding-bottom:clamp(56px, 8vw, 112px);
   }
-  .hero-name { font-family:var(--display); font-size:var(--fs-hero); line-height:0.95; letter-spacing:-0.03em; color:var(--ink); }
+  .hero-name { font-family:var(--display); font-size:var(--fs-hero); font-weight:600; line-height:1.02; letter-spacing:-0.025em; color:var(--ink); }
   .hero-name .line { display:block; overflow:hidden; padding-bottom:0.08em; margin-bottom:-0.08em; }
   .hero-name .line > span { display:block; }
-  .hero-role { margin-top:26px; font-family:var(--display); font-style:italic; font-size:1.75rem; line-height:1.2; color:var(--accent); }
+  .hero-role { margin-top:22px; font-family:var(--display); font-style:italic; font-weight:400; font-size:1.375rem; line-height:1.3; color:var(--accent); }
   .hero-lead { margin-top:12px; max-width:42ch; color:var(--ink2); }
   .hero-actions { margin-top:36px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
   .kbd-hint { margin-top:24px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
@@ -571,14 +549,10 @@ const CSS = `
   .portrait-stage { position:relative; aspect-ratio:1; }
   .portrait-ring { position:absolute; inset:-14px; width:calc(100% + 28px); height:calc(100% + 28px); overflow:visible; }
   .portrait-ring circle { fill:none; stroke:var(--line-strong); stroke-width:1; }
-  .portrait-ring circle.accent { stroke:var(--accent); stroke-width:1.5; stroke-linecap:round; }
   .portrait-frame { position:absolute; inset:0; border-radius:50%; overflow:hidden; background:var(--surface); -webkit-mask-image:-webkit-radial-gradient(white, black); }
   .portrait-frame img {
     position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:var(--photo-pos, 50% 50%); display:block;
-    opacity:0; transform:scale(1.12); transition:opacity 1s ease, transform 2s var(--ease);
   }
-  .portrait-frame img.is-loaded { opacity:1; transform:scale(1); }
-  @media (hover: hover) { .portrait:hover .portrait-frame img.is-loaded { transform:scale(1.04); } }
   .portrait-fallback {
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     font-family:var(--display); font-style:italic; font-size:clamp(3rem, 6vw, 4.5rem); color:var(--accent);
@@ -590,20 +564,29 @@ const CSS = `
     display:grid; grid-template-columns:minmax(150px, 240px) minmax(0,1fr); gap:16px clamp(32px, 7vw, 104px);
     padding:52px 0;
   }
-  .split-label { font-family:var(--display); font-size:1.75rem; line-height:1.15; color:var(--ink); }
+  .split-label { font-family:var(--display); font-size:1.25rem; font-weight:600; line-height:1.3; color:var(--ink); }
   .split .entry:first-child { padding-top:0; }
   .split .entry:last-child { padding-bottom:0; border-bottom:0; }
 
   /* ── Footer ──────────────────────────────────────── */
   .footer { margin-top:72px; border-top:1px solid var(--line); padding:32px 0 calc(44px + env(safe-area-inset-bottom, 0px)); }
   .footer-inner { display:flex; justify-content:space-between; align-items:flex-start; gap:20px 32px; flex-wrap:wrap; }
-  .footer-name { font-family:var(--display); font-size:1.5rem; line-height:1.2; color:var(--ink); }
+  .footer-name { font-family:var(--display); font-size:1.25rem; font-weight:600; line-height:1.2; color:var(--ink); }
   .footer-note { margin-top:4px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
   .footer-links { display:flex; flex-wrap:wrap; gap:8px 22px; align-items:center; font-family:var(--ui); font-size:var(--fs-ui); }
   .footer-links a, .footer-links button { background:none; border:0; padding:0; cursor:pointer; color:var(--ink2); text-decoration:none; transition:color .3s ease; }
   .footer-links a:hover, .footer-links button:hover { color:var(--accent); }
 
   /* ── Responsive ──────────────────────────────────── */
+  /* Motion policy: everything only fades colours, except the nav underline and
+     tooltip below (and the Spotlight search, which is animated in script). */
+  *, *::before, *::after {
+    transition-property:color, background-color, border-color, text-decoration-color, fill, stroke !important;
+    transition-duration:.2s !important; transition-timing-function:ease !important;
+  }
+  .nav-links .nav-link::after { transition-property:width !important; transition-duration:.35s !important; transition-timing-function:cubic-bezier(0.16, 1, 0.3, 1) !important; }
+  .nav-links .nav-tip { transition-property:opacity, transform !important; transition-duration:.18s !important; transition-timing-function:ease-out !important; }
+
   @media (max-width: 900px) {
     .page { grid-template-columns:1fr; gap:36px; }
     .page-aside-inner { position:static; }
@@ -620,23 +603,22 @@ const CSS = `
     .portrait figcaption { display:none; }
   }
   @media (max-width: 640px) {
-    :root { --fs-body:1rem; --fs-h3:1.5rem; --nav-h:62px; --lh:1.7; }
-    .brand { font-size:1.5rem; }
+    :root { --fs-body:1rem; --fs-h3:1.25rem; --nav-h:62px; --lh:1.7; }
+    .brand { font-size:1.25rem; }
     .split { grid-template-columns:1fr; padding:44px 0; }
     .pager { grid-template-columns:1fr; }
     .pager-link.next { grid-column:1; }
     .entry-head { flex-direction:column; gap:2px; }
-    .contact-v { font-size:1.25rem; }
+    .contact-v { font-size:1.125rem; }
     .hero-actions .magnetic { flex:1 1 auto; }
     .hero-actions .btn { width:100%; justify-content:center; }
   }
 `;
 
 // ─── Motion vocabulary ────────────────────────────────────────────────────────
-// Springs tuned to settle quickly with no visible wobble, the way macOS UI moves.
+// Only the Spotlight search animates; it uses this spring.
 const EASE = [0.16, 1, 0.3, 1];
 const SPRING = { type: 'spring', stiffness: 380, damping: 34, mass: 0.9 };
-const SPRING_SOFT = { type: 'spring', stiffness: 220, damping: 28 };
 
 const cap = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent || '');
@@ -649,13 +631,7 @@ const scrollToId = (id) => {
   if (el) el.scrollIntoView({ behavior: prefersReduced() ? 'auto' : 'smooth', block: 'start' });
 };
 
-// Soft rise-and-focus as content scrolls into view (plays once)
-const reveal = (delay = 0) => ({
-  initial: { opacity: 0, y: 18, filter: 'blur(4px)' },
-  whileInView: { opacity: 1, y: 0, filter: 'blur(0px)', transitionEnd: { filter: 'none' } },
-  viewport: { once: true, amount: 0.12 },
-  transition: { duration: 0.9, delay, ease: EASE },
-});
+
 
 // ─── Theme ────────────────────────────────────────────────────────────────────
 const getInitialTheme = () => {
@@ -683,6 +659,7 @@ const useTheme = () => {
   const toggleTheme = (e) => {
     const next = theme === 'light' ? 'dark' : 'light';
     const root = document.documentElement;
+    if (!THEME_REVEAL) { setTheme(next); return; }
     if (!document.startViewTransition || prefersReduced()) {
       root.classList.add('theme-anim');
       window.clearTimeout(timer.current);
@@ -741,18 +718,7 @@ const useScrollSpy = (ids) => {
 // ─── Small components ─────────────────────────────────────────────────────────
 const ThemeToggle = ({ theme, toggleTheme }) => (
   <button onClick={toggleTheme} className="icon-btn" aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}>
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.span
-        key={theme}
-        initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
-        animate={{ opacity: 1, rotate: 0, scale: 1 }}
-        exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
-        transition={SPRING}
-        style={{ display: 'flex' }}
-      >
-        {theme === 'light' ? <Moon /> : <Sun />}
-      </motion.span>
-    </AnimatePresence>
+    {theme === 'light' ? <Moon /> : <Sun />}
   </button>
 );
 
@@ -760,60 +726,19 @@ const ExtLink = ({ href, children, className = 'lnk' }) => (
   <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>
 );
 
-// Leans gently toward a mouse cursor; does nothing on touch screens
-const Magnetic = ({ children, strength = 0.22 }) => {
-  const ref = useRef(null);
-  const x = useSpring(0, { stiffness: 220, damping: 18, mass: 0.6 });
-  const y = useSpring(0, { stiffness: 220, damping: 18, mass: 0.6 });
-  const onMove = (e) => {
-    if (e.pointerType !== 'mouse' || prefersReduced() || !ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    x.set((e.clientX - (r.left + r.width / 2)) * strength);
-    y.set((e.clientY - (r.top + r.height / 2)) * strength * 1.4);
-  };
-  const reset = () => { x.set(0); y.set(0); };
-  return (
-    <motion.span ref={ref} className="magnetic" style={{ x, y }} onPointerMove={onMove} onPointerLeave={reset}>
-      {children}
-    </motion.span>
-  );
-};
-
 const Button = ({ to, href, external = false, variant = 'primary', icon = 'arrow', children, ...rest }) => {
   const cls = `btn${variant === 'ghost' ? ' btn-ghost' : ''}`;
   const Icon = icon === 'external' ? ArrowUpRight : ArrowRight;
-  const inner = (
-    <>
-      <span className="btn-roll"><span>{children}</span><span aria-hidden="true">{children}</span></span>
-      {icon && <span className={`btn-arrow${icon === 'external' ? ' diag' : ''}`} aria-hidden="true"><Icon /><Icon /></span>}
-    </>
-  );
-  return (
-    <Magnetic>
-      {to
-        ? <Link to={to} className={cls} {...rest}>{inner}</Link>
-        : <a href={href} className={cls} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} {...rest}>{inner}</a>}
-    </Magnetic>
-  );
+  const inner = <>{children}{icon && <Icon aria-hidden="true" />}</>;
+  return to
+    ? <Link to={to} className={cls} {...rest}>{inner}</Link>
+    : <a href={href} className={cls} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} {...rest}>{inner}</a>;
 };
 
-// A hairline that draws itself from the left when it scrolls into view
-const Rule = ({ delay = 0 }) => (
-  <motion.span className="rule" aria-hidden="true"
-    initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, amount: 1 }}
-    transition={{ duration: 1.2, delay, ease: EASE }} />
-);
+const Rule = () => <span className="rule" aria-hidden="true" />;
 
-// Text that rises out from behind an invisible mask
-const MaskLine = ({ children, delay = 0, play = true }) => (
-  <span className="line">
-    <motion.span initial={play ? { y: '105%' } : false} animate={{ y: '0%' }}
-      transition={{ duration: 1.1, delay, ease: EASE }}>{children}</motion.span>
-  </span>
-);
-
-const Entry = ({ title, href, tag, sub, date, children, animate = true, index = 0 }) => (
-  <motion.article className="entry" {...(animate ? reveal(Math.min(index, 4) * 0.07) : {})}>
+const Entry = ({ title, href, tag, sub, date, children }) => (
+  <article className="entry">
     <header className="entry-head">
       <h3 className="entry-title">
         {href
@@ -829,13 +754,13 @@ const Entry = ({ title, href, tag, sub, date, children, animate = true, index = 
       </p>
     )}
     {children && <div className="entry-body">{children}</div>}
-  </motion.article>
+  </article>
 );
 
 const Section = ({ id, title, children }) => (
   <section id={id} className="sec" aria-labelledby={`${id}-title`}>
-    <motion.h2 id={`${id}-title`} className="sec-title" {...reveal()}>{title}</motion.h2>
-    <Rule delay={0.1} />
+    <h2 id={`${id}-title`} className="sec-title">{title}</h2>
+    <Rule />
     {children}
   </section>
 );
@@ -847,7 +772,7 @@ const Pager = () => {
   const prev = i > 0 ? navPages[i - 1] : { label: 'Home', path: '/' };
   const next = navPages[i + 1];
   return (
-    <motion.nav className="pager" aria-label="Previous and next page" {...reveal()}>
+    <nav className="pager" aria-label="Previous and next page">
       <Link to={prev.path} className="pager-link prev">
         <span className="pager-dir"><ArrowLeft /> Previous</span>
         <span className="pager-label">{prev.label}</span>
@@ -858,7 +783,7 @@ const Pager = () => {
           <span className="pager-label">{next.label}</span>
         </Link>
       )}
-    </motion.nav>
+    </nav>
   );
 };
 
@@ -870,15 +795,15 @@ const PageLayout = ({ kicker, title, intro, sections = [], aside, children }) =>
       <aside className="page-aside">
         <div className="page-aside-inner">
           {kicker && <p className="kicker">{kicker}</p>}
-          <h1 className="page-title"><MaskLine delay={0.05}>{title}</MaskLine></h1>
-          {intro && <motion.p className="page-intro" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.25, ease: EASE }}>{intro}</motion.p>}
+          <h1 className="page-title">{title}</h1>
+          {intro && <p className="page-intro">{intro}</p>}
           {sections.length > 1 && (
             <nav className="toc" aria-label="On this page">
               {sections.map(s => (
                 <button key={s.id} type="button" className={`toc-item${active === s.id ? ' active' : ''}`}
                   aria-current={active === s.id ? 'location' : undefined}
                   onClick={() => { setActive(s.id); scrollToId(s.id); }}>
-                  {active === s.id && <motion.span layoutId="toc-bar" className="toc-bar" transition={SPRING} />}
+                  {active === s.id && <span className="toc-bar" />}
                   {s.label}
                 </button>
               ))}
@@ -998,8 +923,6 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [hovered, setHovered] = useState(null);
-
   useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 8);
@@ -1019,18 +942,13 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
       <header className={`nav${scrolled ? ' is-scrolled' : ''}${open ? ' is-open' : ''}`}>
         <div className="wrap nav-inner">
           <Link to="/" className="brand" aria-label="Adeetya Choubey, home">{cvData.name}</Link>
-          <nav className="nav-links" aria-label="Main" onMouseLeave={() => setHovered(null)}>
-            {navPages.map(({ label, path }) => {
+          <nav className="nav-links" aria-label="Main">
+            {navPages.map(({ label, path, desc }) => {
               const active = pathname === path;
               return (
-                <Link key={path} to={path} className={`nav-link${active ? ' active' : ''}`} aria-current={active ? 'page' : undefined}
-                  onMouseEnter={() => setHovered(path)}>
-                  <AnimatePresence>
-                    {hovered === path && <motion.span layoutId="nav-hover" className="nav-hover" transition={SPRING}
-                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.25 } }} />}
-                  </AnimatePresence>
-                  {active && <motion.span layoutId="nav-active" className="nav-active" transition={SPRING} />}
+                <Link key={path} to={path} className={`nav-link${active ? ' active' : ''}`} aria-current={active ? 'page' : undefined}>
                   {label}
+                  <span className="nav-tip" aria-hidden="true">{cap(desc)}</span>
                 </Link>
               );
             })}
@@ -1050,49 +968,35 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
         </div>
       </header>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div id="mobile-menu" className="mobile-menu"
-            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6, transition: { duration: 0.18 } }}
-            transition={SPRING_SOFT}>
-            <nav className="wrap" aria-label="Main">
-              {[{ label: 'Home', path: '/', desc: 'start here' }, ...navPages].map(({ label, path, desc }, i) => (
-                <motion.div key={path} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.05 + 0.045 * i, ease: EASE }}>
-                  <Link to={path} className={`m-link${pathname === path ? ' active' : ''}`} aria-current={pathname === path ? 'page' : undefined}>
-                    <span className="m-label">{label}</span>
-                    <span className="m-desc">{cap(desc)}</span>
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open && (
+        <div id="mobile-menu" className="mobile-menu">
+          <nav className="wrap" aria-label="Main">
+            {[{ label: 'Home', path: '/', desc: 'start here' }, ...navPages].map(({ label, path, desc }) => (
+              <Link key={path} to={path} className={`m-link${pathname === path ? ' active' : ''}`} aria-current={pathname === path ? 'page' : undefined}>
+                <span className="m-label">{label}</span>
+                <span className="m-desc">{cap(desc)}</span>
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
     </>
   );
 };
 
 const BackToTop = () => {
   const { scrollY, scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
   const [show, setShow] = useState(false);
   useEffect(() => scrollY.on('change', v => setShow(v > 520)), [scrollY]);
+  if (!show) return null;
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.button type="button" className="to-top" aria-label="Back to top"
-          initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }}
-          transition={SPRING} whileTap={{ scale: 0.9 }}
-          onClick={() => smoothScrollTo(0)}>
-          <svg className="ring-svg" viewBox="0 0 46 46" aria-hidden="true">
-            <circle className="ring-bg" cx="23" cy="23" r="21.5" />
-            <motion.circle className="ring" cx="23" cy="23" r="21.5" style={{ pathLength: progress }} />
-          </svg>
-          <ArrowUp aria-hidden="true" />
-        </motion.button>
-      )}
-    </AnimatePresence>
+    <button type="button" className="to-top" aria-label="Back to top" onClick={() => smoothScrollTo(0)}>
+      <svg className="ring-svg" viewBox="0 0 48 48" aria-hidden="true">
+        <circle className="ring-bg" cx="24" cy="24" r="22.5" />
+        <motion.circle className="ring" cx="24" cy="24" r="22.5" style={{ pathLength: scrollYProgress }} />
+      </svg>
+      <ArrowUp aria-hidden="true" />
+    </button>
   );
 };
 
@@ -1118,92 +1022,60 @@ const Split = ({ id, label, children }) => (
   <section className="wrap split-sec" aria-labelledby={`${id}-title`}>
     <Rule />
     <div className="split">
-      <motion.h2 id={`${id}-title`} className="split-label" {...reveal()}>{label}</motion.h2>
-      <motion.div {...reveal(0.08)}>{children}</motion.div>
+      <h2 id={`${id}-title`} className="split-label">{label}</h2>
+      <div>{children}</div>
     </div>
   </section>
 );
 
-let heroPlayed = false; // the intro plays once per visit, not on every return to Home
+ // the intro plays once per visit, not on every return to Home
 
-const HeroName = ({ play }) => (
+const HeroName = () => (
   <h1 className="hero-name">
-    <span className="sr-only">{cvData.name}</span>
-    {cvData.name.split(' ').map((word, i) => (
-      <span key={word} aria-hidden="true" style={{ display: 'block' }}>
-        <MaskLine play={play} delay={0.15 + i * 0.12}>{word}</MaskLine>
-      </span>
-    ))}
+    {cvData.name.split(' ').map(word => <span key={word} style={{ display: 'block' }}>{word}</span>)}
   </h1>
 );
 
-const Portrait = ({ play }) => {
-  const [state, setState] = useState('loading'); // loading | loaded | error
-  const imgRef = useRef(null);
-  const { scrollY } = useScroll();
-  const drift = useTransform(scrollY, [0, 700], [0, prefersReduced() ? 0 : -60]);
-  useEffect(() => {
-    const im = imgRef.current;
-    if (im && im.complete) setState(im.naturalWidth ? 'loaded' : 'error');
-  }, []);
+const Portrait = () => {
+  const [failed, setFailed] = useState(false);
   return (
-    <motion.figure className="portrait" style={{ y: drift }}>
+    <figure className="portrait">
       <div className="portrait-stage">
         <svg className="portrait-ring" viewBox="0 0 100 100" aria-hidden="true">
           <circle cx="50" cy="50" r="49.5" vectorEffect="non-scaling-stroke" />
-          <motion.circle className="accent" cx="50" cy="50" r="49.5" vectorEffect="non-scaling-stroke"
-            style={{ rotate: -90, transformOrigin: '50% 50%' }}
-            initial={play ? { pathLength: 0, opacity: 1 } : { pathLength: 0, opacity: 0 }}
-            animate={play ? { pathLength: [0, 1, 1], opacity: [1, 1, 0] } : {}}
-            transition={{ duration: 2.4, delay: 0.5, times: [0, 0.6, 1], ease: 'easeInOut' }} />
         </svg>
-        <motion.div className="portrait-frame" style={{ '--photo-pos': PROFILE_PHOTO_POSITION }}
-          initial={play ? { clipPath: 'circle(0% at 50% 50%)' } : false}
-          animate={{ clipPath: 'circle(50% at 50% 50%)', transitionEnd: { clipPath: 'none' } }}
-          transition={{ duration: 1.5, delay: 0.35, ease: EASE }}>
-          {state !== 'error' && (
-            <img ref={imgRef} src={PROFILE_PHOTO} alt={`${cvData.name}, smiling with arms crossed in front of bougainvillea`}
-              width="1000" height="1000" decoding="async"
-              className={state === 'loaded' ? 'is-loaded' : ''}
-              onLoad={() => setState('loaded')} onError={() => setState('error')} />
-          )}
-          {state === 'error' && <div className="portrait-fallback" aria-label={`${cvData.name} (photo not found)`}>AC</div>}
-        </motion.div>
+        <div className="portrait-frame" style={{ '--photo-pos': PROFILE_PHOTO_POSITION }}>
+          {!failed
+            ? <img src={PROFILE_PHOTO} alt={`${cvData.name}, smiling with arms crossed in front of bougainvillea`}
+                width="1000" height="1000" decoding="async" onError={() => setFailed(true)} />
+            : <div className="portrait-fallback" aria-label={`${cvData.name} (photo not found)`}>AC</div>}
+        </div>
       </div>
-      <motion.figcaption initial={play ? { opacity: 0 } : false} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.2 }}>
-        Currently: <Link to="/projects" className="lnk">homotopical algebra</Link>
-      </motion.figcaption>
-    </motion.figure>
+      <figcaption>Currently: <Link to="/projects" className="lnk">homotopical algebra</Link></figcaption>
+    </figure>
   );
 };
 
 const HomePage = ({ onSearch }) => {
-  const [play] = useState(() => !heroPlayed);
-  useEffect(() => { heroPlayed = true; }, []);
-  const rise = (d) => play ? {
-    initial: { opacity: 0, y: 14, filter: 'blur(4px)' },
-    animate: { opacity: 1, y: 0, filter: 'blur(0px)', transitionEnd: { filter: 'none' } },
-    transition: { duration: 0.9, delay: d, ease: EASE },
-  } : {};
 
   return (
     <div className="home">
       <section className="wrap hero">
         <div>
-          <HeroName play={play} />
-          <motion.p className="hero-role" {...rise(0.45)}>Idle category theorist (aspiring)</motion.p>
-          <motion.p className="hero-lead" {...rise(0.55)}>
+          <HeroName />
+          <p className="hero-role">Idle category theorist (aspiring)</p>
+          <p className="hero-lead">
             Math undergrad at <ExtLink href="https://maths.iiserb.ac.in/">IISER Bhopal</ExtLink>. An informal introduction to my formal (academic) self.
-          </motion.p>
-          <motion.div className="hero-actions" {...rise(0.65)}>
+          </p>
+          <div className="hero-actions">
             <Button to="/projects">See my work</Button>
             <Button to="/contact" variant="ghost" icon={null}>Get in touch</Button>
-          </motion.div>
-          <motion.p className="kbd-hint" {...rise(0.8)}>
+          </div>
+          <p className="kbd-hint">
             <button type="button" onClick={onSearch}>Press <kbd>/</kbd> to jump anywhere</button>
-          </motion.p>
+          </p>
         </div>
-        <Portrait play={play} />
+        <Portrait />
       </section>
 
       <Split id="about" label="About">
@@ -1216,7 +1088,7 @@ const HomePage = ({ onSearch }) => {
 
       <Split id="edu" label="Education">
         {cvData.education.map(edu => (
-          <Entry key={edu.institution} title={edu.institution} sub={edu.degree} date={edu.duration} animate={false}>
+          <Entry key={edu.institution} title={edu.institution} sub={edu.degree} date={edu.duration}>
             {edu.grades?.length > 0 && <div>{edu.grades.map(g => <span key={g} className="pill">{g}</span>)}</div>}
           </Entry>
         ))}
@@ -1224,7 +1096,7 @@ const HomePage = ({ onSearch }) => {
 
       <Split id="resp" label="Positions of responsibility">
         {cvData.responsibilities.map((r, i) => (
-          <Entry key={r.role} index={i} title={r.role} sub={r.institution} date={r.duration}>
+          <Entry key={r.role} title={r.role} sub={r.institution} date={r.duration}>
             <p>{r.description}</p>
           </Entry>
         ))}
@@ -1239,12 +1111,12 @@ const AcademicExperiencesPage = () => (
     sections={[{ id: 'internships', label: 'Research internships' }, { id: 'schools', label: 'Summer schools' }]}>
     <Section id="internships" title="Research internships">
       {cvData.academicExperiences.internships.map((exp, i) => (
-        <Entry key={exp.duration} index={i} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
+        <Entry key={exp.duration} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
       ))}
     </Section>
     <Section id="schools" title="Summer schools">
       {cvData.academicExperiences.summerSchools.map((exp, i) => (
-        <Entry key={exp.institution} index={i} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
+        <Entry key={exp.institution} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
       ))}
     </Section>
   </PageLayout>
@@ -1308,29 +1180,22 @@ const EventsPage = () => {
             const on = filter === t;
             const count = t === 'All' ? sortedEvents.length : sortedEvents.filter(e => e.tag === t).length;
             return (
-              <motion.button key={t} type="button" className={`chip${on ? ' active' : ''}`} aria-pressed={on} onClick={() => setFilter(t)}
-                whileTap={{ scale: 0.95 }} transition={SPRING}>
-                {on && <motion.span layoutId="chip-bg" className="chip-bg" transition={SPRING} />}
+              <button key={t} type="button" className={`chip${on ? ' active' : ''}`} aria-pressed={on} onClick={() => setFilter(t)}>
+                {on && <span className="chip-bg" />}
                 {t}<span className="chip-count">{count}</span>
-              </motion.button>
+              </button>
             );
           })}
         </div>
       }>
       <div className="entries">
-        <AnimatePresence initial={false} mode="popLayout">
-          {shown.map(ev => (
-            <motion.div key={ev.title} layout
-              initial={{ opacity: 0, scale: 0.98, filter: 'blur(4px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }}
-              exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.18 } }}
-              transition={{ ...SPRING_SOFT, opacity: { duration: 0.35 }, filter: { duration: 0.35 } }}>
-              <Entry title={ev.title} href={titleHref(ev)} tag={ev.tag} animate={false}>
-                <p>{renderDescription(ev)}</p>
-              </Entry>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {shown.map(ev => (
+          <div key={ev.title}>
+            <Entry title={ev.title} href={titleHref(ev)} tag={ev.tag}>
+              <p>{renderDescription(ev)}</p>
+            </Entry>
+          </div>
+        ))}
       </div>
     </PageLayout>
   );
@@ -1339,10 +1204,10 @@ const EventsPage = () => {
 // ─── Proofs (under construction) ──────────────────────────────────────────────
 const ProofsPage = () => (
   <PageLayout kicker="Proofs" title="Proofs" intro="Some of the abstract nonsense which really made sense.">
-    <motion.div className="note" {...reveal(0.1)}>
+    <div className="note">
       <p className="status" style={{ marginTop: 0 }}><span className="status-dot" aria-hidden="true" />Under construction</p>
       <p>Nothing here yet. In the meantime, have a look at <Link to="/projects" className="lnk">Projects</Link> or <Link to="/events" className="lnk">Events</Link>.</p>
-    </motion.div>
+    </div>
   </PageLayout>
 );
 
@@ -1356,7 +1221,7 @@ const OpenBoardPage = () => (
       { id: 'talks', label: 'Talks so far' },
     ]}>
     <Section id="about" title="About">
-      <motion.div {...reveal()}>
+      <div>
         <div className="prose" style={{ marginTop: 28 }}>
           <p className="lead">A space for students to speak about what they care about, to a general audience.</p>
           <p>{cvData.openboard.mission}</p>
@@ -1364,7 +1229,7 @@ const OpenBoardPage = () => (
         <div className="actions">
           <Button href={cvData.openboard.website} external icon="external">Visit OpenBoard</Button>
         </div>
-      </motion.div>
+      </div>
     </Section>
 
     <Section id="founders" title="Co-founders">
@@ -1377,13 +1242,13 @@ const OpenBoardPage = () => (
     </Section>
 
     <Section id="status" title="Status">
-      <motion.div className="note" style={{ marginTop: 28 }} {...reveal()}>
+      <div className="note" style={{ marginTop: 28 }}>
         <p className="status" style={{ marginTop: 0 }}><span className="status-dot" aria-hidden="true" />Currently on hold</p>
         <p>Due to academic commitments, we are currently on hold. We would like your help to bring it back. Reach out if you have ideas.</p>
         <div className="actions" style={{ marginTop: 20 }}>
           <Button href={`mailto:${cvData.contact.email}`}>Reach out</Button>
         </div>
-      </motion.div>
+      </div>
     </Section>
 
     <Section id="talks" title="Talks so far">
@@ -1405,7 +1270,7 @@ const ContactPage = () => {
   return (
     <PageLayout kicker="Contact" title="Get in touch"
       intro="Feel free to reach out for collaborations, academic discussions, or just a friendly exchange of ideas.">
-      <motion.div {...reveal(0.05)}>
+      <div>
         <a href={`mailto:${cvData.contact.email}`} className="contact-row">
           <span className="contact-icon"><Mail /></span>
           <span><span className="contact-k">Email</span><span className="contact-v">{cvData.contact.email}</span></span>
@@ -1417,17 +1282,12 @@ const ContactPage = () => {
           <ExternalLink className="contact-go" aria-hidden="true" />
         </a>
         <button type="button" className="copy-btn" onClick={copy} aria-live="polite">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span key={copied ? 'y' : 'n'} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.2 }}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              {copied ? <><Check /> Email copied</> : <><Copy /> Copy email address</>}
-            </motion.span>
-          </AnimatePresence>
+          {copied ? <><Check /> Email copied</> : <><Copy /> Copy email address</>}
         </button>
         <div className="prose" style={{ marginTop: 40 }}>
           <p style={{ fontSize: '1rem' }}>Based in {cvData.location}. Response times vary; email is the most reliable way to reach me.</p>
         </div>
-      </motion.div>
+      </div>
     </PageLayout>
   );
 };
@@ -1438,10 +1298,7 @@ const NotFoundPage = () => (
   </PageLayout>
 );
 
-// ─── Shell: persistent navbar/footer, page content fades in ──────────────────
-// Pages swap instantly and the new one eases in. There is deliberately no exit
-// animation: waiting for one is what could leave the screen blank when links
-// were clicked quickly.
+// ─── Shell: persistent navbar/footer around the current page ─────────────────
 function Shell({ theme, toggleTheme }) {
   const location = useLocation();
   const [cmdOpen, setCmdOpen] = useState(false);
@@ -1479,10 +1336,7 @@ function Shell({ theme, toggleTheme }) {
       <a href="#main" className="skip" onClick={focusMain}>Skip to content</a>
       <Navbar theme={theme} toggleTheme={toggleTheme} onSearch={openSearch} />
       <main id="main" tabIndex={-1}>
-        <motion.div key={location.pathname}
-          initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }}
-          transition={{ duration: 0.6, ease: EASE }}>
+        <div>
           <Routes location={location}>
             <Route path="/"          element={<HomePage onSearch={openSearch} />} />
             <Route path="/acadex"    element={<AcademicExperiencesPage />} />
@@ -1493,21 +1347,13 @@ function Shell({ theme, toggleTheme }) {
             <Route path="/contact"   element={<ContactPage />} />
             <Route path="*"          element={<NotFoundPage />} />
           </Routes>
-        </motion.div>
+        </div>
       </main>
       <Footer />
       <BackToTop />
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} theme={theme} toggleTheme={toggleTheme} notify={notify} />
       <div className="toast-wrap" aria-live="polite">
-        <AnimatePresence>
-          {toast && (
-            <motion.div key={toast.id} className="toast" role="status"
-              initial={{ opacity: 0, y: 16, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
-              transition={SPRING}>
-              {toast.msg}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {toast && <div className="toast" role="status">{toast.msg}</div>}
       </div>
       <div className="grain" aria-hidden="true" />
     </>
