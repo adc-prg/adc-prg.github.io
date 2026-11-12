@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import { HashRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, MotionConfig, useScroll, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig, useScroll, useSpring, useTransform } from 'framer-motion';
 
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -49,6 +49,11 @@ const ArrowLeft = (p) => (
 const ArrowUp = (p) => (
   <svg {...p} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>
+  </svg>
+);
+const ArrowUpRight = (p) => (
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M7 17 17 7"/><path d="M8 7h9v9"/>
   </svg>
 );
 const Search = (p) => (
@@ -162,6 +167,7 @@ const navPages = [
   { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
 
+
 // ─── CSS ──────────────────────────────────────────────────────────────────────
 // ─── Libron (embedded, OFL) ───────────────────────────────────────────────────
 // Libron by Nico Verbruggen, SIL Open Font License 1.1 · https://github.com/nicoverbruggen/libron
@@ -180,12 +186,12 @@ const LIBRON_FACE = `
 const PROFILE_PHOTO = 'profile.jpg';
 // Which point of the photo sits in the centre of the circle (x% y%).
 const PROFILE_PHOTO_POSITION = '50% 50%';
-// Dark theme: 'slate' (soft grey-blue with muted gold) or 'navy' (deep navy with gold).
-const DARK_STYLE = 'slate';
+// Dark theme: 'navy' (deep navy with gold) or 'slate' (soft grey-blue with muted gold).
+const DARK_STYLE = 'navy';
 
-// Type: blackletter masthead, Playfair headlines, Libron (embedded above) for body
-// text, Franklin for small labels.
-const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=UnifrakturMaguntia&family=Libre+Franklin:wght@400;500;600&display=swap';
+// Type: Instrument Serif for headings, Libron (embedded above) for body text,
+// and the system UI font (San Francisco on Apple devices, Inter elsewhere) for labels and buttons.
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap';
 
 const CSS = `
   :root {
@@ -197,33 +203,50 @@ const CSS = `
     --accent:      #8A2F37;
     --accent-soft: rgba(138,47,55,0.07);
     --accent-line: rgba(138,47,55,0.32);
+    --hover:       rgba(31,26,23,0.05);
     --line:        #DCD2C2;
     --line-strong: #C5B9A5;
-    --on-ink:      #F0EADD;
+    --on-ink:      #F6F1E7;
     --on-accent:   #FFFFFF;
-    --grain:       0.05;
+    --grain:       0.045;
     --pop-shadow:  0 24px 60px -24px rgba(40,25,15,0.35), 0 2px 6px rgba(40,25,15,0.06);
 
-    --masthead: 'UnifrakturMaguntia', 'Old English Text MT', 'Times New Roman', serif;
-    --display:  'Playfair Display', 'Bodoni 72', Didot, Georgia, serif;
-    --text:     'Libron', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-    --ui:       'Libre Franklin', 'Franklin Gothic Book', 'Helvetica Neue', Arial, sans-serif;
+    --display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+    --text:    'Libron', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    --ui:      -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
     --fs-ui:   0.875rem;
     --fs-ui-s: 0.8125rem;
     --fs-body: 1.0625rem;
-    --fs-lead: 1.25rem;
-    --fs-h3:   1.3125rem;
-    --fs-h1:   clamp(2.25rem, 1.6rem + 2.4vw, 3.125rem);
-    --fs-hero: clamp(3rem, 1.5rem + 5.6vw, 5.25rem);
+    --fs-lead: 1.625rem;
+    --fs-h3:   1.625rem;
+    --fs-h1:   clamp(2.75rem, 1.9rem + 3vw, 4rem);
+    --fs-hero: clamp(3.75rem, 2rem + 7vw, 7rem);
     --lh:      1.72;
     --measure: 64ch;
 
     --nav-h:  70px;
-    --r:      8px;
+    --r:      12px;
     --ease:   cubic-bezier(0.16, 1, 0.3, 1);
   }
   .dark {
+    --bg:          #0A1120;
+    --surface:     #101B30;
+    --ink:         #F4EFE3;
+    --ink2:        #C7CEDD;
+    --ink3:        #8693B0;
+    --accent:      #E3B23C;
+    --accent-soft: rgba(227,178,60,0.09);
+    --accent-line: rgba(227,178,60,0.36);
+    --hover:       rgba(244,239,227,0.06);
+    --line:        #1C2A44;
+    --line-strong: #2A3B5C;
+    --on-ink:      #0A1120;
+    --on-accent:   #1C1206;
+    --grain:       0.05;
+    --pop-shadow:  0 24px 60px -20px rgba(0,0,0,0.65), 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .dark[data-dark="slate"] {
     --bg:          #14171E;
     --surface:     #1A1E27;
     --ink:         #EAE6E0;
@@ -236,22 +259,6 @@ const CSS = `
     --line-strong: #353B49;
     --on-ink:      #14171E;
     --on-accent:   #1A1508;
-    --grain:       0.06;
-    --pop-shadow:  0 24px 60px -20px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.2);
-  }
-  .dark[data-dark="navy"] {
-    --bg:          #0A1120;
-    --surface:     #101B30;
-    --ink:         #F4EFE3;
-    --ink2:        #C7CEDD;
-    --ink3:        #7E8CAA;
-    --accent:      #E3B23C;
-    --accent-soft: rgba(227,178,60,0.08);
-    --accent-line: rgba(227,178,60,0.34);
-    --line:        #1C2A44;
-    --line-strong: #2A3B5C;
-    --on-ink:      #0A1120;
-    --on-accent:   #1C1206;
   }
 
   /* ── Base ─────────────────────────────────────────── */
@@ -265,20 +272,19 @@ const CSS = `
     -webkit-tap-highlight-color:transparent;
   }
   h1,h2,h3,h4,p,figure { margin:0; }
-  h1,h2,h3 { text-wrap:balance; }
+  h1,h2,h3 { text-wrap:balance; font-weight:400; }
   p { text-wrap:pretty; overflow-wrap:break-word; }
   button, input { font:inherit; color:inherit; }
-  strong { font-weight:700; color:var(--ink); }
+  strong { font-weight:600; color:var(--ink); }
   ::selection { background:var(--accent); color:var(--on-accent); }
-  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:4px; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
   main:focus { outline:none; }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
   kbd {
-    font-family:var(--ui); font-size:0.6875rem; line-height:1.6; padding:0 5px; border-radius:4px;
+    font-family:var(--ui); font-size:0.6875rem; line-height:1.6; padding:0 6px; border-radius:5px;
     border:1px solid var(--line-strong); color:var(--ink2);
   }
 
-  /* Newsprint grain */
   .grain { position:fixed; inset:0; z-index:200; pointer-events:none; opacity:var(--grain);
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
@@ -286,7 +292,6 @@ const CSS = `
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Theme switch: circular reveal (View Transitions), cross-fade as fallback */
   ::view-transition-old(root), ::view-transition-new(root) { animation:none; mix-blend-mode:normal; }
   .theme-anim, .theme-anim *, .theme-anim *::before, .theme-anim *::after {
     transition: background-color .45s ease, border-color .45s ease, color .45s ease, fill .45s ease, stroke .45s ease !important;
@@ -299,60 +304,86 @@ const CSS = `
   .wrap { width:100%; max-width:1120px; margin:0 auto; padding:0 clamp(20px, 4vw, 40px); }
 
   .skip {
-    position:fixed; left:16px; top:-60px; z-index:100; padding:8px 16px; border-radius:var(--r);
+    position:fixed; left:16px; top:-60px; z-index:100; padding:8px 16px; border-radius:999px;
     background:var(--ink); color:var(--on-ink); font-family:var(--ui); font-size:var(--fs-ui); text-decoration:none; transition:top .3s var(--ease);
   }
   .skip:focus { top:12px; }
 
-  /* ── Links & buttons ─────────────────────────────── */
+  /* ── Links ───────────────────────────────────────── */
   .lnk {
-    color:var(--accent); text-decoration:underline; text-decoration-thickness:1px;
-    text-underline-offset:3px; text-decoration-color:var(--accent-line); transition:text-decoration-color .3s ease;
+    color:var(--accent); text-decoration:none;
+    background-image:linear-gradient(var(--accent-line), var(--accent-line)), linear-gradient(var(--accent), var(--accent));
+    background-repeat:no-repeat; background-size:100% 1px, 0% 1px; background-position:0 100%, 0 100%;
+    transition:background-size .6s var(--ease);
   }
-  .lnk:hover { text-decoration-color:var(--accent); }
+  .lnk:hover { background-size:100% 1px, 100% 1px; }
 
+  /* ── Buttons ─────────────────────────────────────────
+     Pill buttons: colour sweeps up from below, the label rolls to a fresh copy,
+     and the arrow slides out and back in. On a mouse they lean gently toward
+     the cursor; on touch they simply press. */
+  .magnetic { display:inline-flex; will-change:transform; }
   .btn {
-    display:inline-flex; align-items:center; gap:12px; padding:13px 24px; border-radius:var(--r);
+    position:relative; isolation:isolate; overflow:hidden;
+    display:inline-flex; align-items:center; gap:12px; height:50px; padding:0 26px; border-radius:999px;
     background:var(--ink); color:var(--on-ink); border:1px solid var(--ink);
-    font-family:var(--ui); font-size:var(--fs-ui); font-weight:500; letter-spacing:0.01em; line-height:1.3;
-    text-decoration:none; cursor:pointer; user-select:none;
-    transition:background-color .35s ease, border-color .35s ease, color .35s ease, transform .35s var(--ease);
+    font-family:var(--ui); font-size:0.9375rem; font-weight:500; letter-spacing:-0.005em;
+    text-decoration:none; cursor:pointer; user-select:none; white-space:nowrap;
+    transition:color .45s var(--ease), border-color .45s var(--ease), transform .4s var(--ease);
   }
-  .btn:hover { background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
-  .btn:active { transform:scale(0.97); transition-duration:.12s; }
+  .btn::before {
+    content:''; position:absolute; inset:-1px; z-index:-1; border-radius:inherit; background:var(--accent);
+    transform:translateY(102%); transition:transform .6s var(--ease);
+  }
+  .btn:hover { color:var(--on-accent); border-color:var(--accent); }
+  .btn:hover::before { transform:translateY(0); }
+  .btn:active { transform:scale(0.96); transition-duration:.15s; }
   .btn-ghost { background:transparent; color:var(--ink); border-color:var(--line-strong); }
-  .btn-ghost:hover { background:transparent; color:var(--accent); border-color:var(--accent); }
-  .btn svg { transition:transform .5s var(--ease); }
-  .btn:hover svg { transform:translateX(3px); }
+  .btn-ghost::before { background:var(--ink); }
+  .btn-ghost:hover { color:var(--on-ink); border-color:var(--ink); }
+
+  .btn-roll { position:relative; display:inline-block; overflow:hidden; height:1.3em; line-height:1.3em; }
+  .btn-roll > span { display:block; transition:transform .6s var(--ease); }
+  .btn-roll > span + span { position:absolute; left:0; top:100%; }
+  .btn:hover .btn-roll > span { transform:translateY(-100%); }
+
+  .btn-arrow { position:relative; display:inline-block; width:15px; height:15px; overflow:hidden; flex-shrink:0; }
+  .btn-arrow svg { position:absolute; inset:0; width:15px; height:15px; transition:transform .6s var(--ease); }
+  .btn-arrow svg + svg { transform:translateX(-140%); }
+  .btn:hover .btn-arrow svg:first-child { transform:translateX(140%); }
+  .btn:hover .btn-arrow svg + svg { transform:translateX(0); }
+  .btn-arrow.diag svg + svg { transform:translate(-140%, 140%); }
+  .btn:hover .btn-arrow.diag svg:first-child { transform:translate(140%, -140%); }
+  .btn:hover .btn-arrow.diag svg + svg { transform:translate(0, 0); }
 
   .icon-btn {
-    width:38px; height:38px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
-    border-radius:var(--r); border:1px solid var(--line-strong); background:transparent; color:var(--ink2); cursor:pointer;
-    transition:border-color .3s ease, color .3s ease, transform .35s var(--ease);
+    width:40px; height:40px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:50%; border:1px solid var(--line); background:var(--surface); color:var(--ink2); cursor:pointer;
+    transition:border-color .35s ease, color .35s ease, transform .4s var(--ease);
   }
-  .icon-btn:hover { color:var(--accent); border-color:var(--accent); }
-  .icon-btn:active { transform:scale(0.92); transition-duration:.12s; }
+  .icon-btn:hover { color:var(--accent); border-color:var(--accent-line); }
+  .icon-btn:active { transform:scale(0.9); transition-duration:.15s; }
 
-  /* ── Navbar (masthead) ───────────────────────────── */
+  /* ── Navbar ──────────────────────────────────────── */
   .nav { position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid transparent; transition:border-color .35s ease; }
-  .nav.is-scrolled, .nav.is-open { border-bottom-color:var(--line-strong); }
+  .nav.is-scrolled, .nav.is-open { border-bottom-color:var(--line); }
   .nav-inner { height:var(--nav-h); display:flex; align-items:center; justify-content:space-between; gap:24px; }
-  .brand { font-family:var(--masthead); font-size:1.625rem; font-weight:400; line-height:1; color:var(--ink); text-decoration:none; white-space:nowrap; transition:color .3s ease; }
+  .brand { font-family:var(--display); font-size:1.625rem; line-height:1; letter-spacing:-0.01em; color:var(--ink); text-decoration:none; white-space:nowrap; transition:color .3s ease; }
   .brand:hover { color:var(--accent); }
-  .nav-links { position:relative; display:flex; align-items:center; gap:2px; }
-  .nav-link { position:relative; isolation:isolate; padding:7px 13px; border-radius:999px; font-family:var(--text); font-size:0.9375rem; color:var(--ink2); text-decoration:none; transition:color .3s ease; }
-  .nav-link:hover, .nav-link.active { color:var(--ink); }
+  .nav-links { display:flex; align-items:center; gap:2px; padding:4px; border-radius:999px; }
+  .nav-link { position:relative; isolation:isolate; padding:7px 14px; border-radius:999px; font-family:var(--ui); font-size:var(--fs-ui); font-weight:500; color:var(--ink2); text-decoration:none; transition:color .3s ease; }
+  .nav-link:hover { color:var(--ink); }
   .nav-link.active { color:var(--accent); }
-  .nav-pill { position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--accent-soft); }
-  .nav-underline { position:absolute; left:13px; right:13px; bottom:1px; height:1px; background:var(--accent); }
+  .nav-hover  { position:absolute; inset:0; z-index:-2; border-radius:inherit; background:var(--hover); }
+  .nav-active { position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--accent-soft); box-shadow:inset 0 0 0 1px var(--accent-line); }
   .nav-actions { display:flex; align-items:center; gap:8px; }
   .search-btn {
-    display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 8px 0 12px; border-radius:var(--r);
-    border:1px solid var(--line-strong); background:transparent; color:var(--ink3); font-family:var(--ui); font-size:var(--fs-ui-s); cursor:pointer;
-    transition:border-color .3s ease, color .3s ease, transform .35s var(--ease);
+    display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 8px 0 14px; border-radius:999px;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink3); font-family:var(--ui); font-size:var(--fs-ui-s); cursor:pointer;
+    transition:border-color .35s ease, color .35s ease, transform .4s var(--ease);
   }
-  .search-btn:hover { color:var(--accent); border-color:var(--accent); }
-  .search-btn:active { transform:scale(0.96); transition-duration:.12s; }
+  .search-btn:hover { color:var(--ink); border-color:var(--accent-line); }
+  .search-btn:active { transform:scale(0.96); transition-duration:.15s; }
   .menu-btn { display:none; }
   .burger { position:relative; width:16px; height:10px; }
   .burger span { position:absolute; left:0; right:0; height:1.5px; border-radius:1px; background:currentColor; transition:transform .5s var(--ease), top .5s var(--ease); }
@@ -361,55 +392,55 @@ const CSS = `
   .is-open .burger span:first-child { top:4.25px; transform:rotate(45deg); }
   .is-open .burger span:last-child  { top:4.25px; transform:rotate(-45deg); }
 
-  .mobile-menu { position:fixed; top:var(--nav-h); left:0; right:0; bottom:0; z-index:49; background:var(--bg); overflow-y:auto; padding:8px 0 48px; transform-origin:top center; }
-  .m-link { display:block; padding:16px 0; border-bottom:1px solid var(--line); text-decoration:none; }
-  .m-label { display:block; font-family:var(--display); font-size:1.5rem; font-weight:600; line-height:1.25; color:var(--ink); transition:color .3s ease; }
-  .m-desc  { display:block; margin-top:2px; font-size:0.9375rem; font-style:italic; color:var(--ink3); }
-  .m-link.active .m-label, .m-link:active .m-label { color:var(--accent); }
+  .mobile-menu { position:fixed; top:var(--nav-h); left:0; right:0; bottom:0; z-index:49; background:var(--bg); overflow-y:auto; padding:8px 0 48px; }
+  .m-link { display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--line); text-decoration:none; }
+  .m-label { font-family:var(--display); font-size:2rem; line-height:1.15; color:var(--ink); transition:color .3s ease; }
+  .m-desc  { font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); text-align:right; }
+  .m-link.active .m-label { color:var(--accent); }
 
   @media (max-width: 1000px) {
     .nav-links { display:none; }
     .menu-btn { display:inline-flex; }
-    .search-btn { width:38px; padding:0; justify-content:center; }
+    .search-btn { width:40px; padding:0; justify-content:center; }
     .search-btn .search-label, .search-btn kbd { display:none; }
   }
 
   /* ── Spotlight-style search ──────────────────────── */
   .cmdk-backdrop {
     position:fixed; inset:0; z-index:80; display:flex; justify-content:center; align-items:flex-start;
-    padding:14vh 16px 16px; background:rgba(15,10,8,0.18);
+    padding:14vh 16px 16px; background:rgba(10,8,6,0.2);
   }
   .cmdk {
-    width:100%; max-width:580px; border-radius:16px; overflow:hidden; font-family:var(--ui);
+    width:100%; max-width:580px; border-radius:18px; overflow:hidden; font-family:var(--ui);
     background:color-mix(in srgb, var(--surface) 86%, transparent);
     -webkit-backdrop-filter:blur(28px) saturate(1.5); backdrop-filter:blur(28px) saturate(1.5);
     border:1px solid color-mix(in srgb, var(--ink) 10%, transparent); box-shadow:var(--pop-shadow);
   }
   .cmdk-input-row { display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid var(--line); color:var(--ink3); }
-  .cmdk-input { flex:1; min-width:0; border:0; outline:none; background:transparent; font-family:var(--text); font-size:1.1875rem; color:var(--ink); }
-  .cmdk-input::placeholder { color:var(--ink3); font-style:italic; }
+  .cmdk-input { flex:1; min-width:0; border:0; outline:none; background:transparent; font-family:var(--ui); font-size:1.125rem; color:var(--ink); }
+  .cmdk-input::placeholder { color:var(--ink3); }
   .cmdk-list { max-height:min(56vh, 420px); overflow-y:auto; padding:6px 8px 10px; overscroll-behavior:contain; }
-  .cmdk-group { padding:12px 12px 4px; font-size:var(--fs-ui-s); color:var(--ink3); }
+  .cmdk-group { padding:12px 12px 4px; font-size:var(--fs-ui-s); font-weight:500; color:var(--ink3); }
   .cmdk-item { position:relative; isolation:isolate; display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:10px 12px; border-radius:10px; cursor:pointer; font-size:var(--fs-ui); color:var(--ink); }
   .cmdk-item.active .cmdk-label { color:var(--on-accent); }
   .cmdk-item.active .cmdk-hint { color:color-mix(in srgb, var(--on-accent) 75%, transparent); }
   .cmdk-hl { position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--accent); }
   .cmdk-hint { max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:var(--fs-ui-s); color:var(--ink3); transition:color .2s ease; }
-  .cmdk-empty { padding:28px 12px; text-align:center; font-family:var(--text); font-style:italic; color:var(--ink3); }
+  .cmdk-empty { padding:28px 12px; text-align:center; color:var(--ink3); }
   .cmdk-foot { display:flex; gap:18px; padding:10px 20px; border-top:1px solid var(--line); font-size:var(--fs-ui-s); color:var(--ink3); }
   @media (hover: none) { .cmdk-foot { display:none; } }
 
   /* ── Back-to-top with reading progress ───────────── */
   .to-top {
     position:fixed; right:clamp(16px, 3vw, 32px); bottom:calc(clamp(16px, 3vw, 32px) + env(safe-area-inset-bottom, 0px)); z-index:40;
-    width:46px; height:46px; border-radius:50%; border:0; cursor:pointer; color:var(--ink2);
-    display:flex; align-items:center; justify-content:center; background:var(--bg);
+    width:48px; height:48px; border-radius:50%; border:0; cursor:pointer; color:var(--ink2);
+    display:flex; align-items:center; justify-content:center; background:var(--surface);
     transition:color .3s ease;
   }
   .to-top:hover { color:var(--accent); }
-  .to-top .ring-svg { position:absolute; inset:0; width:46px; height:46px; transform:rotate(-90deg); }
-  .ring-bg { fill:none; stroke:var(--line-strong); stroke-width:1; }
-  .ring    { fill:none; stroke:var(--accent); stroke-width:1.5; }
+  .to-top .ring-svg { position:absolute; inset:0; width:48px; height:48px; transform:rotate(-90deg); }
+  .ring-bg { fill:none; stroke:var(--line); stroke-width:1; }
+  .ring    { fill:none; stroke:var(--accent); stroke-width:1.5; stroke-linecap:round; }
 
   .toast-wrap { position:fixed; left:0; right:0; bottom:calc(28px + env(safe-area-inset-bottom, 0px)); z-index:90; display:flex; justify-content:center; pointer-events:none; }
   .toast { padding:10px 18px; border-radius:999px; background:var(--ink); color:var(--on-ink); font-family:var(--ui); font-size:var(--fs-ui); box-shadow:var(--pop-shadow); }
@@ -417,33 +448,36 @@ const CSS = `
   /* ── Inner page layout ───────────────────────────── */
   main { display:block; min-height:calc(100vh - var(--nav-h)); }
   .page {
-    display:grid; grid-template-columns:minmax(220px, 290px) minmax(0, 1fr); gap:clamp(40px, 7vw, 104px);
+    display:grid; grid-template-columns:minmax(220px, 300px) minmax(0, 1fr); gap:clamp(40px, 7vw, 104px);
     align-items:start; padding-top:clamp(48px, 7vw, 88px); padding-bottom:24px;
   }
   .page-aside { align-self:stretch; }
   .page-aside-inner { position:sticky; top:calc(var(--nav-h) + 40px); }
-  .kicker { font-family:var(--text); font-style:italic; font-size:0.9375rem; color:var(--accent); margin-bottom:10px; }
-  .page-title { font-family:var(--display); font-size:var(--fs-h1); line-height:1.08; font-weight:700; letter-spacing:-0.01em; color:var(--ink); }
-  .page-intro { margin-top:16px; max-width:30ch; font-size:1rem; line-height:1.6; font-style:italic; color:var(--ink3); }
+  .kicker { display:inline-flex; align-items:center; gap:8px; font-family:var(--ui); font-size:var(--fs-ui-s); font-weight:500; color:var(--accent); margin-bottom:14px; }
+  .kicker::before { content:''; width:18px; height:1px; background:currentColor; }
+  .page-title { font-family:var(--display); font-size:var(--fs-h1); line-height:1.02; letter-spacing:-0.02em; color:var(--ink); }
+  .page-title .line { display:block; overflow:hidden; padding-bottom:0.08em; margin-bottom:-0.08em; }
+  .page-title .line > span { display:block; }
+  .page-intro { margin-top:18px; max-width:30ch; font-size:1rem; line-height:1.6; color:var(--ink3); }
 
-  .toc { margin-top:36px; display:flex; flex-direction:column; border-left:1px solid var(--line-strong); }
+  .toc { margin-top:36px; display:flex; flex-direction:column; border-left:1px solid var(--line); }
   .toc-item { position:relative; text-align:left; background:none; border:0; padding:6px 0 6px 18px; font-family:var(--ui); font-size:var(--fs-ui); color:var(--ink3); cursor:pointer; transition:color .3s ease; }
   .toc-item:hover, .toc-item.active { color:var(--ink); }
   .toc-bar { position:absolute; left:-1px; top:6px; bottom:6px; width:2px; border-radius:2px; background:var(--accent); }
 
   .page-body { min-width:0; max-width:46rem; }
   .sec { scroll-margin-top:calc(var(--nav-h) + 32px); }
-  .sec + .sec { margin-top:72px; }
-  .sec-title { font-family:var(--display); font-size:1.0625rem; font-weight:600; font-style:italic; color:var(--ink); padding-bottom:10px; border-bottom:3px double var(--ink); }
+  .sec + .sec { margin-top:80px; }
+  .sec-title { font-family:var(--display); font-size:1.75rem; line-height:1.2; color:var(--ink); padding-bottom:12px; }
+  .rule { display:block; height:1px; background:var(--line-strong); transform-origin:0 50%; }
 
-  .entry { padding:28px 0; border-bottom:1px solid var(--line); }
+  .entry { padding:30px 0; border-bottom:1px solid var(--line); }
   .sec .entry:last-child, .entries > :last-child .entry { border-bottom:0; }
   .entry-head { display:flex; justify-content:space-between; align-items:baseline; gap:4px 24px; flex-wrap:wrap; }
-  .entry-title { font-family:var(--display); font-size:var(--fs-h3); line-height:1.3; font-weight:700; color:var(--ink); }
-  .entry-date { font-family:var(--text); font-style:italic; font-size:0.9375rem; color:var(--ink3); white-space:nowrap; }
+  .entry-title { font-family:var(--display); font-size:var(--fs-h3); line-height:1.2; letter-spacing:-0.005em; color:var(--ink); }
+  .entry-date { font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); white-space:nowrap; font-variant-numeric:tabular-nums; }
   .entry-sub { margin-top:6px; font-family:var(--ui); font-size:var(--fs-ui); line-height:1.5; color:var(--ink2); }
-  .tag { color:var(--accent); font-weight:500; }
-  .tag + span { margin-left:12px; }
+  .tag { display:inline-block; padding:2px 10px; margin-right:10px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-size:var(--fs-ui-s); font-weight:500; }
   .entry-body { margin-top:14px; max-width:var(--measure); color:var(--ink2); }
   .entry-body > * + * { margin-top:0.9em; }
 
@@ -451,117 +485,119 @@ const CSS = `
     color:inherit; text-decoration:none;
     background-image:linear-gradient(currentColor, currentColor); background-repeat:no-repeat;
     background-size:0% 1px; background-position:0 100%;
-    transition:background-size .6s var(--ease), color .3s ease;
+    transition:background-size .7s var(--ease), color .3s ease;
   }
   .title-link:hover { color:var(--accent); background-size:100% 1px; }
-  .title-link-icon { display:inline-block; margin-left:8px; vertical-align:0.02em; color:var(--ink3); transition:color .3s ease, transform .5s var(--ease); }
+  .title-link-icon { display:inline-block; margin-left:8px; vertical-align:0.1em; color:var(--ink3); transition:color .3s ease, transform .5s var(--ease); }
   .title-link:hover .title-link-icon { color:var(--accent); transform:translate(2px,-2px); }
 
-  .lead { font-family:var(--display); font-size:var(--fs-lead); line-height:1.45; font-style:italic; color:var(--ink); max-width:40ch; }
+  .lead { font-family:var(--display); font-style:italic; font-size:var(--fs-lead); line-height:1.3; color:var(--ink); max-width:30ch; }
   .prose { max-width:var(--measure); color:var(--ink2); }
   .prose > * + * { margin-top:0.9em; }
-  .dropcap::first-letter {
-    float:left; font-family:var(--display); font-weight:700; font-size:3.6em; line-height:0.82;
-    padding:0.08em 0.1em 0 0; color:var(--accent);
-  }
-  @media (min-width: 700px) {
-    .prose p:not(.lead), .entry-body p { text-align:justify; -webkit-hyphens:auto; hyphens:auto; }
-  }
   .actions { margin-top:28px; display:flex; flex-wrap:wrap; gap:12px; }
 
-  .pill { display:inline-block; margin-top:12px; padding:3px 12px; border-radius:999px; border:1px solid var(--line-strong); font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink2); font-variant-numeric:tabular-nums; }
+  .pill { display:inline-block; margin-top:12px; padding:4px 12px; border-radius:999px; background:var(--surface); border:1px solid var(--line); font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink2); font-variant-numeric:tabular-nums; }
   .status { display:inline-flex; align-items:center; gap:10px; font-family:var(--ui); font-size:var(--fs-ui-s); font-weight:500; color:var(--accent); }
   .status-dot { position:relative; width:6px; height:6px; border-radius:50%; background:currentColor; }
   .status-dot::after { content:''; position:absolute; inset:-4px; border-radius:50%; border:1px solid currentColor; opacity:0; animation:ping 3s var(--ease) infinite; }
   @keyframes ping { 0% { transform:scale(.6); opacity:.6; } 100% { transform:scale(1.9); opacity:0; } }
-  .note { padding:24px 26px; border-radius:var(--r); background:var(--accent-soft); border-left:2px solid var(--accent); }
+  .note { padding:26px 28px; border-radius:16px; background:var(--surface); border:1px solid var(--line); }
   .note p { margin-top:10px; color:var(--ink2); max-width:56ch; }
 
   .filters { margin-top:32px; display:flex; flex-wrap:wrap; gap:8px; }
   .chip {
     position:relative; isolation:isolate; display:inline-flex; align-items:center; gap:6px;
-    padding:6px 13px; border-radius:999px; border:1px solid var(--line-strong); background:transparent;
-    font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink2); cursor:pointer; transition:color .3s ease, border-color .3s ease;
+    padding:7px 14px; border-radius:999px; border:1px solid var(--line); background:var(--surface);
+    font-family:var(--ui); font-size:var(--fs-ui-s); font-weight:500; color:var(--ink2); cursor:pointer; transition:color .35s ease, border-color .35s ease;
   }
-  .chip:hover { color:var(--ink); border-color:var(--ink3); }
-  .chip.active { color:var(--on-ink); border-color:var(--ink); }
+  .chip:hover { color:var(--ink); border-color:var(--line-strong); }
+  .chip.active { color:var(--on-ink); border-color:transparent; }
   .chip-bg { position:absolute; inset:-1px; z-index:-1; border-radius:inherit; background:var(--ink); }
-  .chip-count { opacity:.65; font-variant-numeric:tabular-nums; }
+  .chip-count { opacity:.6; font-variant-numeric:tabular-nums; }
 
-  .pager { margin-top:88px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .pager { margin-top:96px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .pager-link {
-    display:flex; flex-direction:column; gap:2px; padding:16px 20px; border:1px solid var(--line-strong); border-radius:var(--r);
-    text-decoration:none; transition:border-color .35s ease, background-color .35s ease, transform .35s var(--ease);
+    position:relative; isolation:isolate; overflow:hidden;
+    display:flex; flex-direction:column; gap:4px; padding:20px 22px; border:1px solid var(--line); border-radius:16px; background:var(--surface);
+    text-decoration:none; transition:border-color .4s ease, transform .4s var(--ease);
   }
-  .pager-link:hover { border-color:var(--ink); background:var(--surface); }
-  .pager-link:active { transform:scale(0.98); transition-duration:.12s; }
+  .pager-link::before { content:''; position:absolute; inset:0; z-index:-1; background:var(--accent-soft); opacity:0; transition:opacity .4s ease; }
+  .pager-link:hover { border-color:var(--accent-line); }
+  .pager-link:hover::before { opacity:1; }
+  .pager-link:active { transform:scale(0.98); transition-duration:.15s; }
   .pager-link.next { grid-column:2; align-items:flex-end; text-align:right; }
   .pager-dir { display:inline-flex; align-items:center; gap:6px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
-  .pager-label { font-family:var(--display); font-size:1.25rem; font-weight:600; color:var(--ink); transition:color .3s ease; }
+  .pager-label { font-family:var(--display); font-size:1.75rem; line-height:1.1; color:var(--ink); transition:color .3s ease; }
   .pager-link:hover .pager-label { color:var(--accent); }
-  .pager-link svg { transition:transform .5s var(--ease); }
-  .pager-link.prev:hover svg { transform:translateX(-3px); }
-  .pager-link.next:hover svg { transform:translateX(3px); }
+  .pager-link svg { transition:transform .6s var(--ease); }
+  .pager-link.prev:hover svg { transform:translateX(-4px); }
+  .pager-link.next:hover svg { transform:translateX(4px); }
 
   .contact-row {
-    display:grid; grid-template-columns:42px minmax(0,1fr) auto; align-items:center; gap:18px;
-    padding:20px 0; border-bottom:1px solid var(--line); color:var(--ink); text-decoration:none;
+    position:relative; isolation:isolate;
+    display:grid; grid-template-columns:44px minmax(0,1fr) auto; align-items:center; gap:18px;
+    padding:18px 16px; margin:0 -16px; border-radius:16px; color:var(--ink); text-decoration:none;
   }
-  .contact-row:first-child { padding-top:0; }
-  .contact-icon { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:1px solid var(--line-strong); color:var(--accent); transition:border-color .35s ease, transform .5s var(--ease); }
-  .contact-row:hover .contact-icon { border-color:var(--accent); transform:scale(1.06); }
+  .contact-row::before { content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--surface); opacity:0; transform:scale(0.98); transition:opacity .4s ease, transform .5s var(--ease); }
+  .contact-row:hover::before { opacity:1; transform:scale(1); }
+  .contact-row + .contact-row { margin-top:6px; }
+  .contact-icon { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent); transition:transform .6s var(--ease); }
+  .contact-row:hover .contact-icon { transform:scale(1.08) rotate(-6deg); }
   .contact-k { display:block; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
-  .contact-v { display:block; font-family:var(--display); font-size:1.25rem; line-height:1.4; overflow-wrap:anywhere; transition:color .3s ease; }
+  .contact-v { display:block; font-family:var(--display); font-size:1.5rem; line-height:1.25; overflow-wrap:anywhere; transition:color .3s ease; }
   .contact-row:hover .contact-v { color:var(--accent); }
-  .contact-go { color:var(--ink3); transition:color .3s ease, transform .5s var(--ease); }
-  .contact-row:hover .contact-go { color:var(--accent); transform:translate(2px,-2px); }
+  .contact-go { color:var(--ink3); transition:color .3s ease, transform .6s var(--ease); }
+  .contact-row:hover .contact-go { color:var(--accent); transform:translate(3px,-3px); }
   .copy-btn { margin-top:18px; background:none; border:0; padding:0; font-family:var(--ui); font-size:var(--fs-ui); color:var(--ink3); cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:color .3s ease; }
   .copy-btn:hover { color:var(--accent); }
 
   /* ── Home ────────────────────────────────────────── */
   .hero {
     display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr); gap:56px; align-items:center;
-    padding-top:clamp(40px, 9vw, 112px); padding-bottom:clamp(56px, 8vw, 104px);
+    padding-top:clamp(40px, 9vw, 112px); padding-bottom:clamp(56px, 8vw, 112px);
   }
-  .hero-name { font-family:var(--display); font-size:var(--fs-hero); line-height:1; font-weight:800; letter-spacing:-0.015em; color:var(--ink); }
-  .hero-name .word { display:block; white-space:nowrap; }
-  .hero-rule { margin-top:26px; width:72px; height:0; border-top:3px double var(--accent); }
-  .hero-role { margin-top:20px; font-family:var(--display); font-size:var(--fs-lead); font-style:italic; color:var(--accent); }
-  .hero-lead { margin-top:10px; max-width:44ch; color:var(--ink2); }
-  .hero-actions { margin-top:34px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
-  .kbd-hint { margin-top:22px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
+  .hero-name { font-family:var(--display); font-size:var(--fs-hero); line-height:0.95; letter-spacing:-0.03em; color:var(--ink); }
+  .hero-name .line { display:block; overflow:hidden; padding-bottom:0.08em; margin-bottom:-0.08em; }
+  .hero-name .line > span { display:block; }
+  .hero-role { margin-top:26px; font-family:var(--display); font-style:italic; font-size:1.75rem; line-height:1.2; color:var(--accent); }
+  .hero-lead { margin-top:12px; max-width:42ch; color:var(--ink2); }
+  .hero-actions { margin-top:36px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .kbd-hint { margin-top:24px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
   .kbd-hint button { background:none; border:0; padding:0; color:inherit; cursor:pointer; transition:color .3s ease; }
   .kbd-hint button:hover { color:var(--ink); }
   @media (hover: none), (pointer: coarse) { .kbd-hint { display:none; } }
 
-  .portrait { justify-self:end; width:100%; max-width:330px; }
+  .portrait { justify-self:end; width:100%; max-width:340px; }
   .portrait-stage { position:relative; aspect-ratio:1; }
-  .portrait-ring { position:absolute; inset:-12px; border-radius:50%; border:1px solid var(--line-strong); }
+  .portrait-ring { position:absolute; inset:-14px; width:calc(100% + 28px); height:calc(100% + 28px); overflow:visible; }
+  .portrait-ring circle { fill:none; stroke:var(--line-strong); stroke-width:1; }
+  .portrait-ring circle.accent { stroke:var(--accent); stroke-width:1.5; stroke-linecap:round; }
   .portrait-frame { position:absolute; inset:0; border-radius:50%; overflow:hidden; background:var(--surface); -webkit-mask-image:-webkit-radial-gradient(white, black); }
   .portrait-frame img {
     position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:var(--photo-pos, 50% 50%); display:block;
-    opacity:0; transform:scale(1.06); transition:opacity 1.2s ease, transform 1.6s var(--ease);
+    opacity:0; transform:scale(1.12); transition:opacity 1s ease, transform 2s var(--ease);
   }
   .portrait-frame img.is-loaded { opacity:1; transform:scale(1); }
-  @media (hover: hover) { .portrait:hover .portrait-frame img.is-loaded { transform:scale(1.035); } }
+  @media (hover: hover) { .portrait:hover .portrait-frame img.is-loaded { transform:scale(1.04); } }
   .portrait-fallback {
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-family:var(--masthead); font-size:clamp(3rem, 6vw, 4.5rem); color:var(--accent);
+    font-family:var(--display); font-style:italic; font-size:clamp(3rem, 6vw, 4.5rem); color:var(--accent);
   }
-  .portrait figcaption { margin-top:30px; text-align:center; font-family:var(--text); font-style:italic; font-size:0.9375rem; color:var(--ink3); }
+  .portrait figcaption { margin-top:34px; text-align:center; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
 
+  .split-sec { position:relative; }
   .split {
-    display:grid; grid-template-columns:minmax(150px, 220px) minmax(0,1fr); gap:16px clamp(32px, 7vw, 104px);
-    padding:48px 0; border-top:3px double var(--ink);
+    display:grid; grid-template-columns:minmax(150px, 240px) minmax(0,1fr); gap:16px clamp(32px, 7vw, 104px);
+    padding:52px 0;
   }
-  .split-label { font-family:var(--display); font-size:1.125rem; font-weight:600; font-style:italic; color:var(--ink); padding-top:2px; }
+  .split-label { font-family:var(--display); font-size:1.75rem; line-height:1.15; color:var(--ink); }
   .split .entry:first-child { padding-top:0; }
   .split .entry:last-child { padding-bottom:0; border-bottom:0; }
 
   /* ── Footer ──────────────────────────────────────── */
-  .footer { margin-top:72px; border-top:3px double var(--ink); padding:28px 0 calc(44px + env(safe-area-inset-bottom, 0px)); }
+  .footer { margin-top:72px; border-top:1px solid var(--line); padding:32px 0 calc(44px + env(safe-area-inset-bottom, 0px)); }
   .footer-inner { display:flex; justify-content:space-between; align-items:flex-start; gap:20px 32px; flex-wrap:wrap; }
-  .footer-name { font-family:var(--masthead); font-size:1.375rem; line-height:1.2; color:var(--ink); }
+  .footer-name { font-family:var(--display); font-size:1.5rem; line-height:1.2; color:var(--ink); }
   .footer-note { margin-top:4px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
   .footer-links { display:flex; flex-wrap:wrap; gap:8px 22px; align-items:center; font-family:var(--ui); font-size:var(--fs-ui); }
   .footer-links a, .footer-links button { background:none; border:0; padding:0; cursor:pointer; color:var(--ink2); text-decoration:none; transition:color .3s ease; }
@@ -573,24 +609,26 @@ const CSS = `
     .page-aside-inner { position:static; }
     .page-intro { max-width:52ch; }
     .toc { flex-direction:row; flex-wrap:wrap; gap:6px; margin-top:24px; border-left:0; }
-    .toc-item { padding:5px 12px; border:1px solid var(--line-strong); border-radius:999px; font-size:var(--fs-ui-s); }
-    .toc-item.active { border-color:var(--accent); color:var(--accent); }
+    .toc-item { padding:6px 13px; border:1px solid var(--line); border-radius:999px; background:var(--surface); font-size:var(--fs-ui-s); }
+    .toc-item.active { border-color:var(--accent-line); color:var(--accent); }
     .toc-bar { display:none; }
     .filters { margin-top:24px; }
   }
   @media (max-width: 820px) {
-    .hero { grid-template-columns:1fr; gap:40px; }
-    .portrait { order:-1; justify-self:center; max-width:210px; margin-top:12px; }
+    .hero { grid-template-columns:1fr; gap:44px; }
+    .portrait { order:-1; justify-self:center; max-width:220px; margin-top:16px; }
     .portrait figcaption { display:none; }
   }
   @media (max-width: 640px) {
-    :root { --fs-body:1rem; --fs-h3:1.1875rem; --nav-h:60px; --lh:1.7; }
-    .brand { font-size:1.4375rem; }
-    .split { grid-template-columns:1fr; padding:40px 0; }
+    :root { --fs-body:1rem; --fs-h3:1.5rem; --nav-h:62px; --lh:1.7; }
+    .brand { font-size:1.5rem; }
+    .split { grid-template-columns:1fr; padding:44px 0; }
     .pager { grid-template-columns:1fr; }
     .pager-link.next { grid-column:1; }
     .entry-head { flex-direction:column; gap:2px; }
-    .contact-v { font-size:1.0625rem; }
+    .contact-v { font-size:1.25rem; }
+    .hero-actions .magnetic { flex:1 1 auto; }
+    .hero-actions .btn { width:100%; justify-content:center; }
   }
 `;
 
@@ -722,8 +760,60 @@ const ExtLink = ({ href, children, className = 'lnk' }) => (
   <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>
 );
 
-const Entry = ({ title, href, tag, sub, date, children, animate = true }) => (
-  <motion.article className="entry" {...(animate ? reveal() : {})}>
+// Leans gently toward a mouse cursor; does nothing on touch screens
+const Magnetic = ({ children, strength = 0.22 }) => {
+  const ref = useRef(null);
+  const x = useSpring(0, { stiffness: 220, damping: 18, mass: 0.6 });
+  const y = useSpring(0, { stiffness: 220, damping: 18, mass: 0.6 });
+  const onMove = (e) => {
+    if (e.pointerType !== 'mouse' || prefersReduced() || !ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    x.set((e.clientX - (r.left + r.width / 2)) * strength);
+    y.set((e.clientY - (r.top + r.height / 2)) * strength * 1.4);
+  };
+  const reset = () => { x.set(0); y.set(0); };
+  return (
+    <motion.span ref={ref} className="magnetic" style={{ x, y }} onPointerMove={onMove} onPointerLeave={reset}>
+      {children}
+    </motion.span>
+  );
+};
+
+const Button = ({ to, href, external = false, variant = 'primary', icon = 'arrow', children, ...rest }) => {
+  const cls = `btn${variant === 'ghost' ? ' btn-ghost' : ''}`;
+  const Icon = icon === 'external' ? ArrowUpRight : ArrowRight;
+  const inner = (
+    <>
+      <span className="btn-roll"><span>{children}</span><span aria-hidden="true">{children}</span></span>
+      {icon && <span className={`btn-arrow${icon === 'external' ? ' diag' : ''}`} aria-hidden="true"><Icon /><Icon /></span>}
+    </>
+  );
+  return (
+    <Magnetic>
+      {to
+        ? <Link to={to} className={cls} {...rest}>{inner}</Link>
+        : <a href={href} className={cls} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} {...rest}>{inner}</a>}
+    </Magnetic>
+  );
+};
+
+// A hairline that draws itself from the left when it scrolls into view
+const Rule = ({ delay = 0 }) => (
+  <motion.span className="rule" aria-hidden="true"
+    initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, amount: 1 }}
+    transition={{ duration: 1.2, delay, ease: EASE }} />
+);
+
+// Text that rises out from behind an invisible mask
+const MaskLine = ({ children, delay = 0, play = true }) => (
+  <span className="line">
+    <motion.span initial={play ? { y: '105%' } : false} animate={{ y: '0%' }}
+      transition={{ duration: 1.1, delay, ease: EASE }}>{children}</motion.span>
+  </span>
+);
+
+const Entry = ({ title, href, tag, sub, date, children, animate = true, index = 0 }) => (
+  <motion.article className="entry" {...(animate ? reveal(Math.min(index, 4) * 0.07) : {})}>
     <header className="entry-head">
       <h3 className="entry-title">
         {href
@@ -735,7 +825,7 @@ const Entry = ({ title, href, tag, sub, date, children, animate = true }) => (
     {(tag || sub) && (
       <p className="entry-sub">
         {tag && <span className="tag">{tag}</span>}
-        {sub && <span>{sub}</span>}
+        {sub}
       </p>
     )}
     {children && <div className="entry-body">{children}</div>}
@@ -745,6 +835,7 @@ const Entry = ({ title, href, tag, sub, date, children, animate = true }) => (
 const Section = ({ id, title, children }) => (
   <section id={id} className="sec" aria-labelledby={`${id}-title`}>
     <motion.h2 id={`${id}-title`} className="sec-title" {...reveal()}>{title}</motion.h2>
+    <Rule delay={0.1} />
     {children}
   </section>
 );
@@ -779,8 +870,8 @@ const PageLayout = ({ kicker, title, intro, sections = [], aside, children }) =>
       <aside className="page-aside">
         <div className="page-aside-inner">
           {kicker && <p className="kicker">{kicker}</p>}
-          <h1 className="page-title">{title}</h1>
-          {intro && <p className="page-intro">{intro}</p>}
+          <h1 className="page-title"><MaskLine delay={0.05}>{title}</MaskLine></h1>
+          {intro && <motion.p className="page-intro" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.25, ease: EASE }}>{intro}</motion.p>}
           {sections.length > 1 && (
             <nav className="toc" aria-label="On this page">
               {sections.map(s => (
@@ -935,11 +1026,11 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
                 <Link key={path} to={path} className={`nav-link${active ? ' active' : ''}`} aria-current={active ? 'page' : undefined}
                   onMouseEnter={() => setHovered(path)}>
                   <AnimatePresence>
-                    {hovered === path && <motion.span layoutId="nav-pill" className="nav-pill" transition={SPRING}
-                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.2 } }} />}
+                    {hovered === path && <motion.span layoutId="nav-hover" className="nav-hover" transition={SPRING}
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.25 } }} />}
                   </AnimatePresence>
+                  {active && <motion.span layoutId="nav-active" className="nav-active" transition={SPRING} />}
                   {label}
-                  {active && <motion.span layoutId="nav-underline" className="nav-underline" transition={SPRING} />}
                 </Link>
               );
             })}
@@ -966,8 +1057,8 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
             transition={SPRING_SOFT}>
             <nav className="wrap" aria-label="Main">
               {[{ label: 'Home', path: '/', desc: 'start here' }, ...navPages].map(({ label, path, desc }, i) => (
-                <motion.div key={path} initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  transition={{ ...SPRING_SOFT, delay: 0.04 * i }}>
+                <motion.div key={path} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.05 + 0.045 * i, ease: EASE }}>
                   <Link to={path} className={`m-link${pathname === path ? ' active' : ''}`} aria-current={pathname === path ? 'page' : undefined}>
                     <span className="m-label">{label}</span>
                     <span className="m-desc">{cap(desc)}</span>
@@ -1022,34 +1113,54 @@ const Footer = () => (
 );
 
 // ─── Home ─────────────────────────────────────────────────────────────────────
+// Home page section: label on the left, content on the right, rule drawn above
+const Split = ({ id, label, children }) => (
+  <section className="wrap split-sec" aria-labelledby={`${id}-title`}>
+    <Rule />
+    <div className="split">
+      <motion.h2 id={`${id}-title`} className="split-label" {...reveal()}>{label}</motion.h2>
+      <motion.div {...reveal(0.08)}>{children}</motion.div>
+    </div>
+  </section>
+);
+
 let heroPlayed = false; // the intro plays once per visit, not on every return to Home
 
 const HeroName = ({ play }) => (
-  <motion.h1 className="hero-name"
-    initial={play ? { opacity: 0, y: 12, filter: 'blur(6px)' } : false}
-    animate={{ opacity: 1, y: 0, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }}
-    transition={{ duration: 1.4, delay: 0.1, ease: EASE }}>
-    {cvData.name.split(' ').map(word => <span key={word} className="word">{word}</span>)}
-  </motion.h1>
+  <h1 className="hero-name">
+    <span className="sr-only">{cvData.name}</span>
+    {cvData.name.split(' ').map((word, i) => (
+      <span key={word} aria-hidden="true" style={{ display: 'block' }}>
+        <MaskLine play={play} delay={0.15 + i * 0.12}>{word}</MaskLine>
+      </span>
+    ))}
+  </h1>
 );
 
 const Portrait = ({ play }) => {
   const [state, setState] = useState('loading'); // loading | loaded | error
   const imgRef = useRef(null);
+  const { scrollY } = useScroll();
+  const drift = useTransform(scrollY, [0, 700], [0, prefersReduced() ? 0 : -60]);
   useEffect(() => {
     const im = imgRef.current;
     if (im && im.complete) setState(im.naturalWidth ? 'loaded' : 'error');
   }, []);
   return (
-    <motion.figure className="portrait"
-      initial={play ? { opacity: 0, scale: 0.94, filter: 'blur(8px)' } : false}
-      animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }}
-      transition={{ duration: 1.3, delay: 0.3, ease: EASE }}>
+    <motion.figure className="portrait" style={{ y: drift }}>
       <div className="portrait-stage">
-        <motion.div className="portrait-ring" aria-hidden="true"
-          initial={play ? { scale: 0.9, opacity: 0 } : false} animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.6, delay: 0.55, ease: EASE }} />
-        <div className="portrait-frame" style={{ '--photo-pos': PROFILE_PHOTO_POSITION }}>
+        <svg className="portrait-ring" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="49.5" vectorEffect="non-scaling-stroke" />
+          <motion.circle className="accent" cx="50" cy="50" r="49.5" vectorEffect="non-scaling-stroke"
+            style={{ rotate: -90, transformOrigin: '50% 50%' }}
+            initial={play ? { pathLength: 0, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+            animate={play ? { pathLength: [0, 1, 1], opacity: [1, 1, 0] } : {}}
+            transition={{ duration: 2.4, delay: 0.5, times: [0, 0.6, 1], ease: 'easeInOut' }} />
+        </svg>
+        <motion.div className="portrait-frame" style={{ '--photo-pos': PROFILE_PHOTO_POSITION }}
+          initial={play ? { clipPath: 'circle(0% at 50% 50%)' } : false}
+          animate={{ clipPath: 'circle(50% at 50% 50%)', transitionEnd: { clipPath: 'none' } }}
+          transition={{ duration: 1.5, delay: 0.35, ease: EASE }}>
           {state !== 'error' && (
             <img ref={imgRef} src={PROFILE_PHOTO} alt={`${cvData.name}, smiling with arms crossed in front of bougainvillea`}
               width="1000" height="1000" decoding="async"
@@ -1057,9 +1168,11 @@ const Portrait = ({ play }) => {
               onLoad={() => setState('loaded')} onError={() => setState('error')} />
           )}
           {state === 'error' && <div className="portrait-fallback" aria-label={`${cvData.name} (photo not found)`}>AC</div>}
-        </div>
+        </motion.div>
       </div>
-      <figcaption>Currently: <Link to="/projects" className="lnk">homotopical algebra</Link></figcaption>
+      <motion.figcaption initial={play ? { opacity: 0 } : false} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.2 }}>
+        Currently: <Link to="/projects" className="lnk">homotopical algebra</Link>
+      </motion.figcaption>
     </motion.figure>
   );
 };
@@ -1078,59 +1191,44 @@ const HomePage = ({ onSearch }) => {
       <section className="wrap hero">
         <div>
           <HeroName play={play} />
-          <motion.div className="hero-rule" aria-hidden="true" style={{ originX: 0 }}
-            initial={play ? { scaleX: 0 } : false} animate={{ scaleX: 1 }} transition={{ duration: 1, delay: 0.55, ease: EASE }} />
-          <motion.p className="hero-role" {...rise(0.6)}>Idle category theorist (aspiring)</motion.p>
-          <motion.p className="hero-lead" {...rise(0.7)}>
+          <motion.p className="hero-role" {...rise(0.45)}>Idle category theorist (aspiring)</motion.p>
+          <motion.p className="hero-lead" {...rise(0.55)}>
             Math undergrad at <ExtLink href="https://maths.iiserb.ac.in/">IISER Bhopal</ExtLink>. An informal introduction to my formal (academic) self.
           </motion.p>
-          <motion.div className="hero-actions" {...rise(0.8)}>
-            <Link to="/projects" className="btn">See my work <ArrowRight /></Link>
-            <Link to="/contact" className="btn btn-ghost">Get in touch</Link>
+          <motion.div className="hero-actions" {...rise(0.65)}>
+            <Button to="/projects">See my work</Button>
+            <Button to="/contact" variant="ghost" icon={null}>Get in touch</Button>
           </motion.div>
-          <motion.p className="kbd-hint" {...rise(0.9)}>
+          <motion.p className="kbd-hint" {...rise(0.8)}>
             <button type="button" onClick={onSearch}>Press <kbd>/</kbd> to jump anywhere</button>
           </motion.p>
         </div>
         <Portrait play={play} />
       </section>
 
-      <motion.section className="wrap" aria-labelledby="about-title" {...reveal()}>
-        <div className="split">
-          <h2 id="about-title" className="split-label">About</h2>
-          <div className="prose" lang="en">
-            <p className="lead">{cvData.profile.intro}</p>
-            <p className="dropcap">{cvData.profile.interests}</p>
-            <p>{cvData.profile.ambition}</p>
-          </div>
+      <Split id="about" label="About">
+        <div className="prose">
+          <p className="lead">{cvData.profile.intro}</p>
+          <p>{cvData.profile.interests}</p>
+          <p>{cvData.profile.ambition}</p>
         </div>
-      </motion.section>
+      </Split>
 
-      <motion.section className="wrap" aria-labelledby="edu-title" {...reveal()}>
-        <div className="split">
-          <h2 id="edu-title" className="split-label">Education</h2>
-          <div>
-            {cvData.education.map(edu => (
-              <Entry key={edu.institution} title={edu.institution} sub={edu.degree} date={edu.duration} animate={false}>
-                {edu.grades?.length > 0 && <div>{edu.grades.map(g => <span key={g} className="pill">{g}</span>)}</div>}
-              </Entry>
-            ))}
-          </div>
-        </div>
-      </motion.section>
+      <Split id="edu" label="Education">
+        {cvData.education.map(edu => (
+          <Entry key={edu.institution} title={edu.institution} sub={edu.degree} date={edu.duration} animate={false}>
+            {edu.grades?.length > 0 && <div>{edu.grades.map(g => <span key={g} className="pill">{g}</span>)}</div>}
+          </Entry>
+        ))}
+      </Split>
 
-      <motion.section className="wrap" aria-labelledby="resp-title" {...reveal()}>
-        <div className="split">
-          <h2 id="resp-title" className="split-label">Positions of responsibility</h2>
-          <div lang="en">
-            {cvData.responsibilities.map(r => (
-              <Entry key={r.role} title={r.role} sub={r.institution} date={r.duration}>
-                <p>{r.description}</p>
-              </Entry>
-            ))}
-          </div>
-        </div>
-      </motion.section>
+      <Split id="resp" label="Positions of responsibility">
+        {cvData.responsibilities.map((r, i) => (
+          <Entry key={r.role} index={i} title={r.role} sub={r.institution} date={r.duration}>
+            <p>{r.description}</p>
+          </Entry>
+        ))}
+      </Split>
     </div>
   );
 };
@@ -1140,13 +1238,13 @@ const AcademicExperiencesPage = () => (
   <PageLayout kicker="AcadEx" title="Where I've learned" intro={pageDesc('/acadex')}
     sections={[{ id: 'internships', label: 'Research internships' }, { id: 'schools', label: 'Summer schools' }]}>
     <Section id="internships" title="Research internships">
-      {cvData.academicExperiences.internships.map(exp => (
-        <Entry key={exp.duration} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
+      {cvData.academicExperiences.internships.map((exp, i) => (
+        <Entry key={exp.duration} index={i} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
       ))}
     </Section>
     <Section id="schools" title="Summer schools">
-      {cvData.academicExperiences.summerSchools.map(exp => (
-        <Entry key={exp.institution} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
+      {cvData.academicExperiences.summerSchools.map((exp, i) => (
+        <Entry key={exp.institution} index={i} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
       ))}
     </Section>
   </PageLayout>
@@ -1219,7 +1317,7 @@ const EventsPage = () => {
           })}
         </div>
       }>
-      <div className="entries" lang="en">
+      <div className="entries">
         <AnimatePresence initial={false} mode="popLayout">
           {shown.map(ev => (
             <motion.div key={ev.title} layout
@@ -1259,12 +1357,12 @@ const OpenBoardPage = () => (
     ]}>
     <Section id="about" title="About">
       <motion.div {...reveal()}>
-        <div className="prose" style={{ marginTop: 28 }} lang="en">
+        <div className="prose" style={{ marginTop: 28 }}>
           <p className="lead">A space for students to speak about what they care about, to a general audience.</p>
           <p>{cvData.openboard.mission}</p>
         </div>
         <div className="actions">
-          <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="btn">Visit OpenBoard <ExternalLink /></a>
+          <Button href={cvData.openboard.website} external icon="external">Visit OpenBoard</Button>
         </div>
       </motion.div>
     </Section>
@@ -1283,7 +1381,7 @@ const OpenBoardPage = () => (
         <p className="status" style={{ marginTop: 0 }}><span className="status-dot" aria-hidden="true" />Currently on hold</p>
         <p>Due to academic commitments, we are currently on hold. We would like your help to bring it back. Reach out if you have ideas.</p>
         <div className="actions" style={{ marginTop: 20 }}>
-          <a href={`mailto:${cvData.contact.email}`} className="btn">Reach out <ArrowRight /></a>
+          <Button href={`mailto:${cvData.contact.email}`}>Reach out</Button>
         </div>
       </motion.div>
     </Section>
@@ -1327,7 +1425,7 @@ const ContactPage = () => {
           </AnimatePresence>
         </button>
         <div className="prose" style={{ marginTop: 40 }}>
-          <p style={{ fontSize: '1rem', textAlign: 'left' }}>Based in {cvData.location}. Response times vary; email is the most reliable way to reach me.</p>
+          <p style={{ fontSize: '1rem' }}>Based in {cvData.location}. Response times vary; email is the most reliable way to reach me.</p>
         </div>
       </motion.div>
     </PageLayout>
@@ -1336,7 +1434,7 @@ const ContactPage = () => {
 
 const NotFoundPage = () => (
   <PageLayout kicker="404" title="Page not found" intro="The page you were looking for doesn't exist or has moved.">
-    <Link to="/" className="btn">Go to the home page <ArrowRight /></Link>
+    <Button to="/">Go to the home page</Button>
   </PageLayout>
 );
 
