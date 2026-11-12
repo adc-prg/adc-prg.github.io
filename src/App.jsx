@@ -179,6 +179,9 @@ const LIBRON_FACE = `
 // A relative path (no leading slash) works on GitHub Pages sub-paths too,
 // because HashRouter never changes the page's real URL path.
 const PROFILE_PHOTO = 'profile.jpg';
+// Which part of the photo stays in view inside the arch (x% y%).
+// Leave as is for the cropped profile.jpg; try '40% 72%' if you use the original full-length photo.
+const PROFILE_PHOTO_POSITION = '50% 50%';
 
 const CSS = `
   :root {
@@ -194,8 +197,8 @@ const CSS = `
     --line-strong: #CFC2B9;
     --on-accent:   #FFFFFF;
     --shadow:      0 18px 48px -24px rgba(70,35,45,0.35);
-    --blob1: rgba(205,150,160,0.30);
-    --blob2: rgba(168,186,164,0.28);
+    --blob1: rgba(212,128,164,0.24);
+    --blob2: rgba(150,178,138,0.28);
     --blob3: rgba(222,196,166,0.32);
 
     --serif: 'Libron', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
@@ -228,8 +231,8 @@ const CSS = `
     --on-accent:   #1A1508;
     --shadow:      0 18px 48px -24px rgba(0,0,0,0.6);
     --blob1: rgba(212,179,115,0.07);
-    --blob2: rgba(110,130,185,0.09);
-    --blob3: rgba(165,110,140,0.06);
+    --blob2: rgba(110,150,120,0.07);
+    --blob3: rgba(190,100,150,0.07);
   }
 
   /* ── Base ─────────────────────────────────────────── */
@@ -527,11 +530,11 @@ const CSS = `
   }
   .portrait-frame {
     position:relative; aspect-ratio:4 / 5; overflow:hidden; border-radius:999px 999px 22px 22px;
-    background:linear-gradient(160deg, var(--surface), color-mix(in srgb, var(--accent) 14%, var(--surface)));
+    background:linear-gradient(160deg, color-mix(in srgb, #96B28A 22%, var(--surface)), color-mix(in srgb, var(--accent) 14%, var(--surface)));
     box-shadow:var(--shadow); transform-style:preserve-3d; will-change:transform;
   }
   .portrait-frame img {
-    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:var(--photo-pos, 50% 50%); display:block;
     opacity:0; transform:scale(1.06); transition:opacity .9s ease, transform 1.4s var(--ease);
   }
   .portrait-frame img.is-loaded { opacity:1; transform:scale(1); }
@@ -1099,9 +1102,9 @@ const Portrait = ({ play }) => {
       transition={{ duration: 1.1, delay: 0.35, ease: EASE }}>
       <div className="portrait-stage">
         <motion.div className="portrait-back" style={{ x: backX, y: backY }} aria-hidden="true" />
-        <motion.div ref={frameRef} className="portrait-frame" style={{ rotateX: rx, rotateY: ry }}>
+        <motion.div ref={frameRef} className="portrait-frame" style={{ rotateX: rx, rotateY: ry, '--photo-pos': PROFILE_PHOTO_POSITION }}>
           {state !== 'error' && (
-            <img ref={imgRef} src={PROFILE_PHOTO} alt={`Portrait of ${cvData.name}`} decoding="async"
+            <img ref={imgRef} src={PROFILE_PHOTO} alt={`${cvData.name}, smiling with arms crossed in front of bougainvillea`} decoding="async" width="1000" height="1250"
               className={state === 'loaded' ? 'is-loaded' : ''}
               onLoad={() => setState('loaded')} onError={() => setState('error')} />
           )}
