@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  HashRouter,
-  Routes,
-  Route,
-  Link,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence, MotionConfig, useScroll, useSpring } from 'framer-motion';
+
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 const Sun = (p) => (
@@ -46,6 +40,21 @@ const ArrowRight = (p) => (
   </svg>
 );
 
+const ArrowLeft = (p) => (
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
+  </svg>
+);
+const Copy = (p) => (
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="13" height="13" x="9" y="9" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+  </svg>
+);
+const Check = (p) => (
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 6 9 17l-5-5"/>
+  </svg>
+);
 // Renders \mathbb{R}P^n / \mathbb{C}P^n without needing a LaTeX engine
 const ProjSpace = ({ field }) => (
   <span style={{ whiteSpace:'nowrap' }}>
@@ -65,7 +74,7 @@ const cvData = {
   research: [{
     title: "Exploring Integrality and Genus of some specific Cayley Graphs",
     guide: "Guide: Prof. Ashish Upadhyay",
-    description: "Cayley graphs are graphs which exhibit the nature of action of a group G on a set S, which is closed under inverses (typically generating set). A graph is said to be integral if each of the eigenvalues of its Adjacency Matrix is an integer. The genus of a graph is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without any edge crossings. The goal was to work towards finding out the fields for which the 'generalised' cayley graphs are integral and what genus do they have."
+    description: "Cayley graphs are graphs which exhibit the nature of action of a group G on a set S, which is closed under inverses (typically generating set). A graph is said to be integral if each of the eigenvalues of its Adjacency Matrix is an integer. The genus of a graph is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without any edge crossings. The goal was to work towards finding out the fields for which the 'generalised' Cayley graphs are integral and what genus do they have."
   }],
   
   education: [
@@ -78,7 +87,7 @@ const cvData = {
     { role: "Core Member, Math Club", institution: "IISER Bhopal", duration: "Jun 2024 – Jul 2025",
       description: "Joined with the intent of helping towards a better culture and acceptance towards math. I hope I was able to achieve that." },
     { role: "Peer Counselor", institution: "IISER Bhopal", duration: "Jul 2023 – Jul 2025",
-      description: "A brilliant initiative (theoretically) by the counselling cell @IISERB, which fosters this idea that help is closer than you think. The counselling cell selects a few students on campus who work towards a more acceptiung culture in the student community. " }
+      description: "A brilliant initiative (theoretically) by the counselling cell @IISERB, which fosters this idea that help is closer than you think. The counselling cell selects a few students on campus who work towards a more accepting culture in the student community. " }
   ],
   openboard: {
     role: "Co-founder, Openboard",
@@ -89,19 +98,19 @@ const cvData = {
     description: "Along with my friend Samriddha we have started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.",
     mission: "Openboard is a formal platform to be informal, or an informal platform to be formal. It is dedicated to ideas. Samriddha and I believed that curiosity should have an outlet beyond the classroom; a space where students can address a general audience on topics they genuinely care about.",
     talks: [
-      { title: "The Probabilistic Method", speaker: "Adeetya Choubey", description: "I gave the innaugral talk for this small initiative of ours. The probabilistic method is a way of proving existence of any object without explcitly constructing it, through the means of Probability. The famous proof by Erdős for the bounds on ramsey number was discussed in this talk." }
+      { title: "The Probabilistic Method", speaker: "Adeetya Choubey", description: "I gave the inaugural talk for this small initiative of ours. The probabilistic method is a way of proving existence of any object without explicitly constructing it, through the means of Probability. The famous proof by Erdős for the bounds on Ramsey numbers was discussed in this talk." }
     ]
   },
   academicExperiences: {
     internships: [
       { title: "Summer Intern", institution: "Institute of Science, Banaras Hindu University", duration: "May 2025 – Aug 2025",
-        description: "The first phase involved getting used to with some algebraic topology, referring to books like hatcher, harper and munkres. Towards the end, the focus shifted to finding out groups with integral cayley graphs of genus one through computational and algebraic means." },
+        description: "The first phase involved getting used to some algebraic topology, referring to books like Hatcher, Harper and Munkres. Towards the end, the focus shifted to finding out groups with integral cayley graphs of genus one through computational and algebraic means." },
       { title: "Summer Intern", institution: "Institute of Science, Banaras Hindu University", duration: "May – July 2024",
         description: "This project focussed on studying general topology from the book by J Dugundji, while working through problems, along with reading the book by Murasugi on Braids." }
     ],
     summerSchools: [
       { title: "Summer Program", institution: "TIFR — Centre for Applicable Mathematics", duration: "June – July 2025",
-        description: "The program included short on RKHS, Geometric Measure Theory, Geometric Function Theory, Gibbs Measure and Entropy, Multiscale problems in PDE, Microlocal Analysis and Inverse Problems, along with several keynote lectures on ongoing research in Analysis and Combinatorics." },
+        description: "The program included short courses on RKHS, Geometric Measure Theory, Geometric Function Theory, Gibbs Measure and Entropy, Multiscale problems in PDE, Microlocal Analysis and Inverse Problems, along with several keynote lectures on ongoing research in Analysis and Combinatorics." },
       { title: "Mathematics Summer Program", institution: "Indraprastha Institute of Information Technology, Delhi", duration: "June 2024",
         description: "This was a two week residential summer program covering some elementary aspects of Analysis, Algebra, Topology. This program included daily lectures on the aforementioned topics, along with problem solving sessions." }
     ]
@@ -111,13 +120,13 @@ const cvData = {
       description: "I was a participant, and a student volunteer for this event held at IISER Bhopal. Vibecoded the website and Vibe attended all the talks. Good talks, good food and great people, along with a lot to learn, even outside of Math.",
       link: { url: "https://dmtia-iiserb.github.io/", text: "Discussion meeting" } },
     { title: "GANIT Symposium", tag: "Attended",
-      description: "I attended this 2.5 day symposium @IIT Gandhinagar, which featured mini series and lectures, discussing Commutative Algebra, Algebraic Geometry and Number theory. I bit more than I could chew, but this was one of those points which pushed me more towards pursuing Algebra in general.",
+      description: "I attended this 2.5 day symposium @IIT Gandhinagar, which featured mini series and lectures, discussing Commutative Algebra, Algebraic Geometry and Number theory. I bit off more than I could chew, but this was one of those points which pushed me more towards pursuing Algebra in general.",
       link: { url: "https://events.iitgn.ac.in/2026/caag/", text: "GANIT Symposium" } },
     { title: "The Probabilistic Method", tag: "Openboard Talk",
       description: "Gave the first Openboard talk. More about that talk can be looked at on the Openboard website.",
       link: { url: "https://openboard-web.vercel.app/", text: "Openboard website" } },
     { title: "खेल-culus", tag: "Organised",
-      description: "खेल, in Hindi, stands for sport. खेल-culus (khel-culus; /kʰeːl/) represents the treatise of calculus as a sport — the name for the integration bee held during the annual math fest, Continuum, organised by the department of math at IISER Bhopal. I helped organised the event (and gave the idea for the even and the name), along with Yash Sharma." },
+      description: "खेल, in Hindi, stands for sport. खेल-culus (khel-culus; /kʰeːl/) represents the treatise of calculus as a sport — the name for the integration bee held during the annual math fest, Continuum, organised by the department of math at IISER Bhopal. I helped organise the event (and gave the idea for the event and the name), along with Yash Sharma." },
     { title: "Big-Tac-Toe", tag: "Organised",
       description: "A wordplay on Big + Tic-tac-toe — another name for ultimate tic-tac-toe. Held at Continuum in collaboration with the board games club, Ingenium. The event featured a knockout stage with Saurav Kanetkar emerging as the Big-Tac-Toe champion, 2025 edition.",
       link: { url: "https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe", text: "Ultimate Tic-Tac-Toe" } },
@@ -144,19 +153,6 @@ const navPages = [
 ];
 
 
-
-// ─── Hooks ────────────────────────────────────────────────────────────────────
-const useTheme = () => {
-  const [theme, setTheme] = useState('light');
-  useEffect(() => { setTheme(localStorage.getItem('theme') || 'light'); }, []);
-  useEffect(() => {
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-  return { theme, toggleTheme: () => setTheme(p => p === 'light' ? 'dark' : 'light') };
-};
-
 // ─── CSS ──────────────────────────────────────────────────────────────────────
 // ─── Libron (embedded, OFL) ───────────────────────────────────────────────────
 // Libron by Nico Verbruggen, SIL Open Font License 1.1 · https://github.com/nicoverbruggen/libron
@@ -169,860 +165,946 @@ const LIBRON_FACE = `
 `;
 
 const CSS = `
-  .ev-link-btn {
-    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
-  }
-  .ev-link-btn:hover {
-    transform: scale(1.15);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
   :root {
-    --bg:      #FFFFF0;
-    --surface: #FDFDF5;
-    --ink:     #1C1012;
-    --ink2:    #3E2229;
-    --ink3:    #7D5C63;
-    --accent:  #722F37;
-    --border:  #E8DECE;
-    --sh-sm:   0 1px 4px rgba(114,47,55,0.07);
-    --sh-md:   0 4px 24px rgba(114,47,55,0.10);
-    --sh-lg:   0 14px 48px rgba(114,47,55,0.13);
-    --on-accent:    #FFFFFF;
-    --on-accent-70: rgba(255,255,255,0.7);
-    --on-accent-55: rgba(255,255,255,0.55);
-    --on-accent-45: rgba(255,255,255,0.45);
-    --on-accent-10: rgba(255,255,255,0.1);
-    --fd: 'Libron', Georgia, 'Times New Roman', serif;
-    --fb: 'Libron', Georgia, 'Times New Roman', serif;
-    --r:  7px;
+    --bg:          #F8F5F2;
+    --surface:     #FFFDFB;
+    --ink:         #2A2227;
+    --ink2:        #54484E;
+    --ink3:        #766A71;
+    --accent:      #8A4553;
+    --accent-soft: rgba(138,69,83,0.07);
+    --accent-line: rgba(138,69,83,0.30);
+    --line:        #EAE2DE;
+    --line-strong: #DCD1CC;
+    --on-accent:   #FFFFFF;
+
+    --serif: 'Libron', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+
+    --fs-xs:   0.8125rem;
+    --fs-sm:   0.9375rem;
     --fs-body: 1.0625rem;
-    --lh-body: 1.75;
+    --fs-lead: 1.25rem;
+    --fs-h3:   1.25rem;
+    --fs-h1:   clamp(2.125rem, 1.55rem + 2.1vw, 2.875rem);
+    --fs-hero: clamp(2.75rem, 1.4rem + 5vw, 4.75rem);
+    --lh:      1.72;
+    --measure: 66ch;
+
+    --nav-h:  68px;
+    --radius: 12px;
+    --ease:   cubic-bezier(0.22, 1, 0.36, 1);
   }
   .dark {
-    --bg:      #0A1120;
-    --surface: #101B30;
-    --ink:     #F4EFE3;
-    --ink2:    #C7CEDD;
-    --ink3:    #7E8CAA;
-    --accent:  #E3B23C;
-    --border:  #22314E;
-    --sh-sm:   0 1px 4px rgba(2,6,16,0.35);
-    --sh-md:   0 4px 24px rgba(2,6,16,0.45);
-    --sh-lg:   0 14px 48px rgba(2,6,16,0.55);
-    --on-accent:    #1C1206;
-    --on-accent-70: rgba(28,18,6,0.7);
-    --on-accent-55: rgba(28,18,6,0.55);
-    --on-accent-45: rgba(28,18,6,0.45);
-    --on-accent-10: rgba(28,18,6,0.12);
+    --bg:          #14171E;
+    --surface:     #1A1E27;
+    --ink:         #EAE6E0;
+    --ink2:        #BDB9B3;
+    --ink3:        #8D8E95;
+    --accent:      #D4B373;
+    --accent-soft: rgba(212,179,115,0.09);
+    --accent-line: rgba(212,179,115,0.32);
+    --line:        #262B36;
+    --line-strong: #323846;
+    --on-accent:   #1A1508;
   }
-  *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; zoom: 1; }
-  body { background:var(--bg); color:var(--ink); font-family:var(--fb); font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; font-kerning:normal; font-feature-settings:"kern" 1,"liga" 1; transition:background 0.4s,color 0.4s; margin:0; }
-  h1,h2,h3,h4,p { margin:0; }
-  button, input, textarea, select { font-family:inherit; }
-  p { text-wrap:pretty; overflow-wrap:break-word; }
+
+  /* ── Base ─────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing:border-box; }
+  html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--serif); font-size:var(--fs-body); line-height:var(--lh);
+    font-kerning:normal; font-feature-settings:"kern" 1, "liga" 1;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility;
+  }
+  h1,h2,h3,h4,p,figure { margin:0; }
   h1,h2,h3 { text-wrap:balance; }
-  strong { font-weight:600; }
+  p { text-wrap:pretty; overflow-wrap:break-word; }
+  button, input { font:inherit; color:inherit; }
+  strong { font-weight:600; color:var(--ink); }
   ::selection { background:var(--accent); color:var(--on-accent); }
-  a:focus-visible, button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+  main:focus { outline:none; }
+
+  /* Smooth cross-fade only while the theme is switching */
+  .theme-anim, .theme-anim *, .theme-anim *::before, .theme-anim *::after {
+    transition: background-color .45s ease, border-color .45s ease, color .45s ease, fill .45s ease, stroke .45s ease !important;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+    html { scroll-behavior:auto; }
+    *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
   }
 
-  /* Grain overlay */
-  .grain::after {
-    content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.032;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size:200px 200px;
+  .wrap { width:100%; max-width:1120px; margin:0 auto; padding:0 clamp(20px, 4vw, 40px); }
+
+  .skip {
+    position:fixed; left:16px; top:-60px; z-index:100; padding:8px 16px; border-radius:8px;
+    background:var(--ink); color:var(--bg); font-size:var(--fs-sm); text-decoration:none; transition:top .2s var(--ease);
+  }
+  .skip:focus { top:12px; }
+
+  /* ── Links & buttons ─────────────────────────────── */
+  .lnk {
+    color:var(--accent); text-decoration:underline; text-decoration-thickness:1px;
+    text-underline-offset:3px; text-decoration-color:var(--accent-line); transition:text-decoration-color .2s, color .2s;
+  }
+  .lnk:hover { text-decoration-color:var(--accent); }
+
+  .btn {
+    display:inline-flex; align-items:center; gap:10px; padding:10px 20px; border-radius:999px;
+    background:var(--accent); color:var(--on-accent); border:1px solid var(--accent);
+    font-size:var(--fs-sm); line-height:1.4; text-decoration:none; cursor:pointer;
+    transition: transform .3s var(--ease), box-shadow .3s var(--ease), background-color .2s, color .2s;
+  }
+  .btn:hover { transform:translateY(-1px); box-shadow:0 8px 20px -10px var(--accent); }
+  .btn:active { transform:translateY(0); }
+  .btn-ghost { background:transparent; color:var(--accent); border-color:var(--accent-line); }
+  .btn-ghost:hover { background:var(--accent-soft); box-shadow:none; }
+  .btn svg { transition:transform .3s var(--ease); }
+  .btn:hover svg { transform:translateX(2px); }
+
+  .icon-btn {
+    width:38px; height:38px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--ink2); cursor:pointer;
+    transition:border-color .2s, color .2s, background-color .2s;
+  }
+  .icon-btn:hover { color:var(--accent); border-color:var(--accent-line); background:var(--accent-soft); }
+
+  /* ── Navbar ──────────────────────────────────────── */
+  .nav {
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 84%, transparent);
+    -webkit-backdrop-filter:saturate(1.3) blur(14px); backdrop-filter:saturate(1.3) blur(14px);
+    border-bottom:1px solid transparent; transition:border-color .3s ease;
+  }
+  .nav.is-scrolled, .nav.is-open { border-bottom-color:var(--line); }
+  .nav.is-open { background:var(--bg); }
+  .nav-inner { height:var(--nav-h); display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .brand { font-size:1.1875rem; font-weight:600; letter-spacing:-0.005em; color:var(--ink); text-decoration:none; white-space:nowrap; transition:color .2s; }
+  .brand:hover { color:var(--accent); }
+  .nav-links { display:flex; align-items:center; gap:2px; }
+  .nav-link { position:relative; padding:8px 11px; font-size:var(--fs-sm); color:var(--ink2); text-decoration:none; transition:color .2s; }
+  .nav-link:hover, .nav-link.active { color:var(--ink); }
+  .nav-underline { position:absolute; left:11px; right:11px; bottom:3px; height:1.5px; border-radius:2px; background:var(--accent); }
+  .nav-actions { display:flex; align-items:center; gap:8px; }
+  .menu-btn { display:none; }
+  .burger { position:relative; width:16px; height:10px; }
+  .burger span { position:absolute; left:0; right:0; height:1.5px; border-radius:2px; background:currentColor; transition:transform .35s var(--ease), top .35s var(--ease); }
+  .burger span:first-child { top:0; }
+  .burger span:last-child  { top:8.5px; }
+  .is-open .burger span:first-child { top:4.25px; transform:rotate(45deg); }
+  .is-open .burger span:last-child  { top:4.25px; transform:rotate(-45deg); }
+  .progress { position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--accent); opacity:.5; transform-origin:0 50%; }
+
+  .mobile-menu { position:fixed; top:var(--nav-h); left:0; right:0; bottom:0; z-index:49; background:var(--bg); overflow-y:auto; padding:8px 0 48px; }
+  .m-link { display:block; padding:16px 0; border-bottom:1px solid var(--line); text-decoration:none; }
+  .m-label { display:block; font-size:1.375rem; line-height:1.3; color:var(--ink); transition:color .2s; }
+  .m-desc  { display:block; margin-top:2px; font-size:var(--fs-sm); font-style:italic; color:var(--ink3); }
+  .m-link.active .m-label, .m-link:hover .m-label { color:var(--accent); }
+
+  @media (max-width: 1000px) {
+    .nav-links { display:none; }
+    .menu-btn { display:inline-flex; }
   }
 
-  /* Keyframes */
-  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:0.45} }
-  @keyframes blink  { 0%,100%{opacity:1; box-shadow:0 0 6px 2px var(--accent)} 50%{opacity:0.15; box-shadow:0 0 0 0 transparent} }
-
-  .au  { animation:fadeUp 0.85s cubic-bezier(0.16,1,0.3,1) both; }
-  .d1  { animation-delay:0.08s; }
-  .d2  { animation-delay:0.18s; }
-  .d3  { animation-delay:0.30s; }
-  .d4  { animation-delay:0.44s; }
-  .d5  { animation-delay:0.60s; }
-  .d6  { animation-delay:0.76s; }
-
-  /* Scroll reveal */
-  .sr { opacity:0; transform:translateY(18px); transition:opacity 0.75s cubic-bezier(0.16,1,0.3,1),transform 0.75s cubic-bezier(0.16,1,0.3,1); }
-  .sr.in { opacity:1; transform:translateY(0); }
-
-  /* Paper card */
-  .card { background:var(--surface); border:1px solid var(--border); border-radius:8px 7px 9px 6px; box-shadow:var(--sh-sm); transition:box-shadow 0.35s ease,transform 0.35s ease; }
-  .card:hover { box-shadow:var(--sh-lg); transform:translateY(-2px); }
-
-  .wabi-mark { display:block; width:40px; height:2px; background:var(--accent); opacity:0.6; border-radius:2px; margin-top:24px; }
-
-  /* Nav: inner pages */
-  .ni { position:relative; background:none; border:none; cursor:pointer; font-family:var(--fb); font-weight:500; font-size:12.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink2); transition:color 0.25s; padding:4px 0; text-decoration:none; display:inline-block; transform-origin:center; }
-  .ni::after { content:''; position:absolute; bottom:0; left:0; width:0; height:1px; background:var(--accent); transition:width 0.3s cubic-bezier(0.16,1,0.3,1); }
-  .ni:hover { color:var(--ink); }
-  .ni:hover::after,.ni.active::after { width:100%; }
-  .ni.active { color:var(--accent); }
-
-  /* Nav: landing */
-  .lni { position:relative; background:none; border:none; cursor:pointer; font-family:var(--fb); font-weight:400; font-size:16.5px; letter-spacing:0.05em; color:var(--ink2); transition:color 0.3s; padding:6px 0; text-decoration:none; display:inline-block; transform-origin:center; }
-  .lni::after { content:''; position:absolute; bottom:0; left:0; width:0; height:1px; background:var(--accent); transition:width 0.4s cubic-bezier(0.16,1,0.3,1); }
-  .lni:hover { color:var(--ink); }
-  .lni:hover::after { width:100%; }
-
-  /* Theme toggle */
-  .tt { width:34px; height:34px; border-radius:50%; border:1px solid var(--border); background:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink2); transition:border-color 0.25s,color 0.25s; flex-shrink:0; }
-  .tt:hover { border-color:var(--accent); color:var(--accent); }
-
-  /* Eyebrow label */
-  .eb { font-family:var(--fb); font-size:0.78rem; line-height:1.4; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); }
-
-  /* Display font helper */
-  .df { font-family:var(--fd); }
-
-  /* Timeline dot + line */
-  .tl { position:relative; padding-left:26px; }
-  .tl::before { content:''; position:absolute; left:0; top:12px; width:6px; height:6px; border-radius:50%; background:var(--accent); }
-  .tl::after { content:''; position:absolute; left:2.5px; top:24px; bottom:-22px; width:1px; background:var(--border); }
-  .tl:last-child::after { display:none; }
-
-  /* Inline link */
-  .lnk { display:inline-block; color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; transition:border-color 0.2s; }
-  .lnk:hover { border-bottom-color:var(--accent); }
-
-  /* Divider */
-  .dv { border:none; border-top:1px solid var(--border); }
-
-  /* Intro quote style */
-  .iq { font-family:var(--fd); font-size:clamp(1.3rem,2.4vw,1.6rem); font-style:italic; font-weight:400; line-height:1.55; color:var(--ink); }
-
-  /* Contact link block */
-  .clink { display:flex; align-items:center; gap:16px; padding:16px 22px; border:1px solid var(--border); border-radius:var(--r); text-decoration:none; transition:border-color 0.25s, background 0.25s, transform 0.25s ease, box-shadow 0.3s; }
-  .clink:hover { border-color:var(--accent); background:var(--bg); transform:translateY(-2px); box-shadow:var(--sh-md); }
-
-  /* Responsive header layout */
-  .hdr-inner { display:flex; justify-content:space-between; align-items:center; padding:18px 0; gap:24px; }
-  .hdr-right { display:flex; align-items:center; gap:24px; }
-  .hdr-nav { display:flex; flex-wrap:wrap; gap:6px 26px; justify-content:flex-end; align-items:center; }
-
-  /* Home bio + education grid — proportionate widths, slight askewness */
-  .home-bento { display:grid; grid-template-columns: 1.6fr 1fr; gap:28px; margin-bottom:28px; align-items:start; }
-  .tilt-a { transform:none; }
-  .tilt-b { transform:none; }
-  .tilt-c { transform:none; }
-  @media(max-width:760px) {
-    .home-bento { grid-template-columns:1fr; }
-    .tilt-a, .tilt-b, .tilt-c { transform:none; }
+  /* ── Inner page layout ───────────────────────────── */
+  main { display:block; min-height:calc(100vh - var(--nav-h)); }
+  .page {
+    display:grid; grid-template-columns:minmax(220px, 290px) minmax(0, 1fr); gap:clamp(40px, 7vw, 104px);
+    align-items:start; padding-top:clamp(48px, 7vw, 88px); padding-bottom:24px;
   }
+  .page-aside-inner { position:sticky; top:calc(var(--nav-h) + 40px); }
+  .kicker { font-size:var(--fs-sm); font-style:italic; color:var(--accent); margin-bottom:10px; }
+  .page-title { font-size:var(--fs-h1); line-height:1.12; font-weight:600; letter-spacing:-0.018em; color:var(--ink); }
+  .page-intro { margin-top:16px; max-width:30ch; font-size:var(--fs-sm); line-height:1.6; font-style:italic; color:var(--ink3); }
 
-  /* Bento grid */
-  .bento-grid { display:grid; gap:14px; grid-template-columns:repeat(4, 1fr); }
-  .bento-span-2 { grid-column: span 2; }
-  .bento-card { background:var(--surface); border:1px solid var(--border); border-radius:calc(var(--r) + 2px); padding:26px 22px 22px; transition:box-shadow 0.35s,transform 0.3s; position:relative; overflow:hidden; }
-  .bento-card:hover { box-shadow:var(--sh-md); transform:translateY(-3px); }
-  .bento-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--accent), transparent); opacity:0; transition:opacity 0.3s; }
-  .bento-card:hover::before { opacity:1; }
-  .bento-icon { font-size:2rem; margin-bottom:12px; font-family:var(--fd); line-height:1; color:var(--accent); opacity:0.75; }
-  .bento-wip { display:inline-flex; align-items:center; gap:8px; font-size:0.78rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink3); border:1px solid var(--border); border-radius:20px; padding:5px 14px; margin-top:12px; }
-  .wip-dot { display:inline-block; flex-shrink:0; width:7px; height:7px; border-radius:50%; background:var(--accent); animation:blink 1.4s ease-in-out infinite; }
+  .toc { margin-top:36px; display:flex; flex-direction:column; border-left:1px solid var(--line); }
+  .toc-item { position:relative; text-align:left; background:none; border:0; padding:6px 0 6px 18px; font-size:var(--fs-sm); color:var(--ink3); cursor:pointer; transition:color .2s; }
+  .toc-item:hover, .toc-item.active { color:var(--ink); }
+  .toc-bar { position:absolute; left:-1px; top:7px; bottom:7px; width:2px; border-radius:2px; background:var(--accent); }
 
-  /* OpenBoard tag */
-  .ob-tag { display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:20px; padding:4px 12px; }
+  .page-body { min-width:0; max-width:46rem; }
+  .sec { scroll-margin-top:calc(var(--nav-h) + 32px); }
+  .sec + .sec { margin-top:72px; }
+  .sec-title { font-size:var(--fs-sm); font-weight:600; letter-spacing:0.01em; color:var(--ink2); padding-bottom:12px; border-bottom:1px solid var(--line-strong); }
 
-  /* Event tag */
-  .ev-tag { display:inline-block; font-size:0.76rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); border:1px dashed var(--accent); border-radius:20px; padding:4px 12px; margin-bottom:16px; }
+  /* Entries: the one repeating unit for experiences, events, projects */
+  .entry { padding:28px 0; border-bottom:1px solid var(--line); }
+  .sec .entry:last-child, .entries > :last-child .entry { border-bottom:0; }
+  .entry-head { display:flex; justify-content:space-between; align-items:baseline; gap:4px 24px; flex-wrap:wrap; }
+  .entry-title { font-size:var(--fs-h3); line-height:1.35; font-weight:600; letter-spacing:-0.005em; color:var(--ink); }
+  .entry-date { font-size:var(--fs-sm); color:var(--ink3); white-space:nowrap; font-variant-numeric:lining-nums tabular-nums; }
+  .entry-sub { margin-top:4px; font-size:var(--fs-sm); line-height:1.55; color:var(--ink2); }
+  .tag { color:var(--accent); font-style:italic; }
+  .tag + span { margin-left:12px; }
+  .entry-body { margin-top:14px; max-width:var(--measure); color:var(--ink2); }
+  .entry-body > * + * { margin-top:1em; }
 
-  /* Crimson CTA button */
-  .cta-btn { display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:var(--on-accent); border:none; border-radius:var(--r); padding:12px 24px; font-family:var(--fb); font-size:0.85rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:opacity 0.2s, transform 0.25s ease; }
-  .cta-btn:hover { opacity:0.9; transform:translateY(-2px); }
-
-  /* Grassmannian card accent border */
-  .grass-card { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:var(--r); box-shadow:var(--sh-sm); padding:36px 32px; transition:box-shadow 0.3s; }
-  .grass-card:hover { box-shadow:var(--sh-md); }
-
-  @media(max-width:768px) {
-    .bento-grid { grid-template-columns:repeat(2,1fr); }
-    .bento-span-2 { grid-column: span 2; }
+  .title-link {
+    color:inherit; text-decoration:none;
+    background-image:linear-gradient(var(--accent-line), var(--accent-line)); background-repeat:no-repeat;
+    background-size:0% 1px; background-position:0 100%;
+    transition:background-size .4s var(--ease), color .2s;
   }
-  @media(max-width:480px) {
-    .bento-grid { grid-template-columns:1fr; }
-    .bento-span-2 { grid-column: span 1; }
+  .title-link:hover { color:var(--accent); background-size:100% 1px; }
+  .title-link-icon { display:inline-block; margin-left:8px; vertical-align:0.02em; color:var(--ink3); transition:transform .3s var(--ease), color .2s; }
+  .title-link:hover .title-link-icon { transform:translate(2px,-2px); color:var(--accent); }
+
+  .lead { font-size:var(--fs-lead); line-height:1.55; font-style:italic; color:var(--ink); max-width:40ch; }
+  .prose { max-width:var(--measure); color:var(--ink2); }
+  .prose > * + * { margin-top:1em; }
+  .actions { margin-top:28px; display:flex; flex-wrap:wrap; gap:12px; }
+
+  .pill { display:inline-block; margin-top:12px; padding:3px 12px; border-radius:999px; border:1px solid var(--line-strong); font-size:var(--fs-xs); color:var(--ink2); font-variant-numeric:lining-nums; }
+  .status { display:inline-flex; align-items:center; gap:10px; font-size:var(--fs-sm); font-style:italic; color:var(--accent); }
+  .status-dot { width:7px; height:7px; border-radius:50%; background:currentColor; box-shadow:0 0 0 4px var(--accent-soft); }
+  .note { padding:26px 28px; border-radius:var(--radius); background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 16%, transparent); }
+  .note p { margin-top:10px; color:var(--ink2); max-width:56ch; }
+
+  /* Event filters */
+  .filters { margin-top:32px; display:flex; flex-wrap:wrap; gap:8px; }
+  .chip {
+    position:relative; isolation:isolate; display:inline-flex; align-items:center; gap:6px;
+    padding:5px 14px; border-radius:999px; border:1px solid var(--line-strong); background:transparent;
+    font-size:var(--fs-xs); color:var(--ink2); cursor:pointer; transition:color .25s, border-color .25s;
   }
-  @media(max-width:600px) {
-    .hdr-inner { flex-direction:column; align-items:flex-start; gap:10px; padding:12px 0; }
-    .hdr-right { width:100%; justify-content:space-between; }
-    .hdr-nav { justify-content:flex-start; gap:4px 14px; }
+  .chip:hover { color:var(--ink); border-color:var(--accent-line); }
+  .chip.active { color:var(--on-accent); border-color:var(--accent); }
+  .chip-bg { position:absolute; inset:-1px; z-index:-1; border-radius:inherit; background:var(--accent); }
+  .chip-count { opacity:.7; font-variant-numeric:lining-nums tabular-nums; }
+
+  /* Prev / next */
+  .pager { margin-top:88px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .pager-link {
+    display:flex; flex-direction:column; gap:2px; padding:16px 20px; border:1px solid var(--line); border-radius:var(--radius);
+    text-decoration:none; transition:border-color .25s, background-color .25s;
+  }
+  .pager-link:hover { border-color:var(--accent-line); background:var(--accent-soft); }
+  .pager-link.next { grid-column:2; align-items:flex-end; text-align:right; }
+  .pager-dir { display:inline-flex; align-items:center; gap:6px; font-size:var(--fs-xs); color:var(--ink3); }
+  .pager-label { font-size:1.125rem; color:var(--ink); transition:color .2s; }
+  .pager-link:hover .pager-label { color:var(--accent); }
+  .pager-link svg { transition:transform .3s var(--ease); }
+  .pager-link.prev:hover svg { transform:translateX(-3px); }
+  .pager-link.next:hover svg { transform:translateX(3px); }
+
+  /* Contact */
+  .contact-row {
+    display:grid; grid-template-columns:44px minmax(0,1fr) auto; align-items:center; gap:18px;
+    padding:20px 0; border-bottom:1px solid var(--line); color:var(--ink); text-decoration:none;
+  }
+  .contact-icon { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent); transition:transform .35s var(--ease); }
+  .contact-row:hover .contact-icon { transform:scale(1.06); }
+  .contact-k { display:block; font-size:var(--fs-xs); color:var(--ink3); }
+  .contact-v { display:block; font-size:1.125rem; line-height:1.4; overflow-wrap:anywhere; transition:color .2s; }
+  .contact-row:hover .contact-v { color:var(--accent); }
+  .contact-go { color:var(--ink3); transition:transform .3s var(--ease), color .2s; }
+  .contact-row:hover .contact-go { color:var(--accent); transform:translate(2px,-2px); }
+  .copy-btn { margin-top:16px; background:none; border:0; padding:0; font-size:var(--fs-sm); color:var(--ink3); cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:color .2s; }
+  .copy-btn:hover { color:var(--accent); }
+
+  /* ── Home ────────────────────────────────────────── */
+  .hero {
+    display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:48px; align-items:center;
+    padding-top:clamp(56px, 10vw, 128px); padding-bottom:clamp(56px, 8vw, 104px);
+  }
+  .hero-name { font-size:var(--fs-hero); line-height:1.02; font-weight:600; letter-spacing:-0.028em; color:var(--ink); }
+  .hero-role { margin-top:20px; font-size:var(--fs-lead); font-style:italic; color:var(--accent); }
+  .hero-lead { margin-top:14px; max-width:44ch; color:var(--ink2); }
+
+  .square { justify-self:end; width:100%; max-width:380px; }
+  .square svg { display:block; width:100%; height:auto; overflow:visible; }
+  .square text { text-anchor:middle; dominant-baseline:middle; font-family:var(--serif); }
+  .sq-obj { font-size:21px; fill:var(--ink); }
+  .sq-lbl { font-size:15px; font-style:italic; fill:var(--ink3); }
+  .sq-arrow { fill:none; stroke:var(--accent); stroke-width:1.3; stroke-linecap:round; stroke-linejoin:round; }
+  .square figcaption { margin-top:20px; text-align:center; font-size:var(--fs-sm); font-style:italic; color:var(--ink3); }
+
+  .split {
+    display:grid; grid-template-columns:minmax(150px, 220px) minmax(0,1fr); gap:16px clamp(32px, 7vw, 104px);
+    padding:48px 0; border-top:1px solid var(--line);
+  }
+  .split-label { font-size:var(--fs-sm); font-weight:600; letter-spacing:0.01em; color:var(--ink2); padding-top:3px; }
+  .split .entry:first-child { padding-top:0; }
+  .split .entry:last-child { padding-bottom:0; border-bottom:0; }
+
+  .index { list-style:none; margin:0; padding:0; }
+  .index-row {
+    display:grid; grid-template-columns:130px minmax(0,1fr) 18px; gap:20px; align-items:baseline;
+    padding:13px 0; border-bottom:1px solid var(--line); text-decoration:none; color:var(--ink);
+  }
+  .index li:first-child .index-row { padding-top:0; }
+  .index li:last-child .index-row { border-bottom:0; }
+  .index-label { font-size:1.125rem; transition:color .2s; }
+  .index-desc  { font-size:var(--fs-sm); font-style:italic; color:var(--ink3); transition:color .2s; }
+  .index-arrow { align-self:center; color:var(--accent); opacity:0; transform:translateX(-6px); transition:opacity .25s, transform .35s var(--ease); }
+  .index-row:hover .index-label { color:var(--accent); }
+  .index-row:hover .index-desc  { color:var(--ink2); }
+  .index-row:hover .index-arrow, .index-row:focus-visible .index-arrow { opacity:1; transform:translateX(0); }
+
+  /* ── Footer ──────────────────────────────────────── */
+  .footer { margin-top:72px; border-top:1px solid var(--line); padding:32px 0 44px; }
+  .footer-inner { display:flex; justify-content:space-between; align-items:flex-start; gap:20px 32px; flex-wrap:wrap; }
+  .footer-name { font-weight:600; color:var(--ink); }
+  .footer-note { margin-top:2px; font-size:var(--fs-xs); color:var(--ink3); }
+  .footer-links { display:flex; flex-wrap:wrap; gap:8px 22px; align-items:center; font-size:var(--fs-sm); }
+  .footer-links a, .footer-links button { background:none; border:0; padding:0; cursor:pointer; color:var(--ink2); text-decoration:none; transition:color .2s; }
+  .footer-links a:hover, .footer-links button:hover { color:var(--accent); }
+
+  /* ── Responsive ──────────────────────────────────── */
+  @media (max-width: 900px) {
+    .page { grid-template-columns:1fr; gap:36px; }
+    .page-aside-inner { position:static; }
+    .page-intro { max-width:52ch; }
+    .toc { flex-direction:row; flex-wrap:wrap; gap:6px; margin-top:24px; border-left:0; }
+    .toc-item { padding:4px 12px; border:1px solid var(--line-strong); border-radius:999px; font-size:var(--fs-xs); }
+    .toc-item.active { border-color:var(--accent); color:var(--accent); }
+    .toc-bar { display:none; }
+    .filters { margin-top:24px; }
+  }
+  @media (max-width: 820px) {
+    .hero { grid-template-columns:1fr; gap:40px; }
+    .square { justify-self:start; max-width:300px; }
+    .square figcaption { text-align:left; }
+  }
+  @media (max-width: 640px) {
+    :root { --fs-body:1rem; --fs-h3:1.1875rem; --nav-h:60px; }
+    .split { grid-template-columns:1fr; padding:40px 0; }
+    .index-row { grid-template-columns:minmax(0,1fr) 18px; gap:2px 12px; }
+    .index-desc { grid-column:1; }
+    .index-arrow { grid-row:1 / span 2; grid-column:2; opacity:.6; transform:none; }
+    .pager { grid-template-columns:1fr; }
+    .pager-link.next { grid-column:1; }
+    .entry-head { flex-direction:column; gap:2px; }
   }
 `;
 
-// ─── Small helpers ─────────────────────────────────────────────────────────────
+// ─── Hooks & helpers ──────────────────────────────────────────────────────────
+const EASE = [0.22, 1, 0.36, 1];
+const SPRING = { type: 'spring', stiffness: 420, damping: 36, mass: 0.8 };
+const cap = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
+const prefersReduced = () => {
+  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
+};
+const scrollToId = (id) => {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: prefersReduced() ? 'auto' : 'smooth', block: 'start' });
+};
+
+const getInitialTheme = () => {
+  try { const s = localStorage.getItem('theme'); if (s === 'light' || s === 'dark') return s; } catch (e) {}
+  try { if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark'; } catch (e) {}
+  return 'light';
+};
+
+const useTheme = () => {
+  const [theme, setTheme] = useState(getInitialTheme);
+  const timer = useRef(null);
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove('light', 'dark');
+    root.classList.add(theme);
+    root.style.colorScheme = theme;
+    try { localStorage.setItem('theme', theme); } catch (e) {}
+  }, [theme]);
+  const toggleTheme = () => {
+    const root = document.documentElement;
+    root.classList.add('theme-anim');
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => root.classList.remove('theme-anim'), 500);
+    setTheme(p => (p === 'light' ? 'dark' : 'light'));
+  };
+  return { theme, toggleTheme };
+};
+
+// Highlights whichever section is currently in the upper part of the viewport
+const useScrollSpy = (ids) => {
+  const key = ids.join('|');
+  const [active, setActive] = useState(ids[0]);
+  useEffect(() => {
+    if (!ids.length) return;
+    setActive(ids[0]);
+    const els = ids.map(id => document.getElementById(id)).filter(Boolean);
+    const obs = new IntersectionObserver((entries) => {
+      const hit = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (hit) setActive(hit.target.id);
+    }, { rootMargin: '-90px 0px -55% 0px' });
+    els.forEach(el => obs.observe(el));
+    const atBottom = () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) setActive(ids[ids.length - 1]);
+    };
+    window.addEventListener('scroll', atBottom, { passive: true });
+    return () => { obs.disconnect(); window.removeEventListener('scroll', atBottom); };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return [active, setActive];
+};
+
+// ─── Small components ─────────────────────────────────────────────────────────
 const ThemeToggle = ({ theme, toggleTheme }) => (
-  <button onClick={toggleTheme} className="tt" aria-label="Toggle theme">
-    {theme === 'light' ? <Moon /> : <Sun />}
+  <button onClick={toggleTheme} className="icon-btn" aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}>
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={theme}
+        initial={{ opacity: 0, rotate: -70, scale: 0.6 }}
+        animate={{ opacity: 1, rotate: 0, scale: 1 }}
+        exit={{ opacity: 0, rotate: 70, scale: 0.6 }}
+        transition={{ duration: 0.22, ease: EASE }}
+        style={{ display: 'flex' }}
+      >
+        {theme === 'light' ? <Moon /> : <Sun />}
+      </motion.span>
+    </AnimatePresence>
   </button>
 );
 
-const Divider = ({ style = {} }) => <hr className="dv" style={style} />;
-
-const SectionHead = ({ eyebrow, title }) => (
-  <FadeIn style={{ marginBottom: 56 }}>
-    <div className="eb" style={{ marginBottom: 16 }}>{eyebrow}</div>
-    <h2 className="df" style={{ fontSize: 'clamp(2.3rem,5vw,3.1rem)', fontWeight: 600, lineHeight: 1.12, color: 'var(--ink)', letterSpacing: '-0.01em' }}>{title}</h2>
-    <span className="wabi-mark" />
-  </FadeIn>
+const ExtLink = ({ href, children, className = 'lnk' }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>
 );
 
-// Reusable entry header (title / subtitle / duration) — used across timeline-style lists
-const EntryHeader = ({ title, subtitle, duration, size = '1.4rem' }) => (
-  <>
-    <div className="df" style={{ fontSize: size, fontWeight: 600, color: 'var(--ink)', marginBottom: 6, lineHeight: 1.3 }}>{title}</div>
-    {subtitle && <div style={{ fontSize: '0.95rem', color: 'var(--ink2)', marginBottom: 4, lineHeight: 1.5 }}>{subtitle}</div>}
-    {duration && <div style={{ fontSize: '0.875rem', color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.04em', marginBottom: 14 }}>{duration}</div>}
-  </>
+const Entry = ({ title, href, tag, sub, date, children }) => (
+  <article className="entry">
+    <header className="entry-head">
+      <h3 className="entry-title">
+        {href
+          ? <a href={href} target="_blank" rel="noopener noreferrer" className="title-link">{title}<ExternalLink className="title-link-icon" aria-hidden="true" /></a>
+          : title}
+      </h3>
+      {date && <span className="entry-date">{date}</span>}
+    </header>
+    {(tag || sub) && (
+      <p className="entry-sub">
+        {tag && <span className="tag">{tag}</span>}
+        {sub && <span>{sub}</span>}
+      </p>
+    )}
+    {children && <div className="entry-body">{children}</div>}
+  </article>
 );
 
-// Reusable body paragraph
-const Prose = ({ children, size = 'var(--fs-body)', lh = 'var(--lh-body)', color = 'var(--ink2)', style = {} }) => (
-  <p style={{ fontSize: size, color, lineHeight: lh, ...style }}>{children}</p>
+const Section = ({ id, title, children }) => (
+  <section id={id} className="sec" aria-labelledby={`${id}-title`}>
+    <h2 id={`${id}-title`} className="sec-title">{title}</h2>
+    {children}
+  </section>
 );
 
-const FadeIn = ({ children, delay = 0, style = {}, className = '' }) => {
-  const ref = useRef(null);
-  const [v, setV] = useState(false);
-  useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setV(true); obs.unobserve(el); } }, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+const Pager = () => {
+  const { pathname } = useLocation();
+  const i = navPages.findIndex(p => p.path === pathname);
+  if (i < 0) return null;
+  const prev = i > 0 ? navPages[i - 1] : { label: 'Home', path: '/' };
+  const next = navPages[i + 1];
   return (
-    <div ref={ref} className={`sr${v ? ' in' : ''}${className ? ' ' + className : ''}`} style={{ ...style, transitionDelay: v ? `${delay}ms` : '0ms' }}>
-      {children}
+    <nav className="pager" aria-label="Previous and next page">
+      <Link to={prev.path} className="pager-link prev">
+        <span className="pager-dir"><ArrowLeft /> Previous</span>
+        <span className="pager-label">{prev.label}</span>
+      </Link>
+      {next && (
+        <Link to={next.path} className="pager-link next">
+          <span className="pager-dir">Next <ArrowRight /></span>
+          <span className="pager-label">{next.label}</span>
+        </Link>
+      )}
+    </nav>
+  );
+};
+
+// Shared shell for every inner page: sticky title column + content column
+const PageLayout = ({ kicker, title, intro, sections = [], aside, children }) => {
+  const [active, setActive] = useScrollSpy(sections.map(s => s.id));
+  return (
+    <div className="wrap page">
+      <aside className="page-aside">
+        <div className="page-aside-inner">
+          {kicker && <p className="kicker">{kicker}</p>}
+          <h1 className="page-title">{title}</h1>
+          {intro && <p className="page-intro">{intro}</p>}
+          {sections.length > 1 && (
+            <nav className="toc" aria-label="On this page">
+              {sections.map(s => (
+                <button key={s.id} type="button" className={`toc-item${active === s.id ? ' active' : ''}`}
+                  aria-current={active === s.id ? 'location' : undefined}
+                  onClick={() => { setActive(s.id); scrollToId(s.id); }}>
+                  {active === s.id && <motion.span layoutId="toc-bar" className="toc-bar" transition={SPRING} />}
+                  {s.label}
+                </button>
+              ))}
+            </nav>
+          )}
+          {aside}
+        </div>
+      </aside>
+      <div className="page-body">
+        {children}
+        <Pager />
+      </div>
     </div>
   );
 };
 
-
-const pageVar = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.42, ease: [0.16, 1, 0.3, 1] } },
-  exit:    { opacity: 0, y: -10, transition: { duration: 0.22 } },
-};
-const PageWrapper = ({ children }) => (
-  <motion.div variants={pageVar} initial="initial" animate="animate" exit="exit">
-    {children}
-  </motion.div>
-);
+const pageDesc = (path) => cap(navPages.find(p => p.path === path)?.desc);
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 const Navbar = ({ theme, toggleTheme }) => {
-  const location = useLocation();
+  const { pathname } = useLocation();
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 220, damping: 32, restDelta: 0.001 });
+
+  useEffect(() => { setOpen(false); }, [pathname]);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 8);
+    on();
+    window.addEventListener('scroll', on, { passive: true });
+    return () => window.removeEventListener('scroll', on);
+  }, []);
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  }, [open]);
+
   return (
-    <header style={{ position:'sticky', top:0, zIndex:20, background:'color-mix(in srgb, var(--bg) 86%, transparent)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderBottom:'1px solid var(--border)' }}>
-      <div style={{ maxWidth:1100, margin:'0 auto', padding:'0 28px' }}>
-        <div className="hdr-inner">
-          <Link to="/" style={{ textDecoration:'none' }}>
-            <div className="df" style={{ fontSize:'1.5rem', fontWeight:600, color:'var(--ink)', letterSpacing:'-0.01em', lineHeight:1.2 }}>{cvData.name}</div>
-            <div style={{ fontSize:'11px', fontWeight:500, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--ink3)', marginTop:4 }}>Mathematics · IISER Bhopal</div>
-          </Link>
-          <div className="hdr-right">
-            <nav className="hdr-nav">
-              {navPages.map(({ label, path }) => (
-                <Link key={path} to={path} className={`ni${location.pathname === path ? ' active' : ''}`}>{label}</Link>
-              ))}
-            </nav>
+    <>
+      <header className={`nav${scrolled ? ' is-scrolled' : ''}${open ? ' is-open' : ''}`}>
+        <div className="wrap nav-inner">
+          <Link to="/" className="brand" aria-label="Adeetya Choubey, home">{cvData.name}</Link>
+          <nav className="nav-links" aria-label="Main">
+            {navPages.map(({ label, path }) => {
+              const active = pathname === path;
+              return (
+                <Link key={path} to={path} className={`nav-link${active ? ' active' : ''}`} aria-current={active ? 'page' : undefined}>
+                  {label}
+                  {active && <motion.span layoutId="nav-underline" className="nav-underline" transition={SPRING} />}
+                </Link>
+              );
+            })}
+          </nav>
+          <div className="nav-actions">
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+            <button type="button" className="icon-btn menu-btn" aria-label={open ? 'Close menu' : 'Open menu'}
+              aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(o => !o)}>
+              <span className="burger" aria-hidden="true"><span /><span /></span>
+            </button>
           </div>
         </div>
-      </div>
-    </header>
+        {pathname !== '/' && <motion.div className="progress" style={{ scaleX: progress }} aria-hidden="true" />}
+      </header>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div id="mobile-menu" className="mobile-menu"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.18 } }}
+            transition={{ duration: 0.25 }}>
+            <nav className="wrap" aria-label="Main">
+              {[{ label: 'Home', path: '/', desc: 'start here' }, ...navPages].map(({ label, path, desc }, i) => (
+                <motion.div key={path} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.03 * i, ease: EASE }}>
+                  <Link to={path} className={`m-link${pathname === path ? ' active' : ''}`} aria-current={pathname === path ? 'page' : undefined}>
+                    <span className="m-label">{label}</span>
+                    <span className="m-desc">{cap(desc)}</span>
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
 const Footer = () => (
-  <footer style={{ borderTop:'1px solid var(--border)', padding:'32px 24px', textAlign:'center' }}>
-    <p style={{ fontSize:'0.88rem', color:'var(--ink3)', letterSpacing:'0.03em', lineHeight:1.6 }}>
-      © {new Date().getFullYear()} Adeetya Choubey &nbsp;·&nbsp; You may use, share, and adapt with proper credits.
-    </p>
+  <footer className="footer">
+    <div className="wrap footer-inner">
+      <div>
+        <p className="footer-name">{cvData.name}</p>
+        <p className="footer-note">© {new Date().getFullYear()}. You may use, share, and adapt with proper credits.</p>
+      </div>
+      <div className="footer-links">
+        <a href={`mailto:${cvData.contact.email}`}>Email</a>
+        <a href={cvData.contact.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: prefersReduced() ? 'auto' : 'smooth' })}>Back to top</button>
+      </div>
+    </div>
   </footer>
 );
 
-// ─── Home Page ────────────────────────────────────────────────────────────────
-const HomePage = ({ theme, toggleTheme }) => {
-  const [hovered, setHovered] = useState(null);
-  const navigate = useNavigate();
+// ─── Home ─────────────────────────────────────────────────────────────────────
+// The hero's one animated moment: a commuting square that draws itself.
+// Sing : Top → sSet preserves weak equivalences, so it descends to Ho(Top) → Ho(sSet),
+// which is an equivalence (Quillen) — a nod to the thesis on homotopical algebra.
+let heroPlayed = false;
+
+const CommutingSquare = ({ play }) => {
+  const line = (d) => play ? {
+    initial: { pathLength: 0, opacity: 0 },
+    animate: { pathLength: 1, opacity: 1 },
+    transition: { pathLength: { duration: 0.75, delay: d, ease: [0.65, 0, 0.35, 1] }, opacity: { duration: 0.01, delay: d } },
+  } : {};
+  const fade = (d) => play ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.5, delay: d } } : {};
+  return (
+    <figure className="square">
+      <svg viewBox="0 0 360 236" role="img" aria-labelledby="sq-title">
+        <title id="sq-title">A commutative square: the singular functor from Top to sSet descends to an equivalence of homotopy categories Ho(Top) to Ho(sSet).</title>
+        <g className="sq-obj">
+          <motion.text x="58"  y="40"  {...fade(0.35)}>Top</motion.text>
+          <motion.text x="302" y="40"  {...fade(0.45)}>sSet</motion.text>
+          <motion.text x="58"  y="200" {...fade(0.55)}>Ho(Top)</motion.text>
+          <motion.text x="302" y="200" {...fade(0.65)}>Ho(sSet)</motion.text>
+        </g>
+        <motion.path className="sq-arrow" d="M92 40 H265"  {...line(0.8)} />
+        <motion.path className="sq-arrow" d="M58 62 V178"  {...line(1.0)} />
+        <motion.path className="sq-arrow" d="M302 62 V178" {...line(1.0)} />
+        <motion.path className="sq-arrow" d="M106 200 H250" {...line(1.25)} />
+        <motion.g {...fade(1.45)}>
+          <path className="sq-arrow" d="M258 34.5 L265 40 L258 45.5" />
+          <path className="sq-arrow" d="M52.5 171 L58 178 L63.5 171" />
+          <path className="sq-arrow" d="M296.5 171 L302 178 L307.5 171" />
+          <path className="sq-arrow" d="M243 194.5 L250 200 L243 205.5" />
+        </motion.g>
+        <motion.g className="sq-lbl" {...fade(1.6)}>
+          <text x="178" y="24">Sing</text>
+          <text x="40"  y="120">γ</text>
+          <text x="320" y="120">γ</text>
+          <text x="178" y="186">≃</text>
+          <text x="178" y="221">Ho(Sing)</text>
+        </motion.g>
+      </svg>
+      <motion.figcaption {...fade(1.8)}>
+        Currently: <Link to="/projects" className="lnk">homotopical algebra</Link>
+      </motion.figcaption>
+    </figure>
+  );
+};
+
+const HomePage = () => {
+  const [play] = useState(() => !heroPlayed);
+  useEffect(() => { heroPlayed = true; }, []);
+  const rise = (d) => play ? { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8, delay: d, ease: EASE } } : {};
 
   return (
-    <div className="grain" style={{ minHeight:'100vh', background:'var(--bg)', color:'var(--ink)', fontFamily:'var(--fb)' }}>
-      {/* Faint grid bg */}
-      <div style={{ position:'fixed', inset:0, pointerEvents:'none', zIndex:0,
-        backgroundImage:'linear-gradient(rgba(114,47,55,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(114,47,55,0.025) 1px,transparent 1px)',
-        backgroundSize:'48px 48px' }} />
-
-      {/* Soft radial glow behind hero */}
-      <div style={{ position:'fixed', top:'38%', left:'50%', transform:'translate(-50%,-50%)', width:'min(720px,92vw)', height:'min(480px,55vh)', pointerEvents:'none', zIndex:0,
-        background:'radial-gradient(ellipse at center, rgba(114,47,55,0.09) 0%, transparent 68%)' }} />
-
-      <div style={{ position:'absolute', top:20, right:24, zIndex:10 }}>
-        <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-      </div>
-
-      {/* ── Hero ── */}
-      <section style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'80px 24px 40px', textAlign:'center', position:'relative', zIndex:1 }}>
-
-
-        {/* Name */}
-        <h1 className="au d1" style={{ fontSize:'clamp(3rem,13vw,7.5rem)', fontWeight:900, lineHeight:0.93, color:'var(--ink)', marginBottom:26, letterSpacing:'-0.02em', fontFamily:"'Playfair Display', Georgia, serif", fontStyle:'italic' }}>
-          Adeetya
-        </h1>
-
-        {/* Subtitle */}
-        <p className="au d2" style={{ fontSize:'0.95rem', fontWeight:400, letterSpacing:'0.2em', textTransform:'uppercase', color:'var(--ink3)', marginBottom:32 }}>
-          Idle Category Theorist&nbsp;
-          <span className="df" style={{ color:'var(--accent)', opacity:0.85, fontStyle:'italic', textTransform:'lowercase', letterSpacing:'0.04em', fontSize:'1.1em' }}>(aspiring)</span>
-        </p>
-
-        {/* Integrated Bio Sketch */}
-        <p className="au d3 df" style={{ maxWidth:620, fontSize:'clamp(1.25rem,2.6vw,1.55rem)', fontStyle:'italic', color:'var(--ink)', lineHeight:1.72, marginBottom:16 }}>
-          Math undergrad at <a href="https://maths.iiserb.ac.in/" target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontStyle:'italic' }}>IISER Bhopal</a>.
-        </p>
-        <p className="au d3" style={{ maxWidth:500, fontSize:'1rem', color:'var(--ink3)', lineHeight:1.7, marginBottom:48, fontStyle:'italic' }}>
-          An informal introduction to my formal (academic) self.
-        </p>
-
-        {/* Decorative rule */}
-        <div className="au d4" style={{ display:'flex', margin:'0 auto 44px', maxWidth:320, height:1, background:'linear-gradient(to right, transparent, var(--border), transparent)' }} />
-
-        {/* Navigation */}
-        <nav className="au d4" style={{ display:'flex', flexWrap:'wrap', gap:'12px 32px', justifyContent:'center', marginBottom:24 }}>
-          {navPages.map(({ label, path }) => (
-            <Link key={path} to={path} className="lni"
-              onMouseEnter={() => setHovered(label)}
-              onMouseLeave={() => setHovered(null)}>
-              {label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Hover description */}
-        <div className="au d5" style={{ height:44, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <p className="df" style={{ fontSize:'1.3rem', fontStyle:'italic', color:'var(--ink2)', transition:'opacity 0.35s ease', opacity: hovered ? 1 : 0 }}>
-            {hovered ? navPages.find(p => p.label === hovered)?.desc : ''}
-          </p>
+    <div className="home">
+      <section className="wrap hero">
+        <div>
+          <motion.h1 className="hero-name" {...rise(0.05)}>Adeetya<br />Choubey</motion.h1>
+          <motion.p className="hero-role" {...rise(0.15)}>Idle category theorist (aspiring)</motion.p>
+          <motion.p className="hero-lead" {...rise(0.25)}>
+            Math undergrad at <ExtLink href="https://maths.iiserb.ac.in/">IISER Bhopal</ExtLink>. An informal introduction to my formal (academic) self.
+          </motion.p>
         </div>
+        <CommutingSquare play={play} />
+      </section>
 
-        {/* Scroll cue */}
-        <div className="au d6" style={{ marginTop:40, display:'flex', flexDirection:'column', alignItems:'center', gap:6, color:'var(--ink3)', fontSize:'0.78rem', letterSpacing:'0.14em', textTransform:'uppercase' }}>
-          <span>Scroll</span>
-          <ChevronDown style={{ animation:'fadeUp 1.2s ease infinite alternate' }} />
+      <section className="wrap" aria-labelledby="explore-title">
+        <div className="split">
+          <h2 id="explore-title" className="split-label">Explore</h2>
+          <ul className="index">
+            {navPages.map(({ label, path, desc }) => (
+              <li key={path}>
+                <Link to={path} className="index-row">
+                  <span className="index-label">{label}</span>
+                  <span className="index-desc">{cap(desc)}</span>
+                  <ArrowRight className="index-arrow" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* ── Below-fold content ── */}
-      <section style={{ maxWidth:1000, margin:'0 auto', padding:'24px 28px 104px', position:'relative', zIndex:1 }}>
-
-
-        {/* Bio + Education Grid */}
-        <div className="home-bento">
-
-          {/* Full bio card */}
-          <FadeIn delay={80}>
-            <div className="card tilt-a" style={{ padding:'40px 36px' }}>
-              <div className="eb" style={{ marginBottom:18 }}>Bio-Sketch</div>
-              <p className="iq" style={{ marginBottom:4 }}>{cvData.profile.intro}</p>
-              <Divider style={{ margin:'28px 0' }} />
-              <p style={{ color:'var(--ink2)', lineHeight:'var(--lh-body)', fontSize:'var(--fs-body)' }}>{cvData.profile.interests}</p>
-              <Divider style={{ margin:'28px 0' }} />
-              <p style={{ color:'var(--ink2)', lineHeight:'var(--lh-body)', fontSize:'var(--fs-body)' }}>{cvData.profile.ambition}</p>
-            </div>
-          </FadeIn>
-
-          {/* Education card */}
-          <FadeIn delay={160}>
-            <div className="card tilt-b" style={{ padding:'40px 36px' }}>
-              <div className="eb" style={{ marginBottom:22 }}>Education</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:30 }}>
-                {cvData.education.map(edu => (
-                  <div key={edu.institution} className="tl">
-                    <EntryHeader title={edu.institution} subtitle={edu.degree} duration={edu.duration} />
-                    {edu.grades?.map(g => (
-                      <span key={g} style={{ display:'inline-block', fontSize:'0.85rem', color:'var(--ink2)', background:'var(--bg)', border:'1px solid var(--border)', borderRadius:20, padding:'4px 14px' }}>{g}</span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-
-        {/* Positions of Responsibility */}
-        <FadeIn delay={220}>
-          <div className="card tilt-c" style={{ padding:'40px 36px' }}>
-            <div className="eb" style={{ marginBottom:24 }}>Positions of Responsibility</div>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:36 }}>
-              {cvData.responsibilities.map(resp => (
-                <div key={resp.role} style={{ borderLeft:'2px solid var(--border)', paddingLeft:22 }}>
-                  <EntryHeader title={resp.role} subtitle={resp.institution} duration={resp.duration} size="1.4rem" />
-                  <Prose>{resp.description}</Prose>
-                </div>
-              ))}
-            </div>
+      <section className="wrap" aria-labelledby="about-title">
+        <div className="split">
+          <h2 id="about-title" className="split-label">About</h2>
+          <div className="prose">
+            <p className="lead">{cvData.profile.intro}</p>
+            <p>{cvData.profile.interests}</p>
+            <p>{cvData.profile.ambition}</p>
           </div>
-        </FadeIn>
+        </div>
+      </section>
+
+      <section className="wrap" aria-labelledby="edu-title">
+        <div className="split">
+          <h2 id="edu-title" className="split-label">Education</h2>
+          <div>
+            {cvData.education.map(edu => (
+              <Entry key={edu.institution} title={edu.institution} sub={edu.degree} date={edu.duration}>
+                {edu.grades?.length > 0 && <div>{edu.grades.map(g => <span key={g} className="pill">{g}</span>)}</div>}
+              </Entry>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="wrap" aria-labelledby="resp-title">
+        <div className="split">
+          <h2 id="resp-title" className="split-label">Positions of responsibility</h2>
+          <div>
+            {cvData.responsibilities.map(r => (
+              <Entry key={r.role} title={r.role} sub={r.institution} date={r.duration}>
+                <p>{r.description}</p>
+              </Entry>
+            ))}
+          </div>
+        </div>
       </section>
     </div>
   );
 };
 
-// ─── Academic Experiences Page ─────────────────────────────────────────────────
+// ─── Academic Experiences ─────────────────────────────────────────────────────
 const AcademicExperiencesPage = () => (
-  <PageWrapper>
-    <SectionHead
-      eyebrow="Academic Experiences"
-      title="Where I've learned"
-    />
-    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(340px,1fr))', gap:28 }}>
-      <FadeIn delay={80}>
-        <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
-          <div className="eb" style={{ marginBottom:26 }}>Research Internships</div>
-          <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
-            {cvData.academicExperiences.internships.map((exp, i) => (
-              <div key={exp.duration}>
-                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.5rem" />
-                <Prose>{exp.description}</Prose>
-                {i < cvData.academicExperiences.internships.length - 1 && <Divider style={{ margin:'34px 0' }} />}
-              </div>
-            ))}
-          </div>
-        </div>
-      </FadeIn>
-      <FadeIn delay={160}>
-        <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
-          <div className="eb" style={{ marginBottom:26 }}>Summer Schools</div>
-          <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
-            {cvData.academicExperiences.summerSchools.map((exp, i) => (
-              <div key={exp.institution}>
-                <EntryHeader title={exp.title} subtitle={exp.institution} duration={exp.duration} size="1.5rem" />
-                <Prose>{exp.description}</Prose>
-                {i < cvData.academicExperiences.summerSchools.length - 1 && <Divider style={{ margin:'34px 0' }} />}
-              </div>
-            ))}
-          </div>
-        </div>
-      </FadeIn>
-    </div>
-  </PageWrapper>
+  <PageLayout kicker="AcadEx" title="Where I've learned" intro={pageDesc('/acadex')}
+    sections={[{ id: 'internships', label: 'Research internships' }, { id: 'schools', label: 'Summer schools' }]}>
+    <Section id="internships" title="Research internships">
+      {cvData.academicExperiences.internships.map(exp => (
+        <Entry key={exp.duration} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
+      ))}
+    </Section>
+    <Section id="schools" title="Summer schools">
+      {cvData.academicExperiences.summerSchools.map(exp => (
+        <Entry key={exp.institution} title={exp.title} sub={exp.institution} date={exp.duration}><p>{exp.description}</p></Entry>
+      ))}
+    </Section>
+  </PageLayout>
 );
 
-// ─── Projects Page ──────────────────────────────────────────────────────────
+// ─── Projects ─────────────────────────────────────────────────────────────────
 const ResearchPage = () => (
-  <PageWrapper>
-    <SectionHead
-      eyebrow="Projects"
-      title="Past work & what's ahead"
-    />
-
-    {/* Summer 2026 — Upcoming Thesis Work */}
-    <FadeIn delay={60}>
-      <div style={{ background:'var(--surface)', border:'1px dashed var(--accent)', borderRadius:'var(--r)', padding:'40px 38px', marginBottom:28 }}>
-        <div className="eb" style={{ marginBottom:10, display:'flex', alignItems:'center', gap:8 }}>
-          <span className="wip-dot" />
-          MS Thesis - Ongoing
-        </div>
-        <h3 className="df" style={{ fontSize:'clamp(1.45rem,3vw,1.9rem)', fontWeight:600, color:'var(--ink)', marginBottom:10, lineHeight:1.25 }}>
-          Homotopical Algebra
-        </h3>
-        <div style={{ fontSize:'0.95rem', color:'var(--ink2)', fontWeight:500, marginBottom:20 }}>
-          Advisor: Dr. Vivek Sadhu
-        </div>
-        <p style={{ fontSize:'var(--fs-body)', color:'var(--ink2)', lineHeight:'var(--lh-body)', maxWidth:'70ch' }}>
-          Homotopical algebra grew out of the observation that alot of things one can do in topology, can be carried out in a "well behaved category". Quillen's definition of a model category isolates the bare minimum conditions one needs to impose on a category, so that one can talk about homotopy theory. The primary goal is to understand the definition and basic theory of a model category, together with enough worked out examples, including the classical model structure on the category of Topological spaces. This will be followed by some applications in algebraic K theory and higher homotopy theory (hopefully!). 
+  <PageLayout kicker="Projects" title="Past work & what's ahead" intro={pageDesc('/projects')}
+    sections={[{ id: 'ongoing', label: 'Ongoing' }, { id: 'completed', label: 'Completed' }]}>
+    <Section id="ongoing" title="Ongoing">
+      <Entry title="Homotopical Algebra" sub="MS thesis, advised by Dr. Vivek Sadhu">
+        <p className="status"><span className="status-dot" aria-hidden="true" />In progress</p>
+        <p>
+          Homotopical algebra grew out of the observation that a lot of things one can do in topology can be carried out in a "well behaved category". Quillen's definition of a model category isolates the bare minimum conditions one needs to impose on a category so that one can talk about homotopy theory. The primary goal is to understand the definition and basic theory of a model category, together with enough worked out examples, including the classical model structure on the category of topological spaces. This will be followed by some applications in algebraic K-theory and higher homotopy theory (hopefully!).
         </p>
-      </div>
-    </FadeIn>
-
-    {cvData.research.map((item, i) => (
-      <FadeIn key={item.title} delay={80 * (i + 1)}>
-        <div className="card" style={{ padding:'44px 40px', marginBottom:28 }}>
-          <div className="eb" style={{ marginBottom:16 }}>Completed Project</div>
-          <h3 className="df" style={{ fontSize:'clamp(1.5rem,3.2vw,2rem)', fontWeight:600, color:'var(--ink)', marginBottom:10, lineHeight:1.25 }}>{item.title}</h3>
-          <div style={{ fontSize:'0.95rem', color:'var(--ink2)', fontWeight:500 }}>{item.guide}</div>
-          <Divider style={{ margin:'28px 0' }} />
-          <p style={{ fontSize:'var(--fs-body)', color:'var(--ink2)', lineHeight:1.8, maxWidth:'70ch' }}>
-            <strong style={{ color:'var(--ink)', fontWeight:600 }}>Cayley graphs</strong> exhibit the nature of the action of a group G on a set S closed under inverses. A graph is <strong style={{ color:'var(--ink)', fontWeight:600 }}>integral</strong> if each eigenvalue of its adjacency matrix is an integer. The <strong style={{ color:'var(--ink)', fontWeight:600 }}>genus</strong> is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without edge crossings. The goal of the project was to read relevant literature and try to come up with expressions for genus of generalized cayley graphs (cayley graphs over fields). I tried using computational and algebraic tools to explore these two properties of Cayley graphs on finite abelian groups and generalized cayley graphs.
+      </Entry>
+    </Section>
+    <Section id="completed" title="Completed">
+      {cvData.research.map(item => (
+        <Entry key={item.title} title={item.title} sub={item.guide}>
+          <p>
+            <strong>Cayley graphs</strong> exhibit the nature of the action of a group G on a set S closed under inverses. A graph is <strong>integral</strong> if each eigenvalue of its adjacency matrix is an integer. The <strong>genus</strong> is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without edge crossings.
           </p>
-        </div>
-      </FadeIn>
-    ))}
-  </PageWrapper>
+          <p>
+            The goal of the project was to read relevant literature and try to come up with expressions for the genus of generalized Cayley graphs (Cayley graphs over fields). I used computational and algebraic tools to explore these two properties of Cayley graphs on finite abelian groups and of generalized Cayley graphs.
+          </p>
+        </Entry>
+      ))}
+    </Section>
+  </PageLayout>
 );
 
-// ─── Events Page ───────────────────────────────────────────────────────────────
+// ─── Events ───────────────────────────────────────────────────────────────────
 const EventsPage = () => {
-  // New cards (Discussion Meeting, GANIT Symposium) first, then Grassmannian seminar, then the rest
-  const featuredTitles = [
-    "Discussion Meeting on Topics in Algebra",
-    "GANIT Symposium",
-  ];
+  const featuredTitles = ["Discussion Meeting on Topics in Algebra", "GANIT Symposium"];
   const sortedEvents = [
     ...featuredTitles.map(t => cvData.events.find(e => e.title === t)).filter(Boolean),
     ...cvData.events.filter(e => e.title.includes('Grassmannian')),
     ...cvData.events.filter(e => e.title.startsWith('Cup Product')),
     ...cvData.events.filter(e => !featuredTitles.includes(e.title) && !e.title.includes('Grassmannian') && !e.title.startsWith('Cup Product')),
   ];
+  const tags = ['All', ...Array.from(new Set(sortedEvents.map(e => e.tag)))];
+  const [filter, setFilter] = useState('All');
+  const shown = sortedEvents.filter(e => filter === 'All' || e.tag === filter);
+
+  const renderDescription = (ev) => {
+    const d = ev.description;
+    if (ev.link && typeof d === 'string' && d.includes(ev.link.text)) {
+      const [before, ...rest] = d.split(ev.link.text);
+      return <>{before}<ExtLink href={ev.link.url}>{ev.link.text}</ExtLink>{rest.join(ev.link.text)}</>;
+    }
+    return d;
+  };
+  const titleHref = (ev) => (ev.link && !(typeof ev.description === 'string' && ev.description.includes(ev.link.text)) ? ev.link.url : undefined);
+
   return (
-  <PageWrapper>
-    <SectionHead
-      eyebrow="Events"
-      title="Things I have been a part of"
-    />
-    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))', gap:28 }}>
-      {sortedEvents.map((ev, i) => (
-        <FadeIn key={ev.title} delay={80 * i}>
-          <div className="card" style={{ padding:'36px 32px', height:'100%' }}>
-            <div className="ev-tag">{ev.tag}</div>
-            <h3 className="df" style={{ fontSize:'1.7rem', fontWeight:600, color:'var(--ink)', marginBottom:14, lineHeight:1.2, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
-              {ev.link && featuredTitles.includes(ev.title) ? (
-                <>
-                  <span>{ev.title}</span>
-                  <a
-                    href={ev.link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Visit ${ev.link.text}`}
-                    className="ev-link-btn"
-                    style={{
-                      display:'inline-flex',
-                      alignItems:'center',
-                      justifyContent:'center',
-                      width:22,
-                      height:22,
-                      minWidth:22,
-                      borderRadius:5,
-                      border:'1px solid var(--border)',
-                      color:'var(--ink2)',
-                      flexShrink:0,
-                    }}
-                  >
-                    <ExternalLink />
-                  </a>
-                </>
-              ) : ev.title}
-            </h3>
-            <p style={{ fontSize:'var(--fs-body)', color:'var(--ink2)', lineHeight:'var(--lh-body)' }}>
-              {ev.description === "PLACEHOLDER_DESCRIPTION" ? (
-                <span style={{ fontStyle:'italic', color:'var(--ink3)' }}>
-                  {/* Add your description for this event here */}
-                  Description coming soon.
-                </span>
-              ) : ev.link && !featuredTitles.includes(ev.title) ? (
-                <>
-                  {ev.description.split(ev.link.text)[0]}
-                  <a href={ev.link.url} target="_blank" rel="noopener noreferrer" className="lnk">{ev.link.text}</a>
-                  {ev.description.split(ev.link.text)[1]}
-                </>
-              ) : ev.description}
-            </p>
-          </div>
-        </FadeIn>
-      ))}
-    </div>
-  </PageWrapper>
+    <PageLayout kicker="Events" title="Things I have been a part of" intro={pageDesc('/events')}
+      aside={
+        <div className="filters" role="group" aria-label="Filter events by type">
+          {tags.map(t => {
+            const on = filter === t;
+            const count = t === 'All' ? sortedEvents.length : sortedEvents.filter(e => e.tag === t).length;
+            return (
+              <button key={t} type="button" className={`chip${on ? ' active' : ''}`} aria-pressed={on} onClick={() => setFilter(t)}>
+                {on && <motion.span layoutId="chip-bg" className="chip-bg" transition={SPRING} />}
+                {t}<span className="chip-count">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+      }>
+      <motion.div className="entries" layout transition={{ duration: 0.4, ease: EASE }}>
+        <AnimatePresence initial={false} mode="popLayout">
+          {shown.map(ev => (
+            <motion.div key={ev.title} layout
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, transition: { duration: 0.15 } }}
+              transition={{ duration: 0.4, ease: EASE }}>
+              <Entry title={ev.title} href={titleHref(ev)} tag={ev.tag}>
+                <p>{renderDescription(ev)}</p>
+              </Entry>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+    </PageLayout>
   );
 };
 
-// ─── Coming Soon (shared) ──────────────────────────────────────────────────────
-const ComingSoon = ({ eyebrow, title }) => (
-  <PageWrapper>
-    <div style={{ minHeight:'52vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'60px 24px' }}>
-      <FadeIn>
-        <div className="eb" style={{ marginBottom:14 }}>{eyebrow}</div>
-        <h2 className="df" style={{ fontSize:'clamp(2rem,5vw,3rem)', fontWeight:600, color:'var(--ink)', marginBottom:20, lineHeight:1.15 }}>{title}</h2>
-        <div className="bento-wip" style={{ marginTop:6 }}>
-          <span className="wip-dot" /> Under construction
-        </div>
-      </FadeIn>
+// ─── Under-construction pages ─────────────────────────────────────────────────
+const ComingSoon = ({ kicker, title, intro }) => (
+  <PageLayout kicker={kicker} title={title} intro={intro}>
+    <div className="note">
+      <p className="status" style={{ marginTop: 0 }}><span className="status-dot" aria-hidden="true" />Under construction</p>
+      <p>Nothing here yet. In the meantime, have a look at <Link to="/projects" className="lnk">Projects</Link> or <Link to="/events" className="lnk">Events</Link>.</p>
     </div>
-  </PageWrapper>
+  </PageLayout>
 );
 
-// ─── Frames (Gallery) Page ──────────────────────────────────────────────────────
-const FramesPage = () => (
-  <ComingSoon eyebrow="Frames" title="Under construction" />
-);
+const ProofsPage = () => <ComingSoon kicker="Proofs" title="Proofs" intro="Some of the abstract nonsense which really made sense." />;
+const FramesPage = () => <ComingSoon kicker="Frames" title="Frames" intro={pageDesc('/frames')} />;
 
-// ─── OpenBoard Page ───────────────────────────────────────────────────────────
+// ─── OpenBoard ────────────────────────────────────────────────────────────────
 const OpenBoardPage = () => (
-  <PageWrapper>
-    <SectionHead
-      eyebrow="OpenBoard"
-      title="Ideas, spoken freely"
-    />
+  <PageLayout kicker="OpenBoard" title="Ideas, spoken freely" intro={pageDesc('/openboard')}
+    sections={[
+      { id: 'about', label: 'About' },
+      { id: 'founders', label: 'Co-founders' },
+      { id: 'status', label: 'Status' },
+      { id: 'talks', label: 'Talks so far' },
+    ]}>
+    <Section id="about" title="About">
+      <div className="prose" style={{ marginTop: 28 }}>
+        <p className="lead">A space for students to speak about what they care about, to a general audience.</p>
+        <p>{cvData.openboard.mission}</p>
+      </div>
+      <div className="actions">
+        <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="btn">Visit OpenBoard <ExternalLink /></a>
+      </div>
+    </Section>
 
-    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(340px,1fr))', gap:28, marginBottom:28 }}>
-
-      {/* About OpenBoard */}
-      <FadeIn delay={80}>
-        <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
-          <div style={{ display:'flex', gap:12, alignItems:'center', marginBottom:24 }}>
-            <div className="eb">Initiative</div>
-            <span className="ob-tag">Student-run</span>
-          </div>
-
-          <p className="iq">
-            A space for students to speak about what they care about, to a general audience.
-          </p>
-          <Divider style={{ margin:'28px 0' }} />
-          <p style={{ fontSize:'var(--fs-body)', color:'var(--ink2)', lineHeight:'var(--lh-body)' }}>
-            {cvData.openboard.mission}
-          </p>
-          <div style={{ marginTop:32 }}>
-            <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="cta-btn">
-              Visit Openboard <ExternalLink />
-            </a>
-          </div>
-        </div>
-      </FadeIn>
-
-      {/* Co-founder section */}
-      <FadeIn delay={160}>
-        <div className="card" style={{ padding:'40px 36px', height:'100%' }}>
-          <div className="eb" style={{ marginBottom:20 }}>Co-founder</div>
-          <EntryHeader title={cvData.openboard.role} subtitle={cvData.openboard.institution} duration={cvData.openboard.duration} size="1.8rem" />
-          <Prose>
-            Along with my friend{' '}
-            <a href={cvData.openboard.cofounder.url} target="_blank" rel="noopener noreferrer" className="lnk">{cvData.openboard.cofounder.name}</a>
-            , we started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.
-          </Prose>
-          <Divider style={{ margin:'28px 0' }} />
-          <div className="eb" style={{ marginBottom:14 }}>From the team</div>
-          <p style={{ fontSize:'1rem', color:'var(--ink3)', fontStyle:'italic', lineHeight:1.7 }}>
-            We welcome all disciplines. If you have an idea you'd like to talk about, reach out.
-          </p>
-        </div>
-      </FadeIn>
-    </div>
-
-    {/* On-hold note */}
-    <FadeIn delay={200}>
-      <div style={{ background:'var(--surface)', border:'1px dashed var(--accent)', borderRadius:'var(--r)', padding:'36px 38px', marginBottom:28 }}>
-        <div className="eb" style={{ marginBottom:10, display:'flex', alignItems:'center', gap:8 }}>
-          <span className="wip-dot" />
-          Currently on hold
-        </div>
-        <p className="df" style={{ fontSize:'1.3rem', fontStyle:'italic', color:'var(--ink2)', lineHeight:1.65, margin:0, maxWidth:'60ch' }}>
-          Due to academic commitments, we are currently on hold. We would like your help to bring it back. Reach out if you have ideas.
+    <Section id="founders" title="Co-founders">
+      <Entry title={cvData.openboard.role} sub={`${cvData.openboard.institution}, student-run`} date={cvData.openboard.duration}>
+        <p>
+          Along with my friend <ExtLink href={cvData.openboard.cofounder.url}>{cvData.openboard.cofounder.name}</ExtLink>, I started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.
         </p>
-        <div style={{ marginTop:26 }}>
-          <a href={`mailto:${cvData.contact.email}`} className="cta-btn">
-            Reach out <ArrowRight />
-          </a>
+        <p>We welcome all disciplines. If you have an idea you'd like to talk about, reach out.</p>
+      </Entry>
+    </Section>
+
+    <Section id="status" title="Status">
+      <div className="note" style={{ marginTop: 28 }}>
+        <p className="status" style={{ marginTop: 0 }}><span className="status-dot" aria-hidden="true" />Currently on hold</p>
+        <p>Due to academic commitments, we are currently on hold. We would like your help to bring it back. Reach out if you have ideas.</p>
+        <div className="actions" style={{ marginTop: 20 }}>
+          <a href={`mailto:${cvData.contact.email}`} className="btn">Reach out <ArrowRight /></a>
         </div>
       </div>
-    </FadeIn>
+    </Section>
 
-    {/* Talks section */}
-    <FadeIn delay={240}>
-      <div className="card" style={{ padding:'40px 36px' }}>
-        <div className="eb" style={{ marginBottom:26 }}>Talks so far</div>
-        <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
-          {cvData.openboard.talks.map((talk, i) => (
-            <div key={talk.title}>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:12, alignItems:'flex-start' }}>
-                <div style={{ flex:1, minWidth:220 }}>
-                  <EntryHeader title={talk.title} duration={talk.speaker} size="1.5rem" />
-                  <Prose>{talk.description}</Prose>
-                </div>
-                <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="lnk" style={{ fontSize:'0.9rem', display:'flex', alignItems:'center', gap:6, marginTop:6 }}>
-                  View <ExternalLink />
-                </a>
-              </div>
-              {i < cvData.openboard.talks.length - 1 && <Divider style={{ margin:'30px 0' }} />}
-            </div>
-          ))}
-        </div>
-      </div>
-    </FadeIn>
-  </PageWrapper>
+    <Section id="talks" title="Talks so far">
+      {cvData.openboard.talks.map(talk => (
+        <Entry key={talk.title} title={talk.title} href={cvData.openboard.website} sub={`By ${talk.speaker}`}>
+          <p>{talk.description}</p>
+        </Entry>
+      ))}
+    </Section>
+  </PageLayout>
 );
 
-// ─── Contact Page (full viewport centered) ────────────────────────────────────
-const ContactPage = () => (
-  <PageWrapper>
-    <div style={{
-      display:'flex', alignItems:'center', justifyContent:'center',
-      minHeight:'calc(100vh - 150px)',  /* sticky navbar + footer */
-      padding:'24px 24px',
-    }}>
-      <div style={{ width:'100%', maxWidth:540 }}>
-
-        {/* Header */}
-        <div style={{ textAlign:'center', marginBottom:44 }}>
-          <div className="eb" style={{ marginBottom:16 }}>Contact</div>
-          <h2 className="df" style={{ fontSize:'clamp(2.4rem,5vw,3.2rem)', fontWeight:600, lineHeight:1.08, color:'var(--ink)', letterSpacing:'-0.01em', marginBottom:0 }}>
-            Get in touch
-          </h2>
-        </div>
-
-        {/* Card */}
-        <FadeIn delay={80}>
-          <div className="card" style={{ padding:'44px 40px' }}>
-            <p className="df" style={{ fontSize:'1.3rem', fontStyle:'italic', color:'var(--ink2)', marginBottom:36, lineHeight:1.6, textAlign:'center' }}>
-              Feel free to reach out for collaborations, academic discussions, or just a friendly exchange of ideas.
-            </p>
-
-            <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
-              <a href={`mailto:${cvData.contact.email}`} className="clink">
-                <Mail style={{ color:'var(--accent)', flexShrink:0 }} />
-                <span style={{ fontSize:'1rem', color:'var(--ink2)' }}>{cvData.contact.email}</span>
-              </a>
-              <a href={cvData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="clink">
-                <Linkedin style={{ color:'var(--accent)', flexShrink:0 }} />
-                <span style={{ fontSize:'1rem', color:'var(--ink2)' }}>LinkedIn Profile</span>
-              </a>
-            </div>
-
-            <Divider style={{ margin:'32px 0 24px' }} />
-
-            <div style={{ textAlign:'center', fontSize:'0.9rem', color:'var(--ink3)', letterSpacing:'0.04em' }}>
-              {cvData.location}
-            </div>
-          </div>
-        </FadeIn>
-
-        {/* Social footnote */}
-        <p style={{ textAlign:'center', marginTop:24, fontSize:'0.9rem', color:'var(--ink3)', fontStyle:'italic' }}>
-          Response times vary — email is most reliable.
-        </p>
-      </div>
-    </div>
-  </PageWrapper>
-);
-
-// ─── Proofs Page ───────────────────────────────────────────────────────
-const ProofsPage = () => (
-  <PageWrapper>
-    <div style={{ minHeight:'52vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'60px 24px' }}>
-      <FadeIn>
-        <h2 className="df" style={{ fontSize:'clamp(2.3rem,5vw,3.1rem)', fontWeight:600, color:'var(--ink)', marginBottom:20, lineHeight:1.15, letterSpacing:'-0.01em' }}>Proofs</h2>
-        <Prose style={{ maxWidth:'46ch', margin:'0 auto 24px' }}>
-          some of the abstract nonsense which really made sense
-        </Prose>
-        <div className="bento-wip" style={{ marginTop:6 }}>
-          <span className="wip-dot" /> Under construction
-        </div>
-      </FadeIn>
-    </div>
-  </PageWrapper>
-);
-
-// ─── Inner layout (Navbar + main + footer) ────────────────────────────────────
-const InnerLayout = ({ theme, toggleTheme, children }) => (
-  <>
-    <Navbar theme={theme} toggleTheme={toggleTheme} />
-    <main style={{ maxWidth:1100, margin:'0 auto', padding:'72px 28px 104px' }}>
-      {children}
-    </main>
-    <Footer />
-  </>
-);
-
-// ─── Scroll to top on route change ────────────────────────────────────────────
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
-  return null;
-}
-
-// ─── Animated Routes ──────────────────────────────────────────────────────────
-function AnimatedRoutes({ theme, toggleTheme }) {
-  const location = useLocation();
-
+// ─── Contact ──────────────────────────────────────────────────────────────────
+const ContactPage = () => {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(cvData.contact.email); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch (e) {}
+  };
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <Routes location={location} key={location.pathname}>
+    <PageLayout kicker="Contact" title="Get in touch"
+      intro="Feel free to reach out for collaborations, academic discussions, or just a friendly exchange of ideas.">
+      <div>
+        <a href={`mailto:${cvData.contact.email}`} className="contact-row" style={{ paddingTop: 0 }}>
+          <span className="contact-icon"><Mail /></span>
+          <span><span className="contact-k">Email</span><span className="contact-v">{cvData.contact.email}</span></span>
+          <ArrowRight className="contact-go" aria-hidden="true" />
+        </a>
+        <a href={cvData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="contact-row">
+          <span className="contact-icon"><Linkedin /></span>
+          <span><span className="contact-k">LinkedIn</span><span className="contact-v">Adeetya Choubey</span></span>
+          <ExternalLink className="contact-go" aria-hidden="true" />
+        </a>
+        <button type="button" className="copy-btn" onClick={copy} aria-live="polite">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span key={copied ? 'y' : 'n'} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.18 }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              {copied ? <><Check /> Email copied</> : <><Copy /> Copy email address</>}
+            </motion.span>
+          </AnimatePresence>
+        </button>
+        <div className="prose" style={{ marginTop: 40 }}>
+          <p style={{ fontSize: 'var(--fs-sm)' }}>Based in {cvData.location}. Response times vary; email is the most reliable way to reach me.</p>
+        </div>
+      </div>
+    </PageLayout>
+  );
+};
 
-        {/* Home — no navbar */}
-        <Route path="/" element={<HomePage theme={theme} toggleTheme={toggleTheme} />} />
+const NotFoundPage = () => (
+  <PageLayout kicker="404" title="Page not found" intro="The page you were looking for doesn't exist or has moved.">
+    <Link to="/" className="btn">Go to the home page <ArrowRight /></Link>
+  </PageLayout>
+);
 
-        {/* Inner pages — wrapped in Navbar layout */}
-        <Route path="/acadex" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <AcademicExperiencesPage />
-          </InnerLayout>
-        } />
-        <Route path="/projects" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <ResearchPage />
-          </InnerLayout>
-        } />
-        <Route path="/proofs" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <ProofsPage />
-          </InnerLayout>
-        } />
-        <Route path="/events" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <EventsPage />
-          </InnerLayout>
-        } />
-        <Route path="/openboard" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <OpenBoardPage />
-          </InnerLayout>
-        } />
-        <Route path="/frames" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <FramesPage />
-          </InnerLayout>
-        } />
-        <Route path="/contact" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <ContactPage />
-          </InnerLayout>
-        } />
+// ─── Shell: persistent navbar/footer, animated page content ──────────────────
+const pageVar = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+  exit:    { opacity: 0, y: -6, transition: { duration: 0.18, ease: 'easeIn' } },
+};
 
-        {/* Fallback */}
-        <Route path="*" element={
-          <InnerLayout theme={theme} toggleTheme={toggleTheme}>
-            <div style={{ textAlign:'center', padding:'80px 24px' }}>
-              <div className="eb" style={{ marginBottom:12 }}>404</div>
-              <h2 className="df" style={{ fontSize:'2.5rem', color:'var(--ink)', marginBottom:20 }}>Page not found</h2>
-              <Link to="/" className="cta-btn" style={{ display:'inline-flex' }}>Go home</Link>
-            </div>
-          </InnerLayout>
-        } />
-
-      </Routes>
-    </AnimatePresence>
+function Shell({ theme, toggleTheme }) {
+  const location = useLocation();
+  const focusMain = (e) => { e.preventDefault(); document.getElementById('main')?.focus(); };
+  return (
+    <>
+      <a href="#main" className="skip" onClick={focusMain}>Skip to content</a>
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
+      <main id="main" tabIndex={-1}>
+        <AnimatePresence mode="wait" initial={false} onExitComplete={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })}>
+          <motion.div key={location.pathname} variants={pageVar} initial="initial" animate="animate" exit="exit">
+            <Routes location={location}>
+              <Route path="/"          element={<HomePage />} />
+              <Route path="/acadex"    element={<AcademicExperiencesPage />} />
+              <Route path="/projects"  element={<ResearchPage />} />
+              <Route path="/proofs"    element={<ProofsPage />} />
+              <Route path="/events"    element={<EventsPage />} />
+              <Route path="/openboard" element={<OpenBoardPage />} />
+              <Route path="/frames"    element={<FramesPage />} />
+              <Route path="/contact"   element={<ContactPage />} />
+              <Route path="*"          element={<NotFoundPage />} />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
+      </main>
+      <Footer />
+    </>
   );
 }
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
   const { theme, toggleTheme } = useTheme();
-
-  // Inject Google Fonts
-  useEffect(() => {
-    const href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap";
-    if (!document.querySelector(`link[href="${href}"]`)) {
-      const l = document.createElement('link');
-      l.href = href; l.rel = 'stylesheet';
-      document.head.appendChild(l);
-    }
-  }, []);
-
   return (
     <HashRouter>
-      <ScrollToTop />
-      <style>{LIBRON_FACE + CSS}</style>
-      <div className="grain" style={{ minHeight:'100vh', background:'var(--bg)', color:'var(--ink)', fontFamily:'var(--fb)', transition:'background 0.4s,color 0.4s' }}>
-        <AnimatedRoutes theme={theme} toggleTheme={toggleTheme} />
-      </div>
+      <MotionConfig reducedMotion="user">
+        <style>{LIBRON_FACE + CSS}</style>
+        <Shell theme={theme} toggleTheme={toggleTheme} />
+      </MotionConfig>
     </HashRouter>
   );
 }
