@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import { HashRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, MotionConfig, useScroll } from 'framer-motion';
+import { motion, MotionConfig, useScroll } from 'framer-motion';
 
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -265,7 +265,7 @@ const CSS = `
 
   /* ── Base ─────────────────────────────────────────── */
   *, *::before, *::after { box-sizing:border-box; }
-  html { -webkit-text-size-adjust:100%; }
+  html { -webkit-text-size-adjust:100%; scrollbar-gutter:stable; }
   body {
     margin:0; background:var(--bg); color:var(--ink);
     font-family:var(--text); font-size:var(--fs-body); line-height:var(--lh);
@@ -392,7 +392,7 @@ const CSS = `
   /* ── Spotlight-style search ──────────────────────── */
   .cmdk-backdrop {
     position:fixed; inset:0; z-index:80; display:flex; justify-content:center; align-items:flex-start;
-    padding:14vh 16px 16px; background:rgba(10,8,6,0.2);
+    padding:14vh 16px 16px;
   }
   .cmdk {
     width:100%; max-width:580px; border-radius:18px; overflow:hidden; font-family:var(--ui);
@@ -578,11 +578,26 @@ const CSS = `
   .footer-links a:hover, .footer-links button:hover { color:var(--accent); }
 
   /* ── Responsive ──────────────────────────────────── */
-  /* Motion: short, quiet transitions everywhere; the few deliberate ones follow. */
+  /* Motion: colours fade everywhere; movement is opted in only where wanted below.
+     (A blanket transform/opacity transition fought the Spotlight animation and made it flicker.) */
   *, *::before, *::after {
-    transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, transform !important;
+    transition-property:color, background-color, border-color, text-decoration-color, fill, stroke !important;
     transition-duration:.25s !important; transition-timing-function:cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
+  .btn, .pager-link, .contact-row, .title-link-icon, .burger span {
+    transition-property:color, background-color, border-color, transform, top !important;
+  }
+  .contact-row::before { transition-property:opacity !important; }
+  .cmdk-backdrop, .cmdk { transition:none !important; }
+  .cmdk-hl { transition-property:transform, height !important; transition-duration:.28s !important; transition-timing-function:cubic-bezier(0.16, 1, 0.3, 1) !important; }
+  @keyframes cmdkFadeIn  { from { background-color:rgba(10,8,6,0); } to { background-color:rgba(10,8,6,0.2); } }
+  @keyframes cmdkFadeOut { from { background-color:rgba(10,8,6,0.2); } to { background-color:rgba(10,8,6,0); } }
+  @keyframes cmdkIn  { from { opacity:0; transform:translateY(-6px) scale(0.97); } to { opacity:1; transform:none; } }
+  @keyframes cmdkOut { from { opacity:1; transform:none; } to { opacity:0; transform:translateY(-4px) scale(0.98); } }
+  .cmdk-backdrop { animation:cmdkFadeIn .2s ease-out both; }
+  .cmdk-backdrop.is-closing { animation:cmdkFadeOut .17s ease-in both; pointer-events:none; }
+  .cmdk { animation:cmdkIn .3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .is-closing .cmdk { animation:cmdkOut .17s ease-in both; }
   /* Entrance on page load (the original fadeUp) */
   @keyframes fadeUp { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
   @keyframes pageIn { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
@@ -629,9 +644,7 @@ const CSS = `
 `;
 
 // ─── Motion vocabulary ────────────────────────────────────────────────────────
-// Only the Spotlight search animates; it uses this spring.
 const EASE = [0.16, 1, 0.3, 1];
-const SPRING = { type: 'spring', stiffness: 380, damping: 34, mass: 0.9 };
 
 const cap = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent || '');
@@ -864,6 +877,15 @@ const CommandPalette = ({ open, onClose, theme, toggleTheme, notify }) => {
   const [idx, setIdx] = useState(0);
   const listRef = useRef(null);
   const returnFocus = useRef(null);
+  const [mounted, setMounted] = useState(open);
+  const [closing, setClosing] = useState(false);
+  useEffect(() => {
+    if (open) { setMounted(true); setClosing(false); return; }
+    if (!mounted) return;
+    setClosing(true);
+    const t = window.setTimeout(() => { setMounted(false); setClosing(false); }, 220);
+    return () => window.clearTimeout(t);
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const items = useMemo(() => [
     { group: 'Pages', label: 'Home', hint: 'Start here', run: () => navigate('/') },
@@ -918,23 +940,19 @@ const CommandPalette = ({ open, onClose, theme, toggleTheme, notify }) => {
 
   let lastGroup = null;
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div className="cmdk-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+    mounted && (
+        <div className={`cmdk-backdrop${closing ? ' is-closing' : ''}`}
           onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-          <motion.div className="cmdk" role="dialog" aria-modal="true" aria-label="Quick navigation"
-            initial={{ opacity: 0, scale: 0.96, y: -6 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.15 } }}
-            transition={SPRING}>
+          <div className="cmdk" role="dialog" aria-modal="true" aria-label="Quick navigation">
             <div className="cmdk-input-row">
               <Search aria-hidden="true" />
-              <input autoFocus className="cmdk-input" value={q} onChange={e => setQ(e.target.value)} onKeyDown={onKeyDown}
+              <input autoFocus readOnly={closing} className="cmdk-input" value={q} onChange={e => setQ(e.target.value)} onKeyDown={onKeyDown}
                 placeholder="Jump to a page or action…" aria-label="Search pages and actions"
                 role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-activedescendant={results[idx] ? `cmdk-${idx}` : undefined} />
               <kbd>Esc</kbd>
             </div>
             <div className="cmdk-list" id="cmdk-list" role="listbox" ref={listRef}>
-              {hl && <motion.div className="cmdk-hl" aria-hidden="true" initial={false}
-                animate={{ y: hl.top, height: hl.height }} transition={{ type: 'spring', stiffness: 600, damping: 42 }} />}
+              {hl && <div className="cmdk-hl" aria-hidden="true" style={{ transform: `translateY(${hl.top}px)`, height: hl.height }} />}
               {results.length === 0 && <p className="cmdk-empty">No matches for “{q}”. Try a page name, like “events”.</p>}
               {results.map((item, i) => {
                 const header = item.group !== lastGroup ? item.group : null;
@@ -956,10 +974,9 @@ const CommandPalette = ({ open, onClose, theme, toggleTheme, notify }) => {
               <span><kbd>↑</kbd> <kbd>↓</kbd> to move</span>
               <span><kbd>Enter</kbd> to open</span>
             </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </div>
+        </div>
+    )
   );
 };
 
