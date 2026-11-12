@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import { HashRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, MotionConfig, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig, useScroll, useSpring } from 'framer-motion';
 
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -42,27 +42,27 @@ const ArrowRight = (p) => (
 );
 
 const ArrowLeft = (p) => (
-  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
   </svg>
 );
 const ArrowUp = (p) => (
-  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>
   </svg>
 );
 const Search = (p) => (
-  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
   </svg>
 );
 const Copy = (p) => (
-  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <rect width="13" height="13" x="9" y="9" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
   </svg>
 );
 const Check = (p) => (
-  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+  <svg {...p} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 6 9 17l-5-5"/>
   </svg>
 );
@@ -115,7 +115,7 @@ const cvData = {
   academicExperiences: {
     internships: [
       { title: "Summer Intern", institution: "Institute of Science, Banaras Hindu University", duration: "May 2025 – Aug 2025",
-        description: "The first phase involved getting used to some algebraic topology, referring to books like Hatcher, Harper and Munkres. Towards the end, the focus shifted to finding out groups with integral cayley graphs of genus one through computational and algebraic means." },
+        description: "The first phase involved getting used to some algebraic topology, referring to books like Hatcher, Harper and Munkres. Towards the end, the focus shifted to finding out groups with integral Cayley graphs of genus one through computational and algebraic means." },
       { title: "Summer Intern", institution: "Institute of Science, Banaras Hindu University", duration: "May – July 2024",
         description: "This project focussed on studying general topology from the book by J Dugundji, while working through problems, along with reading the book by Murasugi on Braids." }
     ],
@@ -179,83 +179,91 @@ const LIBRON_FACE = `
 // A relative path (no leading slash) works on GitHub Pages sub-paths too,
 // because HashRouter never changes the page's real URL path.
 const PROFILE_PHOTO = 'profile.jpg';
-// Which part of the photo stays in view inside the arch (x% y%).
-// Leave as is for the cropped profile.jpg; try '40% 72%' if you use the original full-length photo.
-const PROFILE_PHOTO_POSITION = '50% 50%';
+// Which part of the photo sits in the centre of the circle (x% y%).
+const PROFILE_PHOTO_POSITION = '50% 46%';
+
+// Body text and interface fonts (headings stay in the embedded Libron)
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Libre+Franklin:wght@400;500;600&display=swap';
 
 const CSS = `
   :root {
     --bg:          #EDE6E0;
     --surface:     #F3EDE8;
     --ink:         #2E2529;
-    --ink2:        #574A51;
+    --ink2:        #514549;
     --ink3:        #6B5E65;
     --accent:      #864250;
-    --accent-soft: rgba(134,66,80,0.08);
-    --accent-line: rgba(134,66,80,0.30);
+    --accent-soft: rgba(134,66,80,0.07);
+    --accent-line: rgba(134,66,80,0.32);
     --line:        #DDD2CA;
-    --line-strong: #CFC2B9;
+    --line-strong: #C9BBB2;
+    --on-ink:      #F3EDE8;
     --on-accent:   #FFFFFF;
-    --shadow:      0 18px 48px -24px rgba(70,35,45,0.35);
-    --blob1: rgba(212,128,164,0.24);
-    --blob2: rgba(150,178,138,0.28);
-    --blob3: rgba(222,196,166,0.32);
+    --grain-opacity: 0.05;
 
-    --serif: 'Libron', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    --display: 'Libron', 'Iowan Old Style', Georgia, serif;
+    --text:    'Newsreader', 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --ui:      'Libre Franklin', 'Franklin Gothic Book', 'Helvetica Neue', Arial, sans-serif;
 
-    --fs-xs:   0.8125rem;
-    --fs-sm:   0.9375rem;
-    --fs-body: 1.0625rem;
-    --fs-lead: 1.25rem;
+    --fs-ui:   0.875rem;
+    --fs-ui-s: 0.8125rem;
+    --fs-body: 1.125rem;
+    --fs-lead: 1.3125rem;
     --fs-h3:   1.25rem;
     --fs-h1:   clamp(2.125rem, 1.55rem + 2.1vw, 2.875rem);
     --fs-hero: clamp(2.75rem, 1.4rem + 5vw, 4.75rem);
-    --lh:      1.72;
-    --measure: 66ch;
+    --lh:      1.65;
+    --measure: 64ch;
 
     --nav-h:  68px;
-    --radius: 14px;
+    --r:      3px;
     --ease:   cubic-bezier(0.22, 1, 0.36, 1);
   }
   .dark {
-    --bg:          #14171E;
-    --surface:     #1B1F29;
-    --ink:         #EAE6E0;
-    --ink2:        #BDB9B3;
-    --ink3:        #8D8E95;
-    --accent:      #D4B373;
-    --accent-soft: rgba(212,179,115,0.09);
-    --accent-line: rgba(212,179,115,0.32);
-    --line:        #262B36;
-    --line-strong: #323846;
-    --on-accent:   #1A1508;
-    --shadow:      0 18px 48px -24px rgba(0,0,0,0.6);
-    --blob1: rgba(212,179,115,0.07);
-    --blob2: rgba(110,150,120,0.07);
-    --blob3: rgba(190,100,150,0.07);
+    --bg:          #0A1120;
+    --surface:     #101B30;
+    --ink:         #F4EFE3;
+    --ink2:        #C7CEDD;
+    --ink3:        #7E8CAA;
+    --accent:      #E3B23C;
+    --accent-soft: rgba(227,178,60,0.08);
+    --accent-line: rgba(227,178,60,0.34);
+    --line:        #1C2A44;
+    --line-strong: #2A3B5C;
+    --on-ink:      #0A1120;
+    --on-accent:   #1C1206;
+    --grain-opacity: 0.07;
   }
 
   /* ── Base ─────────────────────────────────────────── */
   *, *::before, *::after { box-sizing:border-box; }
-  html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+  html { -webkit-text-size-adjust:100%; }
   body {
     margin:0; background:var(--bg); color:var(--ink);
-    font-family:var(--serif); font-size:var(--fs-body); line-height:var(--lh);
-    font-kerning:normal; font-feature-settings:"kern" 1, "liga" 1;
+    font-family:var(--text); font-size:var(--fs-body); line-height:var(--lh);
+    font-optical-sizing:auto; font-kerning:normal; font-feature-settings:"kern" 1, "liga" 1;
     -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility;
   }
   h1,h2,h3,h4,p,figure { margin:0; }
   h1,h2,h3 { text-wrap:balance; }
-  p { text-wrap:pretty; overflow-wrap:break-word; }
+  p { text-wrap:pretty; overflow-wrap:break-word; hanging-punctuation:first; }
   button, input { font:inherit; color:inherit; }
   strong { font-weight:600; color:var(--ink); }
   ::selection { background:var(--accent); color:var(--on-accent); }
-  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:2px; }
   main:focus { outline:none; }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
   kbd {
-    font-family:inherit; font-size:0.75rem; line-height:1.5; padding:0 6px; border-radius:5px;
-    border:1px solid var(--line-strong); background:var(--bg); color:var(--ink2);
+    font-family:var(--ui); font-size:0.6875rem; line-height:1.6; padding:0 5px; border-radius:2px;
+    border:1px solid var(--line-strong); color:var(--ink2);
+  }
+
+  /* Matte paper grain over everything */
+  .grain { position:fixed; inset:0; z-index:200; pointer-events:none; opacity:var(--grain-opacity);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .dark .grain {
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   /* Theme switch: circular reveal (View Transitions), cross-fade as fallback */
@@ -265,91 +273,64 @@ const CSS = `
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior:auto; }
     *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
   }
-
-  /* Soft drifting colour wash behind everything */
-  .ambient { position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
-  .ambient span { position:absolute; width:62vmax; height:62vmax; border-radius:50%; will-change:transform; }
-  .ambient span:nth-child(1) { top:-28vmax; left:-18vmax; background:radial-gradient(circle, var(--blob1) 0%, transparent 62%); animation:drift1 32s ease-in-out infinite alternate; }
-  .ambient span:nth-child(2) { top:18vh; right:-30vmax; background:radial-gradient(circle, var(--blob2) 0%, transparent 62%); animation:drift2 38s ease-in-out infinite alternate; }
-  .ambient span:nth-child(3) { bottom:-36vmax; left:22vw; background:radial-gradient(circle, var(--blob3) 0%, transparent 62%); animation:drift3 44s ease-in-out infinite alternate; }
-  @keyframes drift1 { to { transform:translate(10vmax, 8vmax) scale(1.08); } }
-  @keyframes drift2 { to { transform:translate(-12vmax, -6vmax) scale(0.94); } }
-  @keyframes drift3 { to { transform:translate(-8vmax, -10vmax) scale(1.1); } }
 
   .wrap { width:100%; max-width:1120px; margin:0 auto; padding:0 clamp(20px, 4vw, 40px); }
 
   .skip {
-    position:fixed; left:16px; top:-60px; z-index:100; padding:8px 16px; border-radius:8px;
-    background:var(--ink); color:var(--bg); font-size:var(--fs-sm); text-decoration:none; transition:top .2s var(--ease);
+    position:fixed; left:16px; top:-60px; z-index:100; padding:8px 16px; border-radius:var(--r);
+    background:var(--ink); color:var(--on-ink); font-family:var(--ui); font-size:var(--fs-ui); text-decoration:none; transition:top .2s var(--ease);
   }
   .skip:focus { top:12px; }
-
-  /* Cursor-following glow on interactive surfaces */
-  .spot { position:relative; isolation:isolate; }
-  .spot::before {
-    content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none; opacity:0;
-    background:radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 70%);
-    transition:opacity .35s ease;
-  }
-  .spot:hover::before { opacity:1; }
 
   /* ── Links & buttons ─────────────────────────────── */
   .lnk {
     color:var(--accent); text-decoration:underline; text-decoration-thickness:1px;
-    text-underline-offset:3px; text-decoration-color:var(--accent-line); transition:text-decoration-color .2s, color .2s;
+    text-underline-offset:3px; text-decoration-color:var(--accent-line); transition:text-decoration-color .25s ease;
   }
   .lnk:hover { text-decoration-color:var(--accent); }
 
   .btn {
-    display:inline-flex; align-items:center; gap:10px; padding:10px 20px; border-radius:999px;
-    background:var(--accent); color:var(--on-accent); border:1px solid var(--accent);
-    font-size:var(--fs-sm); line-height:1.4; text-decoration:none; cursor:pointer;
-    transition: transform .35s var(--ease), box-shadow .35s var(--ease), background-color .2s, color .2s;
+    display:inline-flex; align-items:center; gap:12px; padding:13px 24px; border-radius:var(--r);
+    background:var(--ink); color:var(--on-ink); border:1px solid var(--ink);
+    font-family:var(--ui); font-size:var(--fs-ui); font-weight:500; letter-spacing:0.01em; line-height:1.3;
+    text-decoration:none; cursor:pointer;
+    transition:background-color .3s ease, border-color .3s ease, color .3s ease;
   }
-  .btn:hover { transform:translateY(-2px); box-shadow:0 10px 24px -12px var(--accent); }
-  .btn:active { transform:translateY(0); transition-duration:.1s; }
-  .btn-ghost { background:transparent; color:var(--accent); border-color:var(--accent-line); }
-  .btn-ghost:hover { background:var(--accent-soft); box-shadow:none; }
-  .btn svg { transition:transform .35s var(--ease); }
-  .btn:hover svg { transform:translateX(3px); }
+  .btn:hover { background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
+  .btn-ghost { background:transparent; color:var(--ink); border-color:var(--line-strong); }
+  .btn-ghost:hover { background:transparent; color:var(--accent); border-color:var(--accent); }
+  .btn svg { transition:transform .4s var(--ease); }
+  .btn:hover svg { transform:translateX(2px); }
 
   .icon-btn {
-    width:38px; height:38px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
-    border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--ink2); cursor:pointer;
-    transition:border-color .2s, color .2s, background-color .2s;
+    width:36px; height:36px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--r); border:1px solid var(--line-strong); background:transparent; color:var(--ink2); cursor:pointer;
+    transition:border-color .25s ease, color .25s ease;
   }
-  .icon-btn:hover { color:var(--accent); border-color:var(--accent-line); background:var(--accent-soft); }
+  .icon-btn:hover { color:var(--accent); border-color:var(--accent); }
 
   /* ── Navbar ──────────────────────────────────────── */
-  .nav {
-    position:sticky; top:0; z-index:50;
-    background:color-mix(in srgb, var(--bg) 78%, transparent);
-    -webkit-backdrop-filter:saturate(1.3) blur(16px); backdrop-filter:saturate(1.3) blur(16px);
-    border-bottom:1px solid transparent; transition:border-color .3s ease;
-  }
-  .nav.is-scrolled, .nav.is-open { border-bottom-color:var(--line); }
-  .nav.is-open { background:var(--bg); }
+  .nav { position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid transparent; transition:border-color .3s ease; }
+  .nav.is-scrolled, .nav.is-open { border-bottom-color:var(--line-strong); }
   .nav-inner { height:var(--nav-h); display:flex; align-items:center; justify-content:space-between; gap:24px; }
-  .brand { font-size:1.1875rem; font-weight:600; letter-spacing:-0.005em; color:var(--ink); text-decoration:none; white-space:nowrap; transition:color .2s; }
+  .brand { font-family:var(--display); font-size:1.25rem; font-weight:600; letter-spacing:-0.005em; color:var(--ink); text-decoration:none; white-space:nowrap; transition:color .25s ease; }
   .brand:hover { color:var(--accent); }
-  .nav-links { display:flex; align-items:center; gap:2px; }
-  .nav-link { position:relative; padding:8px 12px; font-size:var(--fs-sm); color:var(--ink2); text-decoration:none; transition:color .2s; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-link { position:relative; padding:8px 12px; font-family:var(--ui); font-size:var(--fs-ui); color:var(--ink2); text-decoration:none; transition:color .25s ease; }
   .nav-link:hover, .nav-link.active { color:var(--ink); }
-  .nav-pill { position:absolute; inset:2px 0; z-index:-1; border-radius:999px; background:var(--accent-soft); }
-  .nav-underline { position:absolute; left:12px; right:12px; bottom:4px; height:1.5px; border-radius:2px; background:var(--accent); }
+  .nav-underline { position:absolute; left:12px; right:12px; bottom:2px; height:1px; background:var(--ink); }
   .nav-actions { display:flex; align-items:center; gap:8px; }
   .search-btn {
-    display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 8px 0 12px; border-radius:999px;
-    border:1px solid var(--line); background:transparent; color:var(--ink3); font-size:var(--fs-xs); cursor:pointer;
-    transition:border-color .2s, color .2s, background-color .2s;
+    display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 8px 0 12px; border-radius:var(--r);
+    border:1px solid var(--line-strong); background:transparent; color:var(--ink3); font-family:var(--ui); font-size:var(--fs-ui-s); cursor:pointer;
+    transition:border-color .25s ease, color .25s ease;
   }
-  .search-btn:hover { color:var(--accent); border-color:var(--accent-line); background:var(--accent-soft); }
+  .search-btn:hover { color:var(--accent); border-color:var(--accent); }
   .menu-btn { display:none; }
   .burger { position:relative; width:16px; height:10px; }
-  .burger span { position:absolute; left:0; right:0; height:1.5px; border-radius:2px; background:currentColor; transition:transform .35s var(--ease), top .35s var(--ease); }
+  .burger span { position:absolute; left:0; right:0; height:1.5px; background:currentColor; transition:transform .4s var(--ease), top .4s var(--ease); }
   .burger span:first-child { top:0; }
   .burger span:last-child  { top:8.5px; }
   .is-open .burger span:first-child { top:4.25px; transform:rotate(45deg); }
@@ -357,53 +338,50 @@ const CSS = `
 
   .mobile-menu { position:fixed; top:var(--nav-h); left:0; right:0; bottom:0; z-index:49; background:var(--bg); overflow-y:auto; padding:8px 0 48px; }
   .m-link { display:block; padding:16px 0; border-bottom:1px solid var(--line); text-decoration:none; }
-  .m-label { display:block; font-size:1.375rem; line-height:1.3; color:var(--ink); transition:color .2s; }
-  .m-desc  { display:block; margin-top:2px; font-size:var(--fs-sm); font-style:italic; color:var(--ink3); }
+  .m-label { display:block; font-family:var(--display); font-size:1.375rem; line-height:1.3; color:var(--ink); transition:color .25s ease; }
+  .m-desc  { display:block; margin-top:2px; font-size:1rem; font-style:italic; color:var(--ink3); }
   .m-link.active .m-label, .m-link:hover .m-label { color:var(--accent); }
 
   @media (max-width: 1000px) {
     .nav-links { display:none; }
     .menu-btn { display:inline-flex; }
-    .search-btn { width:38px; padding:0; justify-content:center; }
+    .search-btn { width:36px; padding:0; justify-content:center; }
     .search-btn .search-label, .search-btn kbd { display:none; }
   }
 
   /* ── Command palette ─────────────────────────────── */
   .cmdk-backdrop {
     position:fixed; inset:0; z-index:80; display:flex; justify-content:center; align-items:flex-start;
-    padding:12vh 16px 16px; background:color-mix(in srgb, var(--ink) 20%, transparent);
-    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    padding:12vh 16px 16px; background:color-mix(in srgb, var(--bg) 70%, transparent);
   }
-  .cmdk { width:100%; max-width:560px; background:var(--surface); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow), 0 2px 8px rgba(0,0,0,0.06); overflow:hidden; }
+  .cmdk { width:100%; max-width:560px; background:var(--surface); border:1px solid var(--line-strong); border-radius:6px; overflow:hidden; font-family:var(--ui); }
   .cmdk-input-row { display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid var(--line); color:var(--ink3); }
-  .cmdk-input { flex:1; min-width:0; border:0; outline:none; background:transparent; font-size:1.0625rem; color:var(--ink); }
+  .cmdk-input { flex:1; min-width:0; border:0; outline:none; background:transparent; font-family:var(--text); font-size:1.125rem; color:var(--ink); }
   .cmdk-input::placeholder { color:var(--ink3); font-style:italic; }
   .cmdk-list { max-height:min(56vh, 420px); overflow-y:auto; padding:6px 8px 10px; overscroll-behavior:contain; }
-  .cmdk-group { padding:12px 12px 4px; font-size:var(--fs-xs); color:var(--ink3); }
-  .cmdk-item { position:relative; isolation:isolate; display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:9px 12px; border-radius:10px; cursor:pointer; color:var(--ink); }
+  .cmdk-group { padding:12px 12px 4px; font-size:var(--fs-ui-s); color:var(--ink3); }
+  .cmdk-item { position:relative; isolation:isolate; display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:9px 12px; border-radius:var(--r); cursor:pointer; font-size:var(--fs-ui); color:var(--ink); }
   .cmdk-item.active .cmdk-label { color:var(--accent); }
   .cmdk-hl { position:absolute; inset:0; z-index:-1; border-radius:inherit; background:var(--accent-soft); }
-  .cmdk-hint { max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:var(--fs-xs); font-style:italic; color:var(--ink3); }
-  .cmdk-empty { padding:28px 12px; text-align:center; font-style:italic; color:var(--ink3); }
-  .cmdk-foot { display:flex; gap:18px; padding:10px 18px; border-top:1px solid var(--line); font-size:var(--fs-xs); color:var(--ink3); }
+  .cmdk-hint { max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:var(--fs-ui-s); color:var(--ink3); }
+  .cmdk-empty { padding:28px 12px; text-align:center; font-family:var(--text); font-style:italic; color:var(--ink3); }
+  .cmdk-foot { display:flex; gap:18px; padding:10px 18px; border-top:1px solid var(--line); font-size:var(--fs-ui-s); color:var(--ink3); }
   @media (hover: none) { .cmdk-foot { display:none; } }
 
-  /* ── Floating back-to-top with reading progress ──── */
+  /* ── Back-to-top with reading progress ───────────── */
   .to-top {
     position:fixed; right:clamp(16px, 3vw, 32px); bottom:clamp(16px, 3vw, 32px); z-index:40;
-    width:48px; height:48px; border-radius:50%; border:0; cursor:pointer; color:var(--accent);
-    display:flex; align-items:center; justify-content:center;
-    background:color-mix(in srgb, var(--surface) 82%, transparent);
-    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:var(--shadow);
+    width:46px; height:46px; border-radius:50%; border:0; cursor:pointer; color:var(--ink2);
+    display:flex; align-items:center; justify-content:center; background:var(--bg);
+    transition:color .25s ease;
   }
-  .to-top .ring-svg { position:absolute; inset:0; width:48px; height:48px; transform:rotate(-90deg); }
-  .ring-bg { fill:none; stroke:var(--line-strong); stroke-width:1.5; }
-  .ring    { fill:none; stroke:var(--accent); stroke-width:1.5; stroke-linecap:round; }
-  .to-top svg:not(.ring-svg) { transition:transform .3s var(--ease); }
-  .to-top:hover svg:not(.ring-svg) { transform:translateY(-2px); }
+  .to-top:hover { color:var(--accent); }
+  .to-top .ring-svg { position:absolute; inset:0; width:46px; height:46px; transform:rotate(-90deg); }
+  .ring-bg { fill:none; stroke:var(--line-strong); stroke-width:1; }
+  .ring    { fill:none; stroke:var(--accent); stroke-width:1.5; }
 
   .toast-wrap { position:fixed; left:0; right:0; bottom:28px; z-index:90; display:flex; justify-content:center; pointer-events:none; }
-  .toast { padding:9px 18px; border-radius:999px; background:var(--ink); color:var(--bg); font-size:var(--fs-sm); box-shadow:var(--shadow); }
+  .toast { padding:9px 18px; border-radius:var(--r); background:var(--ink); color:var(--on-ink); font-family:var(--ui); font-size:var(--fs-ui); }
 
   /* ── Inner page layout ───────────────────────────── */
   main { display:block; min-height:calc(100vh - var(--nav-h)); }
@@ -413,167 +391,148 @@ const CSS = `
   }
   .page-aside { align-self:stretch; }
   .page-aside-inner { position:sticky; top:calc(var(--nav-h) + 40px); }
-  .kicker { font-size:var(--fs-sm); font-style:italic; color:var(--accent); margin-bottom:10px; }
-  .page-title { font-size:var(--fs-h1); line-height:1.12; font-weight:600; letter-spacing:-0.018em; color:var(--ink); }
-  .page-intro { margin-top:16px; max-width:30ch; font-size:var(--fs-sm); line-height:1.6; font-style:italic; color:var(--ink3); }
+  .kicker { font-family:var(--ui); font-size:var(--fs-ui-s); font-weight:500; letter-spacing:0.02em; color:var(--accent); margin-bottom:12px; }
+  .page-title { font-family:var(--display); font-size:var(--fs-h1); line-height:1.12; font-weight:600; letter-spacing:-0.018em; color:var(--ink); }
+  .page-intro { margin-top:16px; max-width:30ch; font-size:1.0625rem; line-height:1.55; font-style:italic; color:var(--ink3); }
 
   .toc { margin-top:36px; display:flex; flex-direction:column; border-left:1px solid var(--line-strong); }
-  .toc-item { position:relative; text-align:left; background:none; border:0; padding:6px 0 6px 18px; font-size:var(--fs-sm); color:var(--ink3); cursor:pointer; transition:color .2s, transform .3s var(--ease); }
-  .toc-item:hover { color:var(--ink); transform:translateX(2px); }
-  .toc-item.active { color:var(--ink); }
-  .toc-bar { position:absolute; left:-1px; top:7px; bottom:7px; width:2px; border-radius:2px; background:var(--accent); }
+  .toc-item { position:relative; text-align:left; background:none; border:0; padding:6px 0 6px 18px; font-family:var(--ui); font-size:var(--fs-ui); color:var(--ink3); cursor:pointer; transition:color .25s ease; }
+  .toc-item:hover, .toc-item.active { color:var(--ink); }
+  .toc-bar { position:absolute; left:-1px; top:7px; bottom:7px; width:1.5px; background:var(--ink); }
 
   .page-body { min-width:0; max-width:46rem; }
   .sec { scroll-margin-top:calc(var(--nav-h) + 32px); }
   .sec + .sec { margin-top:72px; }
-  .sec-title { font-size:var(--fs-sm); font-weight:600; letter-spacing:0.01em; color:var(--ink2); padding-bottom:12px; border-bottom:1px solid var(--line-strong); }
+  .sec-title { font-family:var(--ui); font-size:var(--fs-ui); font-weight:600; letter-spacing:0.01em; color:var(--ink); padding-bottom:12px; border-bottom:1px solid var(--ink); }
 
   .entry { padding:28px 0; border-bottom:1px solid var(--line); }
   .sec .entry:last-child, .entries > :last-child .entry { border-bottom:0; }
   .entry-head { display:flex; justify-content:space-between; align-items:baseline; gap:4px 24px; flex-wrap:wrap; }
-  .entry-title { font-size:var(--fs-h3); line-height:1.35; font-weight:600; letter-spacing:-0.005em; color:var(--ink); }
-  .entry-date { font-size:var(--fs-sm); color:var(--ink3); white-space:nowrap; font-variant-numeric:lining-nums tabular-nums; }
-  .entry-sub { margin-top:4px; font-size:var(--fs-sm); line-height:1.55; color:var(--ink2); }
-  .tag { color:var(--accent); font-style:italic; }
+  .entry-title { font-family:var(--display); font-size:var(--fs-h3); line-height:1.35; font-weight:600; letter-spacing:-0.005em; color:var(--ink); }
+  .entry-date { font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .entry-sub { margin-top:6px; font-family:var(--ui); font-size:var(--fs-ui); line-height:1.5; color:var(--ink2); }
+  .tag { color:var(--accent); font-weight:500; }
   .tag + span { margin-left:12px; }
   .entry-body { margin-top:14px; max-width:var(--measure); color:var(--ink2); }
-  .entry-body > * + * { margin-top:1em; }
+  .entry-body > * + * { margin-top:0.9em; }
 
   .title-link {
     color:inherit; text-decoration:none;
-    background-image:linear-gradient(var(--accent-line), var(--accent-line)); background-repeat:no-repeat;
+    background-image:linear-gradient(currentColor, currentColor); background-repeat:no-repeat;
     background-size:0% 1px; background-position:0 100%;
-    transition:background-size .45s var(--ease), color .2s;
+    transition:background-size .5s var(--ease), color .25s ease;
   }
   .title-link:hover { color:var(--accent); background-size:100% 1px; }
-  .title-link-icon { display:inline-block; margin-left:8px; vertical-align:0.02em; color:var(--ink3); transition:transform .3s var(--ease), color .2s; }
-  .title-link:hover .title-link-icon { transform:translate(2px,-2px); color:var(--accent); }
+  .title-link-icon { display:inline-block; margin-left:8px; vertical-align:0.02em; color:var(--ink3); transition:color .25s ease; }
+  .title-link:hover .title-link-icon { color:var(--accent); }
 
-  .lead { font-size:var(--fs-lead); line-height:1.55; font-style:italic; color:var(--ink); max-width:40ch; }
+  .lead { font-size:var(--fs-lead); line-height:1.5; font-style:italic; color:var(--ink); max-width:40ch; }
   .prose { max-width:var(--measure); color:var(--ink2); }
-  .prose > * + * { margin-top:1em; }
+  .prose > * + * { margin-top:0.9em; }
   .actions { margin-top:28px; display:flex; flex-wrap:wrap; gap:12px; }
 
-  .pill { display:inline-block; margin-top:12px; padding:3px 12px; border-radius:999px; border:1px solid var(--line-strong); font-size:var(--fs-xs); color:var(--ink2); font-variant-numeric:lining-nums tabular-nums; }
-  .status { display:inline-flex; align-items:center; gap:10px; font-size:var(--fs-sm); font-style:italic; color:var(--accent); }
-  .status-dot { position:relative; width:7px; height:7px; border-radius:50%; background:currentColor; }
-  .status-dot::after { content:''; position:absolute; inset:-4px; border-radius:50%; border:1px solid currentColor; opacity:0; animation:ping 2.6s var(--ease) infinite; }
-  @keyframes ping { 0% { transform:scale(.6); opacity:.7; } 100% { transform:scale(1.8); opacity:0; } }
-  .note { padding:26px 28px; border-radius:var(--radius); background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 16%, transparent); }
+  .pill { display:inline-block; margin-top:12px; padding:3px 10px; border-radius:var(--r); border:1px solid var(--line-strong); font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink2); font-variant-numeric:tabular-nums; }
+  .status { display:inline-flex; align-items:center; gap:10px; font-family:var(--ui); font-size:var(--fs-ui-s); font-weight:500; color:var(--accent); }
+  .status-dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .note { padding:24px 26px; border-radius:var(--r); background:var(--accent-soft); border-left:2px solid var(--accent); }
   .note p { margin-top:10px; color:var(--ink2); max-width:56ch; }
 
   .filters { margin-top:32px; display:flex; flex-wrap:wrap; gap:8px; }
   .chip {
     position:relative; isolation:isolate; display:inline-flex; align-items:center; gap:6px;
-    padding:5px 14px; border-radius:999px; border:1px solid var(--line-strong); background:transparent;
-    font-size:var(--fs-xs); color:var(--ink2); cursor:pointer; transition:color .25s, border-color .25s;
+    padding:5px 12px; border-radius:var(--r); border:1px solid var(--line-strong); background:transparent;
+    font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink2); cursor:pointer; transition:color .3s ease, border-color .3s ease;
   }
-  .chip:hover { color:var(--ink); border-color:var(--accent-line); }
-  .chip.active { color:var(--on-accent); border-color:var(--accent); }
-  .chip-bg { position:absolute; inset:-1px; z-index:-1; border-radius:inherit; background:var(--accent); }
-  .chip-count { opacity:.7; font-variant-numeric:lining-nums tabular-nums; }
+  .chip:hover { color:var(--ink); border-color:var(--ink3); }
+  .chip.active { color:var(--on-ink); border-color:var(--ink); }
+  .chip-bg { position:absolute; inset:-1px; z-index:-1; border-radius:inherit; background:var(--ink); }
+  .chip-count { opacity:.65; font-variant-numeric:tabular-nums; }
 
   .pager { margin-top:88px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .pager-link {
-    display:flex; flex-direction:column; gap:2px; padding:16px 20px; border:1px solid var(--line-strong); border-radius:var(--radius);
-    text-decoration:none; transition:border-color .25s, transform .35s var(--ease);
+    display:flex; flex-direction:column; gap:2px; padding:16px 20px; border:1px solid var(--line-strong); border-radius:var(--r);
+    text-decoration:none; transition:border-color .3s ease;
   }
-  .pager-link:hover { border-color:var(--accent-line); transform:translateY(-2px); }
+  .pager-link:hover { border-color:var(--ink); }
   .pager-link.next { grid-column:2; align-items:flex-end; text-align:right; }
-  .pager-dir { display:inline-flex; align-items:center; gap:6px; font-size:var(--fs-xs); color:var(--ink3); }
-  .pager-label { font-size:1.125rem; color:var(--ink); transition:color .2s; }
+  .pager-dir { display:inline-flex; align-items:center; gap:6px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
+  .pager-label { font-family:var(--display); font-size:1.1875rem; color:var(--ink); transition:color .25s ease; }
   .pager-link:hover .pager-label { color:var(--accent); }
-  .pager-link svg { transition:transform .35s var(--ease); }
-  .pager-link.prev:hover svg { transform:translateX(-3px); }
-  .pager-link.next:hover svg { transform:translateX(3px); }
 
   .contact-row {
-    display:grid; grid-template-columns:44px minmax(0,1fr) auto; align-items:center; gap:18px;
-    padding:18px 16px; margin:0 -16px; border-radius:var(--radius); color:var(--ink); text-decoration:none;
+    display:grid; grid-template-columns:40px minmax(0,1fr) auto; align-items:center; gap:18px;
+    padding:20px 0; border-bottom:1px solid var(--line); color:var(--ink); text-decoration:none;
   }
-  .contact-row + .contact-row { margin-top:4px; }
-  .contact-icon { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent); transition:transform .4s var(--ease); }
-  .contact-row:hover .contact-icon { transform:scale(1.08) rotate(-4deg); }
-  .contact-k { display:block; font-size:var(--fs-xs); color:var(--ink3); }
-  .contact-v { display:block; font-size:1.125rem; line-height:1.4; overflow-wrap:anywhere; transition:color .2s; }
+  .contact-row:first-child { padding-top:0; }
+  .contact-icon { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:1px solid var(--line-strong); color:var(--accent); transition:border-color .3s ease; }
+  .contact-row:hover .contact-icon { border-color:var(--accent); }
+  .contact-k { display:block; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
+  .contact-v { display:block; font-size:1.1875rem; line-height:1.4; overflow-wrap:anywhere; transition:color .25s ease; }
   .contact-row:hover .contact-v { color:var(--accent); }
-  .contact-go { color:var(--ink3); transition:transform .35s var(--ease), color .2s; }
-  .contact-row:hover .contact-go { color:var(--accent); transform:translate(3px,-3px); }
-  .copy-btn { margin-top:16px; background:none; border:0; padding:0; font-size:var(--fs-sm); color:var(--ink3); cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:color .2s; }
+  .contact-go { color:var(--ink3); transition:color .25s ease; }
+  .contact-row:hover .contact-go { color:var(--accent); }
+  .copy-btn { margin-top:18px; background:none; border:0; padding:0; font-family:var(--ui); font-size:var(--fs-ui); color:var(--ink3); cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:color .25s ease; }
   .copy-btn:hover { color:var(--accent); }
 
   /* ── Home ────────────────────────────────────────── */
   .hero {
-    display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr); gap:56px; align-items:center;
+    display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr); gap:56px; align-items:center;
     padding-top:clamp(48px, 9vw, 112px); padding-bottom:clamp(56px, 8vw, 104px);
   }
-  .hero-name { font-size:var(--fs-hero); line-height:1.02; font-weight:600; letter-spacing:-0.028em; color:var(--ink); }
-  .hero-name .word { display:block; overflow:hidden; padding-bottom:0.1em; margin-bottom:-0.1em; }
-  .hero-name .char { display:inline-block; will-change:transform; }
+  .hero-name { font-family:var(--display); font-size:var(--fs-hero); line-height:1.02; font-weight:600; letter-spacing:-0.028em; color:var(--ink); }
+  .hero-name .line { display:block; overflow:hidden; padding-bottom:0.1em; margin-bottom:-0.1em; }
+  .hero-name .line > span { display:block; }
   .hero-role { margin-top:22px; font-size:var(--fs-lead); font-style:italic; color:var(--accent); }
-  .hero-think { margin-top:6px; color:var(--ink2); }
-  .rotator { display:inline-block; position:relative; color:var(--ink); font-style:italic; }
-  .rotator-word { display:inline-block; }
-  .rotator::after { content:''; position:absolute; left:0; right:0; bottom:2px; height:1px; background:var(--accent-line); }
-  .hero-lead { margin-top:14px; max-width:44ch; color:var(--ink2); }
-  .hero-actions { margin-top:32px; display:flex; flex-wrap:wrap; align-items:center; gap:12px 14px; }
-  .kbd-hint { margin-top:22px; font-size:var(--fs-xs); color:var(--ink3); }
-  .kbd-hint button { background:none; border:0; padding:0; color:inherit; cursor:pointer; }
-  .kbd-hint button:hover { color:var(--accent); }
+  .hero-lead { margin-top:12px; max-width:44ch; color:var(--ink2); }
+  .hero-actions { margin-top:34px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .kbd-hint { margin-top:22px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
+  .kbd-hint button { background:none; border:0; padding:0; color:inherit; cursor:pointer; transition:color .25s ease; }
+  .kbd-hint button:hover { color:var(--ink); }
   @media (hover: none), (pointer: coarse) { .kbd-hint { display:none; } }
 
-  .portrait { justify-self:end; width:100%; max-width:340px; perspective:900px; }
-  .portrait-stage { position:relative; }
-  .portrait-back {
-    position:absolute; top:16px; left:16px; right:-16px; bottom:-16px;
-    border-radius:999px 999px 22px 22px; border:1px solid var(--accent-line);
-  }
-  .portrait-frame {
-    position:relative; aspect-ratio:4 / 5; overflow:hidden; border-radius:999px 999px 22px 22px;
-    background:linear-gradient(160deg, color-mix(in srgb, #96B28A 22%, var(--surface)), color-mix(in srgb, var(--accent) 14%, var(--surface)));
-    box-shadow:var(--shadow); transform-style:preserve-3d; will-change:transform;
-  }
+  .portrait { justify-self:end; width:100%; max-width:320px; }
+  .portrait-stage { position:relative; aspect-ratio:1; }
+  .portrait-ring { position:absolute; inset:-12px; border-radius:50%; border:1px solid var(--line-strong); }
+  .portrait-frame { position:absolute; inset:0; border-radius:50%; overflow:hidden; background:var(--surface); }
   .portrait-frame img {
     position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:var(--photo-pos, 50% 50%); display:block;
-    opacity:0; transform:scale(1.06); transition:opacity .9s ease, transform 1.4s var(--ease);
+    opacity:0; transition:opacity 1.2s ease;
   }
-  .portrait-frame img.is-loaded { opacity:1; transform:scale(1); }
-  .portrait:hover .portrait-frame img.is-loaded { transform:scale(1.03); }
+  .portrait-frame img.is-loaded { opacity:1; }
   .portrait-fallback {
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-size:clamp(3rem, 6vw, 4.5rem); font-style:italic; font-weight:500; color:var(--accent); letter-spacing:0.02em;
+    font-family:var(--display); font-size:clamp(3rem, 6vw, 4.5rem); font-style:italic; color:var(--accent);
   }
-  .portrait figcaption { margin-top:30px; text-align:center; font-size:var(--fs-sm); font-style:italic; color:var(--ink3); }
+  .portrait figcaption { margin-top:30px; text-align:center; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
 
   .split {
     display:grid; grid-template-columns:minmax(150px, 220px) minmax(0,1fr); gap:16px clamp(32px, 7vw, 104px);
-    padding:48px 0; border-top:1px solid var(--line-strong);
+    padding:48px 0; border-top:1px solid var(--ink);
   }
-  .split-label { font-size:var(--fs-sm); font-weight:600; letter-spacing:0.01em; color:var(--ink2); padding-top:3px; }
+  .split-label { font-family:var(--ui); font-size:var(--fs-ui); font-weight:600; letter-spacing:0.01em; color:var(--ink); padding-top:4px; }
   .split .entry:first-child { padding-top:0; }
   .split .entry:last-child { padding-bottom:0; border-bottom:0; }
 
   .index { list-style:none; margin:-12px 0 0; padding:0; }
+  .index li + li { border-top:1px solid var(--line); }
   .index-row {
-    position:relative; isolation:isolate; display:grid; grid-template-columns:130px minmax(0,1fr) 18px; gap:20px; align-items:baseline;
+    display:grid; grid-template-columns:140px minmax(0,1fr) 18px; gap:20px; align-items:baseline;
     padding:12px 0; text-decoration:none; color:var(--ink);
   }
-  .index li + li .index-row::after { content:''; position:absolute; left:0; right:0; top:0; height:1px; background:var(--line); }
-  .index-hl { position:absolute; inset:0 -16px; z-index:-1; border-radius:12px; background:var(--accent-soft); }
-  .index-label { font-size:1.125rem; transition:color .2s, transform .35s var(--ease); }
-  .index-desc  { font-size:var(--fs-sm); font-style:italic; color:var(--ink3); transition:color .2s; }
-  .index-arrow { align-self:center; color:var(--accent); opacity:0; transform:translateX(-6px); transition:opacity .25s, transform .35s var(--ease); }
-  .index-row:hover .index-label, .index-row:focus-visible .index-label { color:var(--accent); transform:translateX(4px); }
+  .index-label { font-family:var(--display); font-size:1.1875rem; transition:color .3s ease; }
+  .index-desc  { font-size:1.0625rem; font-style:italic; color:var(--ink3); transition:color .3s ease; }
+  .index-arrow { align-self:center; color:var(--accent); opacity:0; transform:translateX(-4px); transition:opacity .35s ease, transform .5s var(--ease); }
+  .index-row:hover .index-label, .index-row:focus-visible .index-label { color:var(--accent); }
   .index-row:hover .index-desc  { color:var(--ink2); }
   .index-row:hover .index-arrow, .index-row:focus-visible .index-arrow { opacity:1; transform:translateX(0); }
 
   /* ── Footer ──────────────────────────────────────── */
-  .footer { margin-top:72px; border-top:1px solid var(--line-strong); padding:32px 0 44px; }
+  .footer { margin-top:72px; border-top:1px solid var(--ink); padding:28px 0 44px; }
   .footer-inner { display:flex; justify-content:space-between; align-items:flex-start; gap:20px 32px; flex-wrap:wrap; }
-  .footer-name { font-weight:600; color:var(--ink); }
-  .footer-note { margin-top:2px; font-size:var(--fs-xs); color:var(--ink3); }
-  .footer-links { display:flex; flex-wrap:wrap; gap:8px 22px; align-items:center; font-size:var(--fs-sm); }
-  .footer-links a, .footer-links button { background:none; border:0; padding:0; cursor:pointer; color:var(--ink2); text-decoration:none; transition:color .2s; }
+  .footer-name { font-family:var(--display); font-weight:600; color:var(--ink); }
+  .footer-note { margin-top:2px; font-family:var(--ui); font-size:var(--fs-ui-s); color:var(--ink3); }
+  .footer-links { display:flex; flex-wrap:wrap; gap:8px 22px; align-items:center; font-family:var(--ui); font-size:var(--fs-ui); }
+  .footer-links a, .footer-links button { background:none; border:0; padding:0; cursor:pointer; color:var(--ink2); text-decoration:none; transition:color .25s ease; }
   .footer-links a:hover, .footer-links button:hover { color:var(--accent); }
 
   /* ── Responsive ──────────────────────────────────── */
@@ -582,24 +541,22 @@ const CSS = `
     .page-aside-inner { position:static; }
     .page-intro { max-width:52ch; }
     .toc { flex-direction:row; flex-wrap:wrap; gap:6px; margin-top:24px; border-left:0; }
-    .toc-item { padding:4px 12px; border:1px solid var(--line-strong); border-radius:999px; font-size:var(--fs-xs); }
-    .toc-item:hover { transform:none; }
-    .toc-item.active { border-color:var(--accent); color:var(--accent); }
+    .toc-item { padding:4px 10px; border:1px solid var(--line-strong); border-radius:var(--r); font-size:var(--fs-ui-s); }
+    .toc-item.active { border-color:var(--ink); }
     .toc-bar { display:none; }
     .filters { margin-top:24px; }
   }
   @media (max-width: 820px) {
-    .hero { grid-template-columns:1fr; gap:40px; }
-    .portrait { order:-1; justify-self:start; max-width:220px; }
+    .hero { grid-template-columns:1fr; gap:44px; }
+    .portrait { order:-1; justify-self:start; max-width:180px; margin:12px 0 0 12px; }
     .portrait figcaption { display:none; }
   }
   @media (max-width: 640px) {
-    :root { --fs-body:1rem; --fs-h3:1.1875rem; --nav-h:60px; }
+    :root { --fs-body:1.0625rem; --fs-h3:1.1875rem; --nav-h:60px; }
     .split { grid-template-columns:1fr; padding:40px 0; }
     .index-row { grid-template-columns:minmax(0,1fr) 18px; gap:2px 12px; }
     .index-desc { grid-column:1; }
     .index-arrow { grid-row:1 / span 2; grid-column:2; opacity:.6; transform:none; }
-    .index-hl { inset:0 -10px; }
     .pager { grid-template-columns:1fr; }
     .pager-link.next { grid-column:1; }
     .entry-head { flex-direction:column; gap:2px; }
@@ -608,12 +565,13 @@ const CSS = `
 
 // ─── Hooks & helpers ──────────────────────────────────────────────────────────
 const EASE = [0.22, 1, 0.36, 1];
-const SPRING = { type: 'spring', stiffness: 420, damping: 36, mass: 0.8 };
+const GLIDE = { duration: 0.5, ease: EASE };      // calm, no overshoot
 const cap = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent || '');
 const prefersReduced = () => {
   try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
 };
+const smoothScrollTo = (top) => window.scrollTo({ top, behavior: prefersReduced() ? 'auto' : 'smooth' });
 const scrollToId = (id) => {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: prefersReduced() ? 'auto' : 'smooth', block: 'start' });
@@ -663,14 +621,14 @@ const useTheme = () => {
     vt.ready.then(() => {
       root.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-        { duration: 650, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' }
+        { duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' }
       );
     }).catch(() => {});
   };
   return { theme, toggleTheme };
 };
 
-// Highlights whichever section is currently in the upper part of the viewport
+// Highlights the last section whose top has passed ~35% of the viewport
 const useScrollSpy = (ids) => {
   const key = ids.join('|');
   const [active, setActive] = useState(ids[0]);
@@ -698,24 +656,16 @@ const useScrollSpy = (ids) => {
   return [active, setActive];
 };
 
-// Gentle rise-in when something first scrolls into view
-const reveal = (delay = 0) => ({
-  initial: { opacity: 0, y: 18 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '0px 0px -60px 0px' },
-  transition: { duration: 0.75, delay, ease: EASE },
-});
-
 // ─── Small components ─────────────────────────────────────────────────────────
 const ThemeToggle = ({ theme, toggleTheme }) => (
   <button onClick={toggleTheme} className="icon-btn" aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}>
     <AnimatePresence mode="wait" initial={false}>
       <motion.span
         key={theme}
-        initial={{ opacity: 0, rotate: -70, scale: 0.6 }}
-        animate={{ opacity: 1, rotate: 0, scale: 1 }}
-        exit={{ opacity: 0, rotate: 70, scale: 0.6 }}
-        transition={{ duration: 0.22, ease: EASE }}
+        initial={{ opacity: 0, rotate: -45 }}
+        animate={{ opacity: 1, rotate: 0 }}
+        exit={{ opacity: 0, rotate: 45 }}
+        transition={{ duration: 0.25, ease: EASE }}
         style={{ display: 'flex' }}
       >
         {theme === 'light' ? <Moon /> : <Sun />}
@@ -728,8 +678,8 @@ const ExtLink = ({ href, children, className = 'lnk' }) => (
   <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>
 );
 
-const Entry = ({ title, href, tag, sub, date, children, animate = true }) => (
-  <motion.article className="entry" {...(animate ? reveal() : {})}>
+const Entry = ({ title, href, tag, sub, date, children }) => (
+  <article className="entry">
     <header className="entry-head">
       <h3 className="entry-title">
         {href
@@ -745,7 +695,7 @@ const Entry = ({ title, href, tag, sub, date, children, animate = true }) => (
       </p>
     )}
     {children && <div className="entry-body">{children}</div>}
-  </motion.article>
+  </article>
 );
 
 const Section = ({ id, title, children }) => (
@@ -762,18 +712,18 @@ const Pager = () => {
   const prev = i > 0 ? navPages[i - 1] : { label: 'Home', path: '/' };
   const next = navPages[i + 1];
   return (
-    <motion.nav className="pager" aria-label="Previous and next page" {...reveal()}>
-      <Link to={prev.path} className="pager-link prev spot">
+    <nav className="pager" aria-label="Previous and next page">
+      <Link to={prev.path} className="pager-link prev">
         <span className="pager-dir"><ArrowLeft /> Previous</span>
         <span className="pager-label">{prev.label}</span>
       </Link>
       {next && (
-        <Link to={next.path} className="pager-link next spot">
+        <Link to={next.path} className="pager-link next">
           <span className="pager-dir">Next <ArrowRight /></span>
           <span className="pager-label">{next.label}</span>
         </Link>
       )}
-    </motion.nav>
+    </nav>
   );
 };
 
@@ -793,7 +743,7 @@ const PageLayout = ({ kicker, title, intro, sections = [], aside, children }) =>
                 <button key={s.id} type="button" className={`toc-item${active === s.id ? ' active' : ''}`}
                   aria-current={active === s.id ? 'location' : undefined}
                   onClick={() => { setActive(s.id); scrollToId(s.id); }}>
-                  {active === s.id && <motion.span layoutId="toc-bar" className="toc-bar" transition={SPRING} />}
+                  {active === s.id && <motion.span layoutId="toc-bar" className="toc-bar" transition={GLIDE} />}
                   {s.label}
                 </button>
               ))}
@@ -866,11 +816,11 @@ const CommandPalette = ({ open, onClose, theme, toggleTheme, notify }) => {
   return (
     <AnimatePresence>
       {open && (
-        <motion.div className="cmdk-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+        <motion.div className="cmdk-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
           onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
           <motion.div className="cmdk" role="dialog" aria-modal="true" aria-label="Quick navigation"
-            initial={{ opacity: 0, y: -14, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.3, ease: EASE }}>
+            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.35, ease: EASE }}>
             <div className="cmdk-input-row">
               <Search aria-hidden="true" />
               <input autoFocus className="cmdk-input" value={q} onChange={e => setQ(e.target.value)} onKeyDown={onKeyDown}
@@ -889,7 +839,7 @@ const CommandPalette = ({ open, onClose, theme, toggleTheme, notify }) => {
                     <div id={`cmdk-${i}`} data-idx={i} role="option" aria-selected={i === idx}
                       className={`cmdk-item${i === idx ? ' active' : ''}`}
                       onMouseMove={() => { if (i !== idx) setIdx(i); }} onClick={() => choose(item)}>
-                      {i === idx && <motion.span layoutId="cmdk-hl" className="cmdk-hl" transition={{ type: 'spring', stiffness: 700, damping: 45 }} />}
+                      {i === idx && <motion.span layoutId="cmdk-hl" className="cmdk-hl" transition={{ duration: 0.25, ease: EASE }} />}
                       <span className="cmdk-label">{item.label}</span>
                       {item.hint && <span className="cmdk-hint">{item.hint}</span>}
                     </div>
@@ -913,7 +863,6 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [hovered, setHovered] = useState(null);
 
   useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
@@ -934,15 +883,13 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
       <header className={`nav${scrolled ? ' is-scrolled' : ''}${open ? ' is-open' : ''}`}>
         <div className="wrap nav-inner">
           <Link to="/" className="brand" aria-label="Adeetya Choubey, home">{cvData.name}</Link>
-          <nav className="nav-links" aria-label="Main" onMouseLeave={() => setHovered(null)}>
+          <nav className="nav-links" aria-label="Main">
             {navPages.map(({ label, path }) => {
               const active = pathname === path;
               return (
-                <Link key={path} to={path} className={`nav-link${active ? ' active' : ''}`} aria-current={active ? 'page' : undefined}
-                  onMouseEnter={() => setHovered(path)} style={{ isolation: 'isolate' }}>
-                  {hovered === path && <motion.span layoutId="nav-pill" className="nav-pill" transition={SPRING} />}
+                <Link key={path} to={path} className={`nav-link${active ? ' active' : ''}`} aria-current={active ? 'page' : undefined}>
                   {label}
-                  {active && <motion.span layoutId="nav-underline" className="nav-underline" transition={SPRING} />}
+                  {active && <motion.span layoutId="nav-underline" className="nav-underline" transition={GLIDE} />}
                 </Link>
               );
             })}
@@ -965,12 +912,12 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
       <AnimatePresence>
         {open && (
           <motion.div id="mobile-menu" className="mobile-menu"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.18 } }}
-            transition={{ duration: 0.25 }}>
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            transition={{ duration: 0.3 }}>
             <nav className="wrap" aria-label="Main">
               {[{ label: 'Home', path: '/', desc: 'start here' }, ...navPages].map(({ label, path, desc }, i) => (
-                <motion.div key={path} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: 0.035 * i, ease: EASE }}>
+                <motion.div key={path} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.03 * i, ease: EASE }}>
                   <Link to={path} className={`m-link${pathname === path ? ' active' : ''}`} aria-current={pathname === path ? 'page' : undefined}>
                     <span className="m-label">{label}</span>
                     <span className="m-desc">{cap(desc)}</span>
@@ -987,19 +934,18 @@ const Navbar = ({ theme, toggleTheme, onSearch }) => {
 
 const BackToTop = () => {
   const { scrollY, scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
   const [show, setShow] = useState(false);
   useEffect(() => scrollY.on('change', v => setShow(v > 520)), [scrollY]);
   return (
     <AnimatePresence>
       {show && (
         <motion.button type="button" className="to-top" aria-label="Back to top"
-          initial={{ opacity: 0, scale: 0.8, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8, y: 12 }}
-          transition={{ duration: 0.35, ease: EASE }} whileTap={{ scale: 0.92 }}
-          onClick={() => window.scrollTo({ top: 0, behavior: prefersReduced() ? 'auto' : 'smooth' })}>
-          <svg className="ring-svg" viewBox="0 0 48 48" aria-hidden="true">
-            <circle className="ring-bg" cx="24" cy="24" r="22" />
-            <motion.circle className="ring" cx="24" cy="24" r="22" style={{ pathLength: progress }} />
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
+          onClick={() => smoothScrollTo(0)}>
+          <svg className="ring-svg" viewBox="0 0 46 46" aria-hidden="true">
+            <circle className="ring-bg" cx="23" cy="23" r="21.5" />
+            <motion.circle className="ring" cx="23" cy="23" r="21.5" style={{ pathLength: progress }} />
           </svg>
           <ArrowUp aria-hidden="true" />
         </motion.button>
@@ -1018,98 +964,51 @@ const Footer = () => (
       <div className="footer-links">
         <a href={`mailto:${cvData.contact.email}`}>Email</a>
         <a href={cvData.contact.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: prefersReduced() ? 'auto' : 'smooth' })}>Back to top</button>
+        <button type="button" onClick={() => smoothScrollTo(0)}>Back to top</button>
       </div>
     </div>
   </footer>
 );
 
 // ─── Home ─────────────────────────────────────────────────────────────────────
-let heroPlayed = false; // the intro sequence plays once per visit, not on every return to Home
+let heroPlayed = false; // the intro plays once per visit, not on every return to Home
 
-const SplitName = ({ play }) => {
-  let k = 0;
-  return (
-    <h1 className="hero-name">
-      <span className="sr-only">{cvData.name}</span>
-      {cvData.name.split(' ').map(word => (
-        <span key={word} className="word" aria-hidden="true">
-          {Array.from(word).map((c, ci) => {
-            const delay = 0.08 + (k++) * 0.035;
-            return (
-              <motion.span key={ci} className="char"
-                initial={play ? { y: '108%' } : false} animate={{ y: '0%' }}
-                transition={{ duration: 0.9, delay, ease: EASE }}>{c}</motion.span>
-            );
-          })}
-        </span>
-      ))}
-    </h1>
-  );
-};
-
-const INTERESTS = ['homological algebra', 'algebraic geometry', 'category theory', 'homotopical algebra'];
-const Rotator = () => {
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    if (prefersReduced()) return;
-    const t = setInterval(() => setI(v => (v + 1) % INTERESTS.length), 2800);
-    return () => clearInterval(t);
-  }, []);
-  return (
-    <span className="rotator">
-      <span className="sr-only">{INTERESTS.join(', ')}</span>
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span key={i} className="rotator-word" aria-hidden="true"
-          initial={{ opacity: 0, y: '0.5em', filter: 'blur(4px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, y: '-0.5em', filter: 'blur(4px)' }}
-          transition={{ duration: 0.45, ease: EASE }}>
-          {INTERESTS[i]}
+const HeroName = ({ play }) => (
+  <h1 className="hero-name">
+    <span className="sr-only">{cvData.name}</span>
+    {cvData.name.split(' ').map((word, i) => (
+      <span key={word} className="line" aria-hidden="true">
+        <motion.span initial={play ? { y: '105%' } : false} animate={{ y: '0%' }}
+          transition={{ duration: 1.1, delay: 0.1 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}>
+          {word}
         </motion.span>
-      </AnimatePresence>
-    </span>
-  );
-};
+      </span>
+    ))}
+  </h1>
+);
 
 const Portrait = ({ play }) => {
   const [state, setState] = useState('loading'); // loading | loaded | error
   const imgRef = useRef(null);
-  const frameRef = useRef(null);
-  const rx = useSpring(0, { stiffness: 160, damping: 18 });
-  const ry = useSpring(0, { stiffness: 160, damping: 18 });
-  const backX = useTransform(ry, v => v * -1.4);
-  const backY = useTransform(rx, v => v * 1.4);
-
   useEffect(() => {
     const im = imgRef.current;
     if (im && im.complete) setState(im.naturalWidth ? 'loaded' : 'error');
   }, []);
-
-  const onMove = (e) => {
-    if (e.pointerType !== 'mouse' || prefersReduced() || !frameRef.current) return;
-    const r = frameRef.current.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    ry.set(px * 10);
-    rx.set(-py * 10);
-  };
-  const onLeave = () => { rx.set(0); ry.set(0); };
-
   return (
-    <motion.figure className="portrait" onPointerMove={onMove} onPointerLeave={onLeave}
-      initial={play ? { opacity: 0, y: 28 } : false} animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1.1, delay: 0.35, ease: EASE }}>
+    <motion.figure className="portrait"
+      initial={play ? { opacity: 0 } : false} animate={{ opacity: 1 }}
+      transition={{ duration: 1.2, delay: 0.35, ease: 'easeOut' }}>
       <div className="portrait-stage">
-        <motion.div className="portrait-back" style={{ x: backX, y: backY }} aria-hidden="true" />
-        <motion.div ref={frameRef} className="portrait-frame" style={{ rotateX: rx, rotateY: ry, '--photo-pos': PROFILE_PHOTO_POSITION }}>
+        <div className="portrait-ring" aria-hidden="true" />
+        <div className="portrait-frame" style={{ '--photo-pos': PROFILE_PHOTO_POSITION }}>
           {state !== 'error' && (
-            <img ref={imgRef} src={PROFILE_PHOTO} alt={`${cvData.name}, smiling with arms crossed in front of bougainvillea`} decoding="async" width="1000" height="1250"
+            <img ref={imgRef} src={PROFILE_PHOTO} alt={`${cvData.name}, smiling with arms crossed in front of bougainvillea`}
+              width="1000" height="1250" decoding="async"
               className={state === 'loaded' ? 'is-loaded' : ''}
               onLoad={() => setState('loaded')} onError={() => setState('error')} />
           )}
           {state === 'error' && <div className="portrait-fallback" aria-label={`${cvData.name} (photo not found)`}>AC</div>}
-        </motion.div>
+        </div>
       </div>
       <figcaption>Currently: <Link to="/projects" className="lnk">homotopical algebra</Link></figcaption>
     </motion.figure>
@@ -1118,39 +1017,36 @@ const Portrait = ({ play }) => {
 
 const HomePage = ({ onSearch }) => {
   const [play] = useState(() => !heroPlayed);
-  const [hovered, setHovered] = useState(null);
   useEffect(() => { heroPlayed = true; }, []);
-  const rise = (d) => play ? { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8, delay: d, ease: EASE } } : {};
+  const fade = (d) => play ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.9, delay: d, ease: 'easeOut' } } : {};
 
   return (
     <div className="home">
       <section className="wrap hero">
         <div>
-          <SplitName play={play} />
-          <motion.p className="hero-role" {...rise(0.45)}>Idle category theorist (aspiring)</motion.p>
-          <motion.p className="hero-think" {...rise(0.55)}>Thinking about <Rotator /></motion.p>
-          <motion.p className="hero-lead" {...rise(0.65)}>
+          <HeroName play={play} />
+          <motion.p className="hero-role" {...fade(0.45)}>Idle category theorist (aspiring)</motion.p>
+          <motion.p className="hero-lead" {...fade(0.55)}>
             Math undergrad at <ExtLink href="https://maths.iiserb.ac.in/">IISER Bhopal</ExtLink>. An informal introduction to my formal (academic) self.
           </motion.p>
-          <motion.div className="hero-actions" {...rise(0.75)}>
+          <motion.div className="hero-actions" {...fade(0.65)}>
             <Link to="/projects" className="btn">See my work <ArrowRight /></Link>
             <Link to="/contact" className="btn btn-ghost">Get in touch</Link>
           </motion.div>
-          <motion.p className="kbd-hint" {...rise(0.85)}>
+          <motion.p className="kbd-hint" {...fade(0.75)}>
             <button type="button" onClick={onSearch}>Press <kbd>/</kbd> to jump anywhere</button>
           </motion.p>
         </div>
         <Portrait play={play} />
       </section>
 
-      <motion.section className="wrap" aria-labelledby="explore-title" {...reveal()}>
+      <section className="wrap" aria-labelledby="explore-title">
         <div className="split">
           <h2 id="explore-title" className="split-label">Explore</h2>
-          <ul className="index" onMouseLeave={() => setHovered(null)}>
+          <ul className="index">
             {navPages.map(({ label, path, desc }) => (
               <li key={path}>
-                <Link to={path} className="index-row" onMouseEnter={() => setHovered(path)} onFocus={() => setHovered(path)} onBlur={() => setHovered(null)}>
-                  {hovered === path && <motion.span layoutId="index-hl" className="index-hl" transition={SPRING} />}
+                <Link to={path} className="index-row">
                   <span className="index-label">{label}</span>
                   <span className="index-desc">{cap(desc)}</span>
                   <ArrowRight className="index-arrow" aria-hidden="true" />
@@ -1159,9 +1055,9 @@ const HomePage = ({ onSearch }) => {
             ))}
           </ul>
         </div>
-      </motion.section>
+      </section>
 
-      <motion.section className="wrap" aria-labelledby="about-title" {...reveal()}>
+      <section className="wrap" aria-labelledby="about-title">
         <div className="split">
           <h2 id="about-title" className="split-label">About</h2>
           <div className="prose">
@@ -1170,22 +1066,22 @@ const HomePage = ({ onSearch }) => {
             <p>{cvData.profile.ambition}</p>
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      <motion.section className="wrap" aria-labelledby="edu-title" {...reveal()}>
+      <section className="wrap" aria-labelledby="edu-title">
         <div className="split">
           <h2 id="edu-title" className="split-label">Education</h2>
           <div>
             {cvData.education.map(edu => (
-              <Entry key={edu.institution} title={edu.institution} sub={edu.degree} date={edu.duration} animate={false}>
+              <Entry key={edu.institution} title={edu.institution} sub={edu.degree} date={edu.duration}>
                 {edu.grades?.length > 0 && <div>{edu.grades.map(g => <span key={g} className="pill">{g}</span>)}</div>}
               </Entry>
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      <motion.section className="wrap" aria-labelledby="resp-title" {...reveal()}>
+      <section className="wrap" aria-labelledby="resp-title">
         <div className="split">
           <h2 id="resp-title" className="split-label">Positions of responsibility</h2>
           <div>
@@ -1196,7 +1092,7 @@ const HomePage = ({ onSearch }) => {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
     </div>
   );
 };
@@ -1276,26 +1172,23 @@ const EventsPage = () => {
             const on = filter === t;
             const count = t === 'All' ? sortedEvents.length : sortedEvents.filter(e => e.tag === t).length;
             return (
-              <motion.button key={t} type="button" className={`chip${on ? ' active' : ''}`} aria-pressed={on} onClick={() => setFilter(t)} whileTap={{ scale: 0.95 }}>
-                {on && <motion.span layoutId="chip-bg" className="chip-bg" transition={SPRING} />}
+              <button key={t} type="button" className={`chip${on ? ' active' : ''}`} aria-pressed={on} onClick={() => setFilter(t)}>
+                {on && <motion.span layoutId="chip-bg" className="chip-bg" transition={GLIDE} />}
                 {t}<span className="chip-count">{count}</span>
-              </motion.button>
+              </button>
             );
           })}
         </div>
       }>
-      <motion.div className="entries" layout transition={{ duration: 0.4, ease: EASE }}>
-        <AnimatePresence initial={false} mode="popLayout">
-          {shown.map(ev => (
-            <motion.div key={ev.title} layout
-              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, transition: { duration: 0.15 } }}
-              transition={{ duration: 0.45, ease: EASE }}>
-              <Entry title={ev.title} href={titleHref(ev)} tag={ev.tag} animate={false}>
-                <p>{renderDescription(ev)}</p>
-              </Entry>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+      {/* Keyed by filter: the list simply cross-fades when the filter changes */}
+      <motion.div key={filter} className="entries" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, ease: 'easeOut' }}>
+        {shown.map(ev => (
+          <div key={ev.title}>
+            <Entry title={ev.title} href={titleHref(ev)} tag={ev.tag}>
+              <p>{renderDescription(ev)}</p>
+            </Entry>
+          </div>
+        ))}
       </motion.div>
     </PageLayout>
   );
@@ -1304,10 +1197,10 @@ const EventsPage = () => {
 // ─── Proofs (under construction) ──────────────────────────────────────────────
 const ProofsPage = () => (
   <PageLayout kicker="Proofs" title="Proofs" intro="Some of the abstract nonsense which really made sense.">
-    <motion.div className="note" {...reveal(0.1)}>
+    <div className="note">
       <p className="status" style={{ marginTop: 0 }}><span className="status-dot" aria-hidden="true" />Under construction</p>
       <p>Nothing here yet. In the meantime, have a look at <Link to="/projects" className="lnk">Projects</Link> or <Link to="/events" className="lnk">Events</Link>.</p>
-    </motion.div>
+    </div>
   </PageLayout>
 );
 
@@ -1321,15 +1214,13 @@ const OpenBoardPage = () => (
       { id: 'talks', label: 'Talks so far' },
     ]}>
     <Section id="about" title="About">
-      <motion.div {...reveal()}>
-        <div className="prose" style={{ marginTop: 28 }}>
-          <p className="lead">A space for students to speak about what they care about, to a general audience.</p>
-          <p>{cvData.openboard.mission}</p>
-        </div>
-        <div className="actions">
-          <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="btn">Visit OpenBoard <ExternalLink /></a>
-        </div>
-      </motion.div>
+      <div className="prose" style={{ marginTop: 28 }}>
+        <p className="lead">A space for students to speak about what they care about, to a general audience.</p>
+        <p>{cvData.openboard.mission}</p>
+      </div>
+      <div className="actions">
+        <a href={cvData.openboard.website} target="_blank" rel="noopener noreferrer" className="btn">Visit OpenBoard <ExternalLink /></a>
+      </div>
     </Section>
 
     <Section id="founders" title="Co-founders">
@@ -1342,13 +1233,13 @@ const OpenBoardPage = () => (
     </Section>
 
     <Section id="status" title="Status">
-      <motion.div className="note spot" style={{ marginTop: 28 }} {...reveal()}>
+      <div className="note" style={{ marginTop: 28 }}>
         <p className="status" style={{ marginTop: 0 }}><span className="status-dot" aria-hidden="true" />Currently on hold</p>
         <p>Due to academic commitments, we are currently on hold. We would like your help to bring it back. Reach out if you have ideas.</p>
         <div className="actions" style={{ marginTop: 20 }}>
           <a href={`mailto:${cvData.contact.email}`} className="btn">Reach out <ArrowRight /></a>
         </div>
-      </motion.div>
+      </div>
     </Section>
 
     <Section id="talks" title="Talks so far">
@@ -1370,29 +1261,29 @@ const ContactPage = () => {
   return (
     <PageLayout kicker="Contact" title="Get in touch"
       intro="Feel free to reach out for collaborations, academic discussions, or just a friendly exchange of ideas.">
-      <motion.div {...reveal(0.05)}>
-        <a href={`mailto:${cvData.contact.email}`} className="contact-row spot">
+      <div>
+        <a href={`mailto:${cvData.contact.email}`} className="contact-row">
           <span className="contact-icon"><Mail /></span>
           <span><span className="contact-k">Email</span><span className="contact-v">{cvData.contact.email}</span></span>
           <ArrowRight className="contact-go" aria-hidden="true" />
         </a>
-        <a href={cvData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="contact-row spot">
+        <a href={cvData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="contact-row">
           <span className="contact-icon"><Linkedin /></span>
           <span><span className="contact-k">LinkedIn</span><span className="contact-v">Adeetya Choubey</span></span>
           <ExternalLink className="contact-go" aria-hidden="true" />
         </a>
         <button type="button" className="copy-btn" onClick={copy} aria-live="polite">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.span key={copied ? 'y' : 'n'} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.18 }}
+            <motion.span key={copied ? 'y' : 'n'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
               style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               {copied ? <><Check /> Email copied</> : <><Copy /> Copy email address</>}
             </motion.span>
           </AnimatePresence>
         </button>
         <div className="prose" style={{ marginTop: 40 }}>
-          <p style={{ fontSize: 'var(--fs-sm)' }}>Based in {cvData.location}. Response times vary; email is the most reliable way to reach me.</p>
+          <p style={{ fontSize: '1rem' }}>Based in {cvData.location}. Response times vary; email is the most reliable way to reach me.</p>
         </div>
-      </motion.div>
+      </div>
     </PageLayout>
   );
 };
@@ -1403,13 +1294,10 @@ const NotFoundPage = () => (
   </PageLayout>
 );
 
-// ─── Shell: persistent navbar/footer, animated page content ──────────────────
-const pageVar = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
-  exit:    { opacity: 0, y: -6, transition: { duration: 0.18, ease: 'easeIn' } },
-};
-
+// ─── Shell: persistent navbar/footer, page content fades in ──────────────────
+// Pages are swapped instantly and the new one fades in. There is deliberately no
+// exit animation: waiting for one is what could leave the screen blank when
+// links were clicked quickly.
 function Shell({ theme, toggleTheme }) {
   const location = useLocation();
   const [cmdOpen, setCmdOpen] = useState(false);
@@ -1423,6 +1311,11 @@ function Shell({ theme, toggleTheme }) {
   }, []);
   const openSearch = useCallback(() => setCmdOpen(true), []);
 
+  // New page starts at the top, without a visible scroll animation
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
   // Keyboard shortcuts: ⌘K / Ctrl K toggles search, "/" opens it
   useEffect(() => {
     const onKey = (e) => {
@@ -1435,41 +1328,27 @@ function Shell({ theme, toggleTheme }) {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // Feeds the cursor position to any `.spot` element for its hover glow
-  useEffect(() => {
-    const onMove = (e) => {
-      const el = e.target && e.target.closest ? e.target.closest('.spot') : null;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
-      el.style.setProperty('--my', `${e.clientY - r.top}px`);
-    };
-    window.addEventListener('pointermove', onMove, { passive: true });
-    return () => window.removeEventListener('pointermove', onMove);
-  }, []);
-
   const focusMain = (e) => { e.preventDefault(); document.getElementById('main')?.focus(); };
 
   return (
     <>
-      <div className="ambient" aria-hidden="true"><span /><span /><span /></div>
       <a href="#main" className="skip" onClick={focusMain}>Skip to content</a>
       <Navbar theme={theme} toggleTheme={toggleTheme} onSearch={openSearch} />
       <main id="main" tabIndex={-1}>
-        <AnimatePresence mode="wait" initial={false} onExitComplete={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })}>
-          <motion.div key={location.pathname} variants={pageVar} initial="initial" animate="animate" exit="exit">
-            <Routes location={location}>
-              <Route path="/"          element={<HomePage onSearch={openSearch} />} />
-              <Route path="/acadex"    element={<AcademicExperiencesPage />} />
-              <Route path="/projects"  element={<ResearchPage />} />
-              <Route path="/proofs"    element={<ProofsPage />} />
-              <Route path="/events"    element={<EventsPage />} />
-              <Route path="/openboard" element={<OpenBoardPage />} />
-              <Route path="/contact"   element={<ContactPage />} />
-              <Route path="*"          element={<NotFoundPage />} />
-            </Routes>
-          </motion.div>
-        </AnimatePresence>
+        <motion.div key={location.pathname}
+          initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: EASE }}>
+          <Routes location={location}>
+            <Route path="/"          element={<HomePage onSearch={openSearch} />} />
+            <Route path="/acadex"    element={<AcademicExperiencesPage />} />
+            <Route path="/projects"  element={<ResearchPage />} />
+            <Route path="/proofs"    element={<ProofsPage />} />
+            <Route path="/events"    element={<EventsPage />} />
+            <Route path="/openboard" element={<OpenBoardPage />} />
+            <Route path="/contact"   element={<ContactPage />} />
+            <Route path="*"          element={<NotFoundPage />} />
+          </Routes>
+        </motion.div>
       </main>
       <Footer />
       <BackToTop />
@@ -1478,13 +1357,14 @@ function Shell({ theme, toggleTheme }) {
         <AnimatePresence>
           {toast && (
             <motion.div key={toast.id} className="toast" role="status"
-              initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
-              transition={{ duration: 0.3, ease: EASE }}>
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.35, ease: EASE }}>
               {toast.msg}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      <div className="grain" aria-hidden="true" />
     </>
   );
 }
@@ -1492,6 +1372,20 @@ function Shell({ theme, toggleTheme }) {
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
   const { theme, toggleTheme } = useTheme();
+
+  // Load the body/interface fonts once
+  useEffect(() => {
+    if (document.querySelector(`link[href="${FONT_HREF}"]`)) return;
+    ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'].forEach((href, i) => {
+      const pc = document.createElement('link');
+      pc.rel = 'preconnect'; pc.href = href; if (i) pc.crossOrigin = 'anonymous';
+      document.head.appendChild(pc);
+    });
+    const l = document.createElement('link');
+    l.rel = 'stylesheet'; l.href = FONT_HREF;
+    document.head.appendChild(l);
+  }, []);
+
   return (
     <HashRouter>
       <MotionConfig reducedMotion="user">
