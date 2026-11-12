@@ -191,9 +191,8 @@ const DARK_STYLE = 'navy';
 // The circular reveal when switching light/dark. Set to false for an instant switch.
 const THEME_REVEAL = true;
 
-// Type: Fraunces for headings, Libron (embedded above) for body text, and the
-// system UI font (San Francisco on Apple devices, Inter elsewhere) for labels and buttons.
-const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Inter:wght@400;500;600&display=swap';
+// Type: Fraunces for headings, navigation, buttons and labels; Libron (embedded above) for body text.
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&display=swap';
 
 const CSS = `
   :root {
@@ -215,7 +214,7 @@ const CSS = `
 
     --display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
     --text:    'Libron', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-    --ui:      -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --ui:      'Fraunces', 'Iowan Old Style', Georgia, serif;
 
     --fs-ui:   0.875rem;
     --fs-ui-s: 0.8125rem;
