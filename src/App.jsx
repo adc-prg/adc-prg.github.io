@@ -85,12 +85,12 @@ const cvData = {
   profile: {
     intro: "Math undergrad at IISER Bhopal.",
     interests: "Academically, my interests are in algebraic topology and algebraic geometry, with a lot of categorical flavor.",
-    ambition: "Apart from academics, I enjoy. I want to enjoy whatever I can, however I can, whenever I can. Things like football, music, mangas, cards and board games, table tennis, frisbee are just some of the things that bring me joy. I am recently exploring a lot of music, outside of my usual interests (Hip-Hop, and RnB), like indian classical, rock, soul, and I enjoy working on creative personal projects from time to time."
+    ambition: "Apart from academics, I enjoy. I want to enjoy whatever I can, however I can, whenever I can. Football, music, manga, card and board games, table tennis and frisbee are just some of the things that bring me joy. Lately I have been exploring a lot of music outside my usual interests (hip-hop and R&B), like Indian classical, rock and soul, and I enjoy working on creative personal projects from time to time."
   },
   research: [{
     title: "Exploring Integrality and Genus of some specific Cayley Graphs",
     guide: "Guide: Prof. Ashish Upadhyay",
-    description: "Cayley graphs are graphs which exhibit the nature of action of a group G on a set S, which is closed under inverses (typically generating set). A graph is said to be integral if each of the eigenvalues of its adjacency matrix is an integer. The genus of a graph is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without any edge crossings. The goal was to work towards finding out the fields for which the 'generalised' Cayley graphs are integral and what genus do they have."
+    description: "Cayley graphs are graphs that exhibit the action of a group G on a set S that is closed under inverses (typically a generating set). A graph is said to be integral if each of the eigenvalues of its adjacency matrix is an integer. The genus of a graph is the minimum number of handles that must be added to a sphere to embed the graph on the resulting surface without any edge crossings. The goal was to find the fields over which the 'generalised' Cayley graphs are integral, and to determine their genus."
   }],
   
   education: [
@@ -99,59 +99,59 @@ const cvData = {
   ],
   responsibilities: [
     { role: "Department Representative, Math Dept.", institution: "IISER Bhopal", duration: "Sep 2024 – Sep 2025",
-      description: "I was elected as the batch representative for the batch of '22, math department. Primary responsibilities included facilitating effective communication between the students and the administration." },
+      description: "I was elected batch representative for the 2022 batch of the Department of Mathematics. My primary responsibility was facilitating effective communication between the students and the administration." },
     { role: "Core Member, Math Club", institution: "IISER Bhopal", duration: "Jun 2024 – Jul 2025",
-      description: "Joined with the intent of helping towards a better culture and acceptance towards math. I hope I was able to achieve that." },
+      description: "I joined with the intent of helping build a better culture around math, and a wider acceptance of it. I hope I was able to achieve that." },
     { role: "Peer Counselor", institution: "IISER Bhopal", duration: "Jul 2023 – Jul 2025",
-      description: "A brilliant initiative (theoretically) by the counselling cell @IISERB, which fosters this idea that help is closer than you think. The counselling cell selects a few students on campus who work towards a more accepting culture in the student community. " }
+      description: "A brilliant initiative (theoretically) by the counselling cell at IISER Bhopal, which fosters the idea that help is closer than you think. The cell selects a few students on campus who work towards a more accepting culture in the student community." }
   ],
   openboard: {
-    role: "Co-founder, Openboard",
+    role: "Co-founder, OpenBoard",
     institution: "IISER Bhopal",
     duration: "Ongoing",
     cofounder: { name: "Samriddha", url: "https://samriddhaganguly.github.io/" },
     website: "https://openboard-web.vercel.app/",
     description: "Samriddha and I started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.",
-    mission: "Openboard is a formal platform to be informal, and an informal platform to be formal. It is dedicated to ideas. Samriddha and I believed that curiosity should have an outlet beyond the classroom; a space where students can address a general audience on topics they genuinely care about.",
+    mission: "OpenBoard is a formal platform to be informal, and an informal platform to be formal. It is dedicated to ideas. Samriddha and I believed that curiosity should have an outlet beyond the classroom; a space where students can address a general audience on topics they genuinely care about.",
     talks: [
-      { title: "The Probabilistic Method", speaker: "Adeetya Choubey", description: "I gave the inaugural talk for this small initiative of ours. The probabilistic method is a way of proving existence of any object without explicitly constructing it, through the means of Probability. The famous proof by Erdős for the bounds on Ramsey numbers was discussed in this talk." }
+      { title: "The Probabilistic Method", speaker: "Adeetya Choubey", description: "I gave the inaugural talk for this small initiative of ours. The probabilistic method is a way of proving that an object exists without explicitly constructing it, by means of probability. The talk discussed Erdős's famous proof of bounds on Ramsey numbers." }
     ]
   },
   academicExperiences: {
     internships: [
       { title: "Summer Intern", institution: "Institute of Science, Banaras Hindu University", duration: "May 2025 – Aug 2025",
-        description: "The first phase involved getting used to some algebraic topology, referring to books like Hatcher, Harper and Munkres. Towards the end, the focus shifted to finding out groups with integral Cayley graphs of genus one through computational and algebraic means." },
+        description: "The first phase involved getting comfortable with algebraic topology, using the books by Hatcher, Harper and Munkres. Towards the end, the focus shifted to finding groups with integral Cayley graphs of genus one, through computational and algebraic means." },
       { title: "Summer Intern", institution: "Institute of Science, Banaras Hindu University", duration: "May – July 2024",
-        description: "This project focussed on studying general topology from the book by J Dugundji, while working through problems, along with reading the book by Murasugi on Braids." }
+        description: "This project focused on studying general topology from Dugundji's book while working through problems, along with reading Murasugi's book on braids." }
     ],
     summerSchools: [
-      { title: "Summer Program", institution: "TIFR — Centre for Applicable Mathematics", duration: "June – July 2025",
-        description: "The program included short courses on RKHS, Geometric Measure Theory, Geometric Function Theory, Gibbs Measure and Entropy, Multiscale problems in PDE, Microlocal Analysis and Inverse Problems, along with several keynote lectures on ongoing research in Analysis and Combinatorics." },
+      { title: "Summer Program", institution: "TIFR Centre for Applicable Mathematics", duration: "June – July 2025",
+        description: "The program included short courses on RKHS, geometric measure theory, geometric function theory, Gibbs measures and entropy, multiscale problems in PDEs, and microlocal analysis and inverse problems, along with several keynote lectures on ongoing research in analysis and combinatorics." },
       { title: "Mathematics Summer Program", institution: "Indraprastha Institute of Information Technology, Delhi", duration: "June 2024",
-        description: "This was a two week residential summer program covering some elementary aspects of Analysis, Algebra, Topology. This program included daily lectures on the aforementioned topics, along with problem solving sessions." }
+        description: "A two-week residential summer program covering elementary aspects of analysis, algebra and topology, with daily lectures on these topics and problem-solving sessions." }
     ]
   },
   events: [
     { title: "Discussion Meeting on Topics in Algebra", tag: "Attended",
-      description: "I was a participant, and a student volunteer for this event held at IISER Bhopal. Vibecoded the website and Vibe attended all the talks. Good talks, good food and great people, along with a lot to learn, even outside of Math.",
-      link: { url: "https://dmtia-iiserb.github.io/", text: "Discussion meeting" } },
+      description: "I was a participant and a student volunteer at this event, held at IISER Bhopal. I vibecoded the website and vibe-attended all the talks. Good talks, good food and great people, along with a lot to learn, even outside of math.",
+      link: { url: "https://dmtia-iiserb.github.io/", text: "the website" } },
     { title: "GANIT Symposium", tag: "Attended",
-      description: "I attended this 2.5 day symposium @IIT Gandhinagar, which featured mini series and lectures, discussing Commutative Algebra, Algebraic Geometry and Number theory. I bit off more than I could chew, but this was one of those points which pushed me more towards pursuing Algebra in general.",
+      description: "I attended this 2.5-day symposium at IIT Gandhinagar, which featured mini-courses and lectures on commutative algebra, algebraic geometry and number theory. I bit off more than I could chew, but it was one of the moments that pushed me towards algebra in general.",
       link: { url: "https://events.iitgn.ac.in/2026/caag/", text: "GANIT Symposium" } },
-    { title: "The Probabilistic Method", tag: "Openboard Talk",
-      description: "Gave the first Openboard talk. More about that talk can be looked at on the Openboard website.",
-      link: { url: "https://openboard-web.vercel.app/", text: "Openboard website" } },
+    { title: "The Probabilistic Method", tag: "OpenBoard talk",
+      description: "I gave the first OpenBoard talk. More about it can be found on the OpenBoard website.",
+      link: { url: "https://openboard-web.vercel.app/", text: "OpenBoard website" } },
     { title: "खेल-culus", tag: "Organised",
-      description: "खेल, in Hindi, stands for sport. खेल-culus (khel-culus; /kʰeːl/) represents the treatise of calculus as a sport — the name for the integration bee held during the annual math fest, Continuum, organised by the department of math at IISER Bhopal. I helped organise the event (and gave the idea for the event and the name), along with Yash Sharma." },
+      description: "खेल, in Hindi, stands for sport. खेल-culus (khel-culus; /kʰeːl/) treats calculus as a sport. It is the name of the integration bee held during Continuum, the annual math fest organised by the Department of Mathematics at IISER Bhopal. I organised the event along with Yash Sharma, and came up with both the idea and the name." },
     { title: "Big-Tac-Toe", tag: "Organised",
-      description: "A wordplay on Big + Tic-tac-toe — another name for ultimate tic-tac-toe. Held at Continuum in collaboration with the board games club, Ingenium. The event featured a knockout stage with Saurav Kanetkar emerging as the Big-Tac-Toe champion, 2025 edition.",
-      link: { url: "https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe", text: "Ultimate Tic-Tac-Toe" } },
-    { title: "Realizing Grassmannian as a Projective Variety and the Segre embedding", tag: "Seminar Talk",
-      description: "I gave a seminar on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to discussing the Segre embedding and how it helps to see product of two projective spaces as a projective variety embedded into a much larger projective space." },
-    { title: "Cup Product Structure on Real and Complex Projective Space", tag: "Seminar Talk",
+      description: "A play on \"big\" and \"tic-tac-toe\", and our name for ultimate tic-tac-toe. It was held at Continuum in collaboration with Ingenium, the board games club, and featured a knockout stage, with Saurav Kanetkar emerging as the 2025 Big-Tac-Toe champion.",
+      link: { url: "https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe", text: "ultimate tic-tac-toe" } },
+    { title: "Realizing the Grassmannian as a Projective Variety, and the Segre Embedding", tag: "Seminar talk",
+      description: "I gave a seminar on the classical result that the Grassmannian Gr(k, n) embeds into projective space via the Plücker embedding, making it a projective variety. The focus then shifted to the Segre embedding, and how it lets one see a product of two projective spaces as a projective variety inside a much larger projective space." },
+    { title: "Cup Product Structure on Real and Complex Projective Space", tag: "Seminar talk",
       description: (
         <>
-          The seminar discussed the structure of the cohomology ring for <ProjSpace field="R" /> and <ProjSpace field="C" /> after setting up some basic definitions. This seminar was graded and was a part of my Topology II course.
+          The seminar discussed the structure of the cohomology ring for <ProjSpace field="R" /> and <ProjSpace field="C" /> after setting up some basic definitions. This graded seminar was part of my Topology II course.
         </>
       ) }
   ],
@@ -159,11 +159,12 @@ const cvData = {
 };
 
 const navPages = [
-  { label: 'AcadEx',    path: '/acadex',    desc: 'academic venture during the summer' },
+  { label: 'AcadEx',    path: '/acadex',    desc: 'academic ventures during the summers' },
   { label: 'Projects',  path: '/projects',  desc: 'attempts to be more academically acceptable :)' },
   { label: 'Proofs', path: '/proofs', desc: 'proofs I enjoyed working through' },
-  { label: 'Events',    path: '/events',    desc: 'events I\'ve helped organise.' },
+  { label: 'Events',    path: '/events',    desc: 'events I\'ve been a part of' },
   { label: 'OpenBoard', path: '/openboard', desc: 'a place to speak' },
+  { label: 'Frames',    path: '/frames',    desc: 'under construction' },
   { label: 'Contact',   path: '/contact',   desc: 'how to get in touch' },
 ];
 
@@ -224,7 +225,7 @@ const CSS = `
     --measure: 66ch;
     --indent:  1.5em;
 
-    --nav-h:  64px;
+    --nav-h:  56px;
     --pop:    cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   /* Dark: a PDF viewer in night mode, soft grey paper with light-blue links */
@@ -308,22 +309,24 @@ const CSS = `
   .btn-ghost { color:var(--ink); }
 
   .icon-btn {
-    width:36px; height:36px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:30px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
     border:1px solid var(--line-strong); border-radius:2px; background:transparent; color:var(--ink2); cursor:pointer;
   }
   .icon-btn:hover { color:var(--accent); border-color:var(--accent-line); }
 
   /* ── Navbar: a running head with a rule under it ─── */
   .nav { position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid var(--line-strong); }
-  .nav-inner { height:var(--nav-h); display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .nav-inner { height:var(--nav-h); display:flex; align-items:center; justify-content:space-between; gap:20px; }
+  .nav-actions svg { width:13px; height:13px; }
+  @media (max-width: 1180px) { .search-btn .search-label { display:none; } }
   .brand {
-    font-size:1.25rem; font-weight:400; line-height:1; font-variant-caps:small-caps; letter-spacing:0.03em;
+    font-size:1.3125rem; font-weight:400; line-height:1; font-variant-caps:small-caps; letter-spacing:0.03em;
     color:var(--ink); text-decoration:none; white-space:nowrap; display:inline-block;
   }
   .brand:hover { color:var(--accent); transform:translateY(-1px) scale(1.04); }
-  .nav-links { display:flex; align-items:center; gap:4px 24px; }
+  .nav-links { display:flex; align-items:center; gap:4px 16px; }
   .nav-link {
-    position:relative; padding:4px 0; font-size:1.0625rem; font-variant-caps:small-caps; letter-spacing:0.02em;
+    position:relative; padding:4px 0; font-size:0.875rem; font-variant-caps:small-caps; letter-spacing:0.02em;
     color:var(--ink2); text-decoration-color:transparent;
   }
   .nav-link.active { color:var(--accent); text-decoration-color:var(--accent); }
@@ -336,8 +339,8 @@ const CSS = `
   .nav-link:hover .nav-tip, .nav-link:focus-visible .nav-tip { opacity:1; }
   .nav-actions { display:flex; align-items:center; gap:8px; }
   .search-btn {
-    display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 6px 0 12px; border-radius:2px;
-    border:1px solid var(--line-strong); background:transparent; color:var(--ink3); font-size:0.9375rem;
+    display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 5px 0 9px; border-radius:2px;
+    border:1px solid var(--line-strong); background:transparent; color:var(--ink3); font-size:0.8125rem;
     font-variant-caps:small-caps; cursor:pointer;
   }
   .search-btn:hover { color:var(--ink); border-color:var(--accent-line); }
@@ -355,11 +358,11 @@ const CSS = `
   .m-desc  { font-style:italic; font-size:0.9375rem; color:var(--ink3); text-align:right; }
   .m-link.active .m-label { color:var(--accent); text-decoration-color:var(--accent); }
 
-  @media (max-width: 1000px) {
+  @media (max-width: 900px) {
     .nav-links { display:none; }
     .menu-btn { display:inline-flex; }
-    .search-btn { width:36px; padding:0; justify-content:center; }
-    .search-btn .search-label, .search-btn kbd { display:none; }
+    .search-btn { padding:0 9px; }
+    .search-btn kbd { display:none; }
   }
 
   /* ── Spotlight-style search ──────────────────────── */
@@ -996,7 +999,7 @@ const Footer = () => (
     <div className="wrap footer-inner">
       <div>
         <p className="footer-name">{cvData.name}</p>
-        <p className="footer-note">© {new Date().getFullYear()}. You may use, share, and adapt with proper credits.</p>
+        <p className="footer-note">© {new Date().getFullYear()}. You may use, share and adapt this with proper credit.</p>
       </div>
       <div className="footer-links">
         <a href={`mailto:${cvData.contact.email}`}>Email</a>
@@ -1121,7 +1124,7 @@ const ResearchPage = () => (
       <Entry title="Homotopical Algebra" sub="MS thesis, advised by Dr. Vivek Sadhu">
         <p className="status"><span className="status-dot" aria-hidden="true" />In progress</p>
         <p>
-          Homotopical algebra grew out of the observation that a lot of things one can do in topology can be carried out in a "well behaved category". Quillen's definition of a model category isolates the bare minimum conditions one needs to impose on a category so that one can talk about homotopy theory. The primary goal is to understand the definition and basic theory of a model category, together with enough worked out examples, including the classical model structure on the category of topological spaces. This will be followed by some applications in algebraic K-theory and higher homotopy theory (hopefully!).
+          Homotopical algebra grew out of the observation that much of what one does in topology can be carried out in any "well-behaved" category. Quillen's definition of a model category isolates the bare minimum conditions one needs to impose on a category so that one can talk about homotopy theory. The primary goal is to understand the definition and basic theory of a model category, together with enough worked out examples, including the classical model structure on the category of topological spaces. This will be followed by some applications in algebraic K-theory and higher homotopy theory (hopefully!).
         </p>
       </Entry>
     </Section>
@@ -1202,6 +1205,16 @@ const ProofsPage = () => (
   </PageLayout>
 );
 
+// ─── Frames (under construction) ──────────────────────────────────────────────
+const FramesPage = () => (
+  <PageLayout kicker="Frames" title="Frames">
+    <div className="note">
+      <p className="status" style={{ marginTop: 0 }}><span className="status-dot" aria-hidden="true" />Under construction</p>
+      <p>Nothing here yet. Check back soon.</p>
+    </div>
+  </PageLayout>
+);
+
 // ─── OpenBoard ────────────────────────────────────────────────────────────────
 const OpenBoardPage = () => (
   <PageLayout kicker="OpenBoard" title="Ideas, spoken freely" intro={pageDesc('/openboard')}
@@ -1260,7 +1273,7 @@ const ContactPage = () => {
   };
   return (
     <PageLayout kicker="Contact" title="Get in touch"
-      intro="Feel free to reach out for collaborations, academic discussions, or just a friendly exchange of ideas.">
+      intro="Feel free to reach out for collaborations, academic discussions or just a friendly exchange of ideas.">
       <div>
         <a href={`mailto:${cvData.contact.email}`} className="contact-row">
           <span className="contact-icon"><Mail /></span>
@@ -1335,6 +1348,7 @@ function Shell({ theme, toggleTheme }) {
             <Route path="/proofs"    element={<ProofsPage />} />
             <Route path="/events"    element={<EventsPage />} />
             <Route path="/openboard" element={<OpenBoardPage />} />
+            <Route path="/frames"    element={<FramesPage />} />
             <Route path="/contact"   element={<ContactPage />} />
             <Route path="*"          element={<NotFoundPage />} />
           </Routes>
