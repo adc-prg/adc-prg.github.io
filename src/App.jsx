@@ -176,7 +176,7 @@ const CM_BASE = 'https://cdn.jsdelivr.net/npm/computer-modern@0.1.3/fonts/';
 const PROFILE_PHOTO = 'profile.jpg';
 // Which point of the photo sits in the centre of the circle (x% y%).
 const PROFILE_PHOTO_POSITION = '50% 50%';
-// Dark theme: 'navy' (deep navy with gold) or 'slate' (soft grey-blue with muted gold).
+// Dark theme style key (kept for compatibility; one dark palette is defined in CSS).
 const DARK_STYLE = 'navy';
 // The circular reveal when switching light/dark. Set to false for an instant switch.
 const THEME_REVEAL = true;
@@ -190,21 +190,22 @@ const CSS = `
   @font-face { font-family:'CMU Serif'; font-style:italic; font-weight:700; font-display:swap; src:url(${CM_BASE}cmu-serif-700-italic.woff2) format('woff2'); }
   @font-face { font-family:'CMU Typewriter Text'; font-style:normal; font-weight:400; font-display:swap; src:url(${CM_BASE}cmu-typewriter-text-500-roman.woff2) format('woff2'); }
 
+  /* Classic LaTeX: white paper, black ink, hyperref-style dark-blue links */
   :root {
-    --bg:          #F0EADD;
-    --surface:     #F6F1E7;
-    --ink:         #1F1A17;
-    --ink2:        #463E38;
-    --ink3:        #695F56;
-    --accent:      #8A2F37;
-    --accent-soft: rgba(138,47,55,0.07);
-    --accent-line: rgba(138,47,55,0.38);
-    --hover:       rgba(31,26,23,0.05);
-    --line:        #DCD2C2;
-    --line-strong: #C5B9A5;
-    --on-ink:      #F6F1E7;
+    --bg:          #FFFFFF;
+    --surface:     #FAFAF8;
+    --ink:         #000000;
+    --ink2:        #1A1A1A;
+    --ink3:        #5C5C5C;
+    --accent:      #00008B;
+    --accent-soft: rgba(0,0,139,0.06);
+    --accent-line: rgba(0,0,139,0.40);
+    --hover:       rgba(0,0,0,0.04);
+    --line:        #E2E2E2;
+    --line-strong: #BDBDBD;
+    --on-ink:      #FFFFFF;
     --on-accent:   #FFFFFF;
-    --pop-shadow:  0 24px 60px -24px rgba(40,25,15,0.35), 0 2px 6px rgba(40,25,15,0.06);
+    --pop-shadow:  0 24px 60px -24px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.06);
 
     --serif: 'CMU Serif', 'Latin Modern Roman', 'Computer Modern Serif', 'Computer Modern', 'Times New Roman', serif;
     --mono:  'CMU Typewriter Text', 'Latin Modern Mono', 'Courier New', monospace;
@@ -226,35 +227,22 @@ const CSS = `
     --nav-h:  64px;
     --pop:    cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+  /* Dark: a PDF viewer in night mode, soft grey paper with light-blue links */
   .dark {
-    --bg:          #070D1A;
-    --surface:     #0C1526;
-    --ink:         #F4EFE3;
-    --ink2:        #C7CEDD;
-    --ink3:        #8693B0;
-    --accent:      #E3B23C;
-    --accent-soft: rgba(227,178,60,0.09);
-    --accent-line: rgba(227,178,60,0.42);
-    --hover:       rgba(244,239,227,0.06);
-    --line:        #17233A;
-    --line-strong: #243553;
-    --on-ink:      #070D1A;
-    --on-accent:   #1C1206;
-    --pop-shadow:  0 24px 60px -20px rgba(0,0,0,0.65), 0 2px 6px rgba(0,0,0,0.25);
-  }
-  .dark[data-dark="slate"] {
-    --bg:          #14171E;
-    --surface:     #1A1E27;
-    --ink:         #EAE6E0;
-    --ink2:        #BDB9B3;
-    --ink3:        #8D8E95;
-    --accent:      #D4B373;
-    --accent-soft: rgba(212,179,115,0.09);
-    --accent-line: rgba(212,179,115,0.40);
-    --line:        #262B36;
-    --line-strong: #353B49;
-    --on-ink:      #14171E;
-    --on-accent:   #1A1508;
+    --bg:          #1E1E1E;
+    --surface:     #252526;
+    --ink:         #ECECEC;
+    --ink2:        #D4D4D4;
+    --ink3:        #9A9A9A;
+    --accent:      #8AB4F8;
+    --accent-soft: rgba(138,180,248,0.08);
+    --accent-line: rgba(138,180,248,0.45);
+    --hover:       rgba(255,255,255,0.05);
+    --line:        #333333;
+    --line-strong: #4A4A4A;
+    --on-ink:      #1E1E1E;
+    --on-accent:   #10141C;
+    --pop-shadow:  0 24px 60px -20px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.3);
   }
 
   /* ── Base ─────────────────────────────────────────── */
@@ -431,7 +419,7 @@ const CSS = `
     position:relative; text-align:left; background:none; border:0; padding:3px 0; font-size:var(--fs-ui);
     color:var(--ink2); cursor:pointer; text-decoration-color:transparent; transform-origin:0 70%;
   }
-  .toc-item::before { counter-increment:toc; content:counter(toc); display:inline-block; min-width:1.6em; color:var(--ink3); }
+  .toc-item::before { counter-increment:toc; content:counter(toc); display:inline-block; width:1.6em; color:var(--ink3); }
   .toc-item.active { color:var(--accent); text-decoration-color:var(--accent-line); }
   .toc-bar { display:none; }
 
@@ -439,12 +427,13 @@ const CSS = `
   .sec { scroll-margin-top:calc(var(--nav-h) + 28px); }
   .sec + .sec { margin-top:56px; }
   .sec-title { font-size:1.4375rem; font-weight:700; line-height:1.3; color:var(--ink); padding-bottom:4px; }
-  .sec-title::before { counter-increment:sec; content:counter(sec); display:inline-block; min-width:1.6em; }
+  .sec-title { display:flex; gap:0.9em; }
+  .sec-title::before { counter-increment:sec; content:counter(sec); flex:none; }
   .rule { display:none; }
 
   .entry { padding:22px 0 0; }
   .sec > .entry:first-of-type, .entries > :first-child .entry { padding-top:12px; }
-  .entry-head { display:flex; justify-content:space-between; align-items:baseline; gap:2px 24px; flex-wrap:wrap; }
+  .entry-head { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:baseline; gap:2px 24px; }
   .entry-title { font-size:var(--fs-h3); font-weight:700; line-height:1.35; color:var(--ink); }
   .entry-date { font-size:var(--fs-ui); font-style:italic; color:var(--ink3); white-space:nowrap; font-variant-numeric:lining-nums; }
   .entry-sub { margin-top:1px; font-size:var(--fs-ui); font-style:italic; line-height:1.45; color:var(--ink2); }
@@ -461,14 +450,14 @@ const CSS = `
   .prose { max-width:var(--measure); color:var(--ink2); }
   .prose > * + * { margin-top:0.75em; }
 
-  /* LaTeX paragraphs: justified, hyphenated, indented after the first */
-  .prose > p:not(.lead), .entry-body > p:not(.status) { text-align:justify; hyphens:auto; -webkit-hyphens:auto; }
-  .entry-body > p + p:not(.status), .prose > p:not(.lead) + p { text-indent:var(--indent); margin-top:0; }
+  /* LaTeX paragraphs (parskip style): justified, hyphenated, no indents, even spacing */
+  .prose > p:not(.lead), .entry-body > p:not(.status), .note p { text-align:justify; hyphens:auto; -webkit-hyphens:auto; text-indent:0; }
+  .entry-body > * + * { margin-top:0.6em; }
   .entry-body > .status + p { margin-top:4px; }
 
   .actions { margin-top:22px; display:flex; flex-wrap:wrap; gap:12px 28px; }
 
-  .pill { display:inline-block; margin-top:2px; font-size:var(--fs-ui); color:var(--ink2); }
+  .pill { display:inline-block; margin-top:0; font-size:var(--fs-ui); color:var(--ink2); }
   .status { display:inline-flex; align-items:center; gap:8px; font-size:var(--fs-ui); font-variant-caps:small-caps; letter-spacing:0.03em; color:var(--accent); }
   .status-dot { width:5px; height:5px; background:currentColor; }
   .note { padding:18px 22px; border:1px solid var(--line-strong); background:transparent; }
@@ -535,7 +524,8 @@ const CSS = `
 
   .split { display:grid; grid-template-columns:minmax(150px, 230px) minmax(0,1fr); gap:10px clamp(32px, 6vw, 88px); padding:36px 0; }
   .split-label { font-size:1.4375rem; font-weight:700; line-height:1.3; color:var(--ink); }
-  .split-label::before { counter-increment:sec; content:counter(sec); display:inline-block; min-width:1.6em; }
+  .split-label { display:flex; gap:0.9em; }
+  .split-label::before { counter-increment:sec; content:counter(sec); flex:none; }
   .split .entry:first-child { padding-top:0; }
 
   /* ── Footer ──────────────────────────────────────── */
@@ -595,7 +585,7 @@ const CSS = `
     .split { grid-template-columns:1fr; padding:30px 0; }
     .pager { grid-template-columns:1fr; }
     .pager-link.next { grid-column:1; }
-    .entry-head { flex-direction:column; gap:0; }
+    .entry-head { grid-template-columns:1fr; gap:0; }
     .contact-v { font-size:1.0625rem; }
     .prose > p:not(.lead), .entry-body > p:not(.status) { text-align:left; }
   }
