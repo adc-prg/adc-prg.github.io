@@ -1239,7 +1239,7 @@ const OpenBoardPage = () => (
     <Section id="founders" title="Co-founders">
       <Entry title={cvData.openboard.role} sub={`${cvData.openboard.institution}, student-run`} date={cvData.openboard.duration}>
         <p>
-          Along with my friend <ExtLink href={cvData.openboard.cofounder.url}>{cvData.openboard.cofounder.name}</ExtLink>, I started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.
+          <ExtLink href={cvData.openboard.cofounder.url}>{cvData.openboard.cofounder.name}</ExtLink> and I started an independent initiative to let students come forward and speak their minds about topics they are passionate about, preferably to a general audience.
         </p>
         <p>We welcome all disciplines. If you have an idea you'd like to talk about, reach out.</p>
       </Entry>
